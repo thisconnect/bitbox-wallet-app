@@ -43,7 +43,7 @@
     "preact": "8.5.2",
     "preact-compat": "3.18.0",
     "preact-router": "2.6.1",
-    "react-i18next": "7.9.0"
+    "react-i18next": "7.13.0"
   },
   "browserslist": [
     "last 2 Chrome versions"
