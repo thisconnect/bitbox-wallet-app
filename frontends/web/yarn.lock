@@ -4456,10 +4456,10 @@ i18next-locize-backend@1.6.0:
   resolved "https://registry.yarnpkg.com/i18next-locize-backend/-/i18next-locize-backend-1.6.0.tgz#4a95c19fa2bee623c1d61ce5a80a76a123f7ff92"
   integrity sha512-3+hlwM7eC8MclWIfZ89hXwir4HC5YKUxrx+aLWWPC1H1hrB9dFh4uxve1o2HqJnravOrg247xHvW8xGv9h/Asg==
 
-i18next@11.3.6:
-  version "11.3.6"
-  resolved "https://registry.yarnpkg.com/i18next/-/i18next-11.3.6.tgz#a8e5aff413f5440b3526ebb38e1b7dc605f50faf"
-  integrity sha512-gaS/MwVTxOXgYSYPB3J8N3LWgOPJw7U6syjFZd2jef+kWA+0UDxf84Ai6587kTjS622/nOeCzCNPjJNQ5Mzp3Q==
+i18next@11.10.2:
+  version "11.10.2"
+  resolved "https://registry.yarnpkg.com/i18next/-/i18next-11.10.2.tgz#e5f10346f6320ecf15595419926c25255381a56c"
+  integrity sha512-1rowdX8PqrvsdFhYb3v0A/LlIHLQL1HTa4ia29IzhvNAg2fesNV7R1jXibWLmLQdz3FfTB8RuqSqDEjIawXruA==
 
 iconv-lite@0.4.24, iconv-lite@^0.4.17, iconv-lite@^0.4.4:
   version "0.4.24"
