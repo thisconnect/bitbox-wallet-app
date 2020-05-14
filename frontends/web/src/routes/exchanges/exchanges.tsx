@@ -19,9 +19,10 @@ import A from '../../components/anchor/anchor';
 import Button from '../../components/forms/button';
 import { SwissMadeOpenSource } from '../../components/icon/logo';
 import { Footer, Header } from '../../components/layout';
-import { Spinner } from '../../components/spinner/Spinner';
 import { translate, TranslateProps } from '../../decorators/translate';
 import i18n from '../../i18n/i18n';
+
+import { data, ExchangeData, Method, Region } from './exchanges-data';
 
 import * as styles from './exchanges.css';
 
@@ -30,21 +31,12 @@ interface ExchangesProps {
 
 type Props = ExchangesProps & TranslateProps;
 
-type Method = 'BT' | 'DCA' | 'CC' | 'SW' | 'P2P';
-type Region = 'NA' | 'LA' | 'EU' | 'AF' | 'APAC';
-
 interface State {
-    status: 'loading' | 'loaded' | 'error';
     region: Region | null;
     methods: Method[];
 }
 
-interface Exchange {
-    key: string;
-    link: string;
-    description: string;
-    regions: Region[];
-    payment: Method[];
+interface Exchange extends ExchangeData {
     hostname?: string;
 }
 
@@ -52,28 +44,18 @@ class Exchanges extends Component<Props, State> {
 
     constructor(props) {
         super(props);
+        this.data = data.map(({link, ...rest}) => ({
+            ...rest,
+            link,
+            hostname: new URL(link).hostname,
+        }));
         this.state = {
-            status: 'loading',
             region: null,
             methods: [],
         };
-        this.data = [];
     }
 
     private data: Exchange[];
-
-    public componentDidMount() {
-        fetch('/assets/exchanges/exchanges.json')
-            .then(res => res.json())
-            .then(data => data.map(({link, ...rest}) => ({
-                ...rest,
-                link,
-                hostname: new URL(link).hostname,
-            })))
-            .then(data => this.data = data)
-            .then(() => this.setState({ status: 'loaded', region: null, methods: [] }))
-            .catch(() => this.setState({ status: 'error' }));
-    }
 
     private toggleRegion = code => {
         this.setState(({ region }) => ({ region: region !== code ? code : null }));
@@ -90,18 +72,9 @@ class Exchanges extends Component<Props, State> {
     public render(
         { t }: RenderableProps<Props>,
         {
-        status,
         methods,
         region,
     }) {
-        if (status === 'error') {
-            return 'Error';
-        }
-        if (status === 'loading') {
-            return <div className="contentWithGuide">
-                <Spinner />
-            </div>;
-        }
         const results = this.data
             .filter(({ regions }) => !region || regions.includes(region))
             .filter(({ payment }) => !methods.length || methods.some(m => payment.includes(m)))
