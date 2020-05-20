@@ -148,17 +148,17 @@ class Exchanges extends Component<Props, State> {
                             <div className={styles.results}>
                                 {results.length ? results : t('exchanges.nomatch')}
                             </div>
-                            <Guide>
-                                <Entry key="exchangeDescription" entry={t('guide.exchanges.description')} />
-                                <Entry key="exchangeWhichService" entry={t('guide.exchanges.whichService')} />
-                                <Entry key="accountTransactionConfirmation" entry={t('guide.exchanges.commission')} />
-                            </Guide>
                         </div>
                         <Footer>
                             <SwissMadeOpenSource />
                         </Footer>
                     </div>
                 </div>
+                <Guide>
+                    <Entry key="exchangeDescription" entry={t('guide.exchanges.description')} />
+                    <Entry key="exchangeWhichService" entry={t('guide.exchanges.whichService')} />
+                    <Entry key="accountTransactionConfirmation" entry={t('guide.exchanges.commission')} />
+                </Guide>
             </div>
         );
     }
