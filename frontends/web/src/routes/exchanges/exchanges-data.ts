@@ -12,7 +12,7 @@ export interface ExchangeData {
 export const data: ExchangeData[] = [
     {
         key: 'exmo',
-        link: 'https://exmo.com',
+        link: 'https://exmo.com/?ref=1782231',
         description: 'Founded in 2013 and based in London, Kiev, Barcelona, and Moscow. EXMO is fairly popular in Eastern Europe.',
         regions: ['EU', 'NA'],
         payment: ['CC', 'BT'],
@@ -26,14 +26,14 @@ export const data: ExchangeData[] = [
     },
     {
         key: 'luno',
-        link: 'https://www.luno.com/en/',
+        link: 'https://www.luno.com/invite/R427CJ',
         description: 'Luno makes it safe and easy to buy, store and learn about cryptocurrencies',
         regions: ['EU', 'APAC'],
         payment: ['CC', 'BT'],
     },
     {
         key: 'kraken',
-        link: 'https://www.kraken.com/',
+        link: 'https://r.kraken.com/shift',
         description: 'As one of the largest and oldest Bitcoin exchanges in the world, Kraken is consistently named one of the best places to buy and sell crypto online.',
         regions: ['EU', 'NA'],
         payment: ['BT'],
@@ -75,7 +75,7 @@ export const data: ExchangeData[] = [
     },
     {
         key: 'hodlhodl',
-        link: 'https://hodlhodl.com',
+        link: 'https://hodlhodl.com/join/V7N7',
         description: 'Hodl Hodl is a global P2P Bitcoin trading platform, where all trades occur directly between buyers and sellers, and without a middleman involved - locking it in multisig escrow instead.',
         regions: ['EU', 'NA', 'LA', 'APAC', 'AF'],
         payment: ['P2P'],
@@ -89,7 +89,7 @@ export const data: ExchangeData[] = [
     },
     {
         key: 'paxful',
-        link: 'https://paxful.com',
+        link: 'https://paxful.com/?r=PGYjmnqZgd2',
         description: 'Paxful is a peer-to-peer marketplace to buy and sell bitcoin with 300+ payment methods.',
         regions: ['EU', 'NA', 'LA', 'APAC', 'AF'],
         payment: ['P2P'],
@@ -110,7 +110,7 @@ export const data: ExchangeData[] = [
     },
     {
         key: 'bullbitcoin',
-        link: 'https://bullbitcoin.com/recurring-buys',
+        link: 'https://bullbitcoin.com/signup?referralcode=6f3cfcccc56e37d52ff51ad0a67f2526fbdd0ce2a3',
         description: 'Bull Bitcoin is a fixed rate Bitcoin exchange for Canadians to buy, sell and spend bitcoins online.',
         regions: ['NA'],
         payment: ['BT', 'DCA'],
@@ -124,7 +124,7 @@ export const data: ExchangeData[] = [
     },
     {
         key: 'bitdroplet',
-        link: 'https://bitdroplet.com/',
+        link: 'https://ref.bitdroplet.com/237050',
         description: 'Bitdroplet is a convenient and secure platform which allows an investor to invest in cryptocurrencies through a Systematic Purchase Plan on a monthly basis.',
         regions: ['APAC'],
         payment: ['DCA'],
