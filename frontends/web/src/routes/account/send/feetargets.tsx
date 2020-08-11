@@ -107,23 +107,23 @@ class FeeTargets extends Component<Props, State> {
 
         return (
             <div className={style.row}>
-                <div className={style.column}>
-                    { feeTargets.length > 0 && (
-                          <Select
-                              className={style.priority}
-                              label={t('send.priority')}
-                              id="feeTarget"
-                              disabled={disabled}
-                              onChange={this.handleFeeTargetChange}
-                              selected={feeTarget}
-                              options={feeTargets.map(({ code }) => {
-                                  return {
-                                      value: code,
-                                      text: t(`send.feeTarget.label.${code}`),
-                                  };
-                              })} />
-                      )}
-                </div>
+                { feeTargets.length > 0 && (
+                    <div className={style.column}>
+                        <Select
+                            className={style.priority}
+                            label={t('send.priority')}
+                            id="feeTarget"
+                            disabled={disabled}
+                            onChange={this.handleFeeTargetChange}
+                            selected={feeTarget}
+                            options={feeTargets.map(({ code }) => {
+                                return {
+                                    value: code,
+                                    text: t(`send.feeTarget.label.${code}`),
+                                };
+                            })} />
+                    </div>
+                )}
                 <div className={style.column}>
                     {showCalculatingFeeLabel ? (
                         <Input
