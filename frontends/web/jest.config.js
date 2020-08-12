@@ -104,7 +104,7 @@ module.exports = {
     // with a single module.
     moduleNameMapper: {
         // Pass-through CSS to allow for styles.name look ups in tests.
-        '\\.css$': 'identity-obj-proxy',
+        '\\.(css|png|svg)$': 'identity-obj-proxy',
         // Alias react to preact in tests.
         // Uncomment the others if required by a test dependencies.
         '^react$': 'preact-compat',

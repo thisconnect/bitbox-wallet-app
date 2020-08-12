@@ -58,9 +58,9 @@ export interface AmountWithConversions {
     conversions: Conversions;
 }
 
-interface Conversions {
-    [key: string]: Fiat;
-}
+type Conversions = {
+    [key in Fiat]: string;
+};
 
 interface SignProgress {
     steps: number;

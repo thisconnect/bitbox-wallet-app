@@ -15,25 +15,24 @@
  */
 
 import 'jest';
-import '../../../matchmediastub';
-
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import '../../../matchmediastub';
+jest.mock('../../../../src/i18n/i18n');
+
+import { deep, shallow } from 'preact-render-spy';
 
 jest.mock('../../../../src/utils/request');
 import { apiGet } from '../../../../src/utils/request';
 
-jest.mock('../../../../src/i18n/i18n');
-
 jest.mock('../../../../src/decorators/translate', () => ({
     // this mock makes sure any components using the translate HoC receive the t function as a prop
     translate: () => Component => {
-        Component.defaultProps = { ...Component.defaultProps, t: () => '' };
+        Component.defaultProps = { ...Component.defaultProps, t: k => k };
         return Component;
     },
 }));
 
-import { FeeTargets, Props } from '../../../../src/routes/account/send/feetargets';
+import { FeeTargets } from '../../../../src/routes/account/send/feetargets';
 
 describe('routes/account/send/feetargets', () => {
     it('should match the snapshot', () => {
@@ -42,7 +41,7 @@ describe('routes/account/send/feetargets', () => {
             feeTargets: [{ code: 'economy' }],
         });
 
-        const fee = deep<Props, {}>(
+        const fee = deep(
             <FeeTargets
                 accountCode="btc"
                 disabled={false}
@@ -52,27 +51,67 @@ describe('routes/account/send/feetargets', () => {
         expect(fee).toMatchSnapshot();
     });
 
-    it('should call onFeeTargetChange', () => {
-        const apiGetMock = (apiGet as jest.Mock).mockResolvedValue({
+    it('should call onFeeTargetChange with default', done => {
+        (apiGet as jest.Mock).mockResolvedValue({
             defaultFeeTarget: 'normal',
             feeTargets: [
                 { code: 'low' },
                 { code: 'economy' },
-                { code: 'normal' },
-                { code: 'high' },
             ],
         });
 
-        const onFeeTargetChangeCB = jest.fn();
+        const onFeeTargetChangeCB = code => {
+            expect(code).toBe('normal');
+            done();
+        };
 
-        deep<Props, {}>(
+        shallow(
             <FeeTargets
                 accountCode="btc"
                 disabled={false}
                 fiatUnit="USD"
                 onFeeTargetChange={onFeeTargetChangeCB} />,
         );
+    });
+
+    it('should display amount in correct currency', done => {
+        const apiGetMock = (apiGet as jest.Mock).mockResolvedValue({
+            defaultFeeTarget: 'normal',
+            feeTargets: [
+                { code: 'low' },
+                { code: 'economy' },
+                { code: 'high' },
+            ],
+        });
+
+        const fee = deep(
+            <FeeTargets
+                accountCode="eth"
+                disabled={false}
+                fiatUnit="CHF"
+                proposedFee={{
+                    amount: '1',
+                    unit: 'ETH',
+                    conversions: {
+                        AUD: '0.02',
+                        CAD: '0.02',
+                        CHF: '0.01',
+                        CNY: '0.08',
+                        EUR: '0.02',
+                        GBP: '0.02',
+                        JPY: '1.30',
+                        KRW: '14.43',
+                        RUB: '0.88',
+                        USD: '0.02',
+                    },
+                }}
+                onFeeTargetChange={code => {
+                    expect(code).toBe('normal');
+                    done();
+                }} />,
+        );
+
+        expect(fee).toMatchSnapshot();
         expect(apiGetMock).toHaveBeenCalled();
-        // expect(onFeeTargetChangeCB).toHaveBeenCalledWith('normal');
     });
 });
