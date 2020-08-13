@@ -34,35 +34,34 @@ jest.mock('../../../../src/decorators/translate', () => ({
 
 jest.mock('@zxing/library');
 
-// const mock = 
-(apiGet as jest.Mock).mockImplementation(endpoint => {
-    switch (endpoint) {
-        case 'rates': { return Promise.resolve({BTC: { AUD: 16111.14, CAD: 15310.95, CHF: 10504.8, EUR: 9729.86, USD: 11482.74 }}); }
-        case 'config': { return Promise.resolve({ frontend: { fiatCode: 'CHF', fiatList: ['USD', 'EUR', 'CHF'] } }); }
-        case 'account/btc/balance': {
-            return Promise.resolve({
-                available: { amount: '0.23862468', unit: 'BTC', conversions: { AUD: "3'826.05", CAD: "3'633.11", CHF: "2'505.56", CNY: "18'673.89", EUR: "2'305.71", GBP: "2'085.88", JPY: "291'360.40", KRW: "3'221'292.41", RUB: "200'098.58", USD: "2'721.25" }},
-                hasIncoming: false, incoming: { amount: '0', unit: 'TBTC', conversions: { AUD: '0.00', CAD: '0.00', CHF: '0.00', CNY: '0.00', EUR: '0.00', GBP: '0.00', JPY: '0.00', KRW: '0.00', RUB: '0.00', USD: '0.00' }}});
-        }
-        case 'account/btc/fee-targets': { return Promise.resolve({ defaultFeeTarget: 'economy', feeTargets: [{ code: 'low' }, { code: 'economy' }, { code: 'normal' }, { code: 'high' }] }); }
-        case 'account/btc/receive-addresses': { return Promise.resolve(); }
-        case 'xyz': { return Promise.resolve(); }
-        default: { console.log(endpoint);return Promise.resolve(); }
-    }
-});
-
-import { Send } from '../../../../src/routes/account/send/send';
+// import { Send } from '../../../../src/routes/account/send/send';
 
 describe('routes/account/send/send', () => {
 
     it('should match the snapshot', done => {
+        // const mock = 
+        (apiGet as jest.Mock).mockImplementation(endpoint => {
+            switch (endpoint) {
+                case 'rates': { return Promise.resolve({BTC: { AUD: 16111.14, CAD: 15310.95, CHF: 10504.8, EUR: 9729.86, USD: 11482.74 }}); }
+                case 'config': { return Promise.resolve({ frontend: { fiatCode: 'CHF', fiatList: ['USD', 'EUR', 'CHF'] } }); }
+                case 'account/btc/balance': {
+                    return Promise.resolve({
+                        available: { amount: '0.23862468', unit: 'BTC', conversions: { AUD: "3'826.05", CAD: "3'633.11", CHF: "2'505.56", CNY: "18'673.89", EUR: "2'305.71", GBP: "2'085.88", JPY: "291'360.40", KRW: "3'221'292.41", RUB: "200'098.58", USD: "2'721.25" }},
+                        hasIncoming: false, incoming: { amount: '0', unit: 'TBTC', conversions: { AUD: '0.00', CAD: '0.00', CHF: '0.00', CNY: '0.00', EUR: '0.00', GBP: '0.00', JPY: '0.00', KRW: '0.00', RUB: '0.00', USD: '0.00' }}});
+                }
+                case 'account/btc/fee-targets': { return Promise.resolve({ defaultFeeTarget: 'economy', feeTargets: [{ code: 'low' }, { code: 'economy' }, { code: 'normal' }, { code: 'high' }] }); }
+                case 'account/btc/receive-addresses': { return Promise.resolve(); }
+                case 'xyz': { return Promise.resolve(); }
+                default: { console.log(endpoint);return Promise.resolve(); }
+            }
+        });
 
         // rates.tsx has a custom store and tries to imediatelly
         // fetch fiatCode, fiatList from the config and rates endpoint
         // so we cannot use (or have to mock apiGet before):
         // import { Send } from '../../../../src/routes/account/send/send';
-        // import('../../../../src/routes/account/send/send')
-        //     .then(({ Send }) => {
+        import('../../../../src/routes/account/send/send')
+            .then(({ Send }) => {
                 const send = deep(
                     <Send
                         accounts={[
@@ -84,8 +83,8 @@ describe('routes/account/send/send', () => {
                 // mock.mockReset();
                 done();
 
-            // })
-            // .catch(error => done(error));
+            })
+            .catch(error => done(error));
     });
 
 });
