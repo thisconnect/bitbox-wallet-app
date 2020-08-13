@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
-import * as style from './checkbox.css';
+export const debug = process.env.NODE_ENV === 'development';
 
-export default function Checkbox({
-    disabled = false,
-    label = undefined,
-    id,
-    className = '',
-    children = undefined,
-    ...props
-}) {
-    return (
-        <span className={[style.checkbox, className].join(' ')}>
-            <input
-                type="checkbox"
-                id={id}
-                disabled={disabled}
-                {...props}
-            />
-            <label for={id}>{label} {children}</label>
-        </span>
-    );
+/**
+ * Returns whether the code is running in QtWebEngine.
+ */
+export function runningInQtWebEngine(): boolean {
+    return 'qt' in window;
+}
+
+/**
+ * Returns whether the code is running in Android.
+ */
+export function runningInAndroid(): boolean {
+    return 'android' in window;
 }

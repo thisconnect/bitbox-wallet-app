@@ -50,8 +50,8 @@ servewallet-prodservers:
 buildweb:
 	node --version
 	rm -rf ${WEBROOT}/build
-	yarn --cwd=${WEBROOT} install
-	yarn --cwd=${WEBROOT} run build
+	npm --cwd=${WEBROOT} install
+	npm --cwd=${WEBROOT} run build
 webdev:
 	cd frontends/web && $(MAKE) dev
 weblint:

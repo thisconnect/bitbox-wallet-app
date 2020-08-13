@@ -26,16 +26,16 @@ export function ButtonLink({
     className = '',
     tabIndex = 0,
     children,
-    disabled = undefined,
+    disabled,
     ...props
-}) {
+}): JSX.Element {
     const classNames = [
         style[primary && 'primary'
         || secondary && 'secondary'
         || transparent && 'transparent'
         || danger && 'danger'
         || 'button'
-        ], className
+        ], className,
     ].join(' ');
 
     if (disabled) {
@@ -66,14 +66,14 @@ export default function Button({
     className = '',
     children,
     ...props
-}) {
+}): JSX.Element {
     const classNames = [
         style[primary && 'primary'
         || secondary && 'secondary'
         || transparent && 'transparent'
         || danger && 'danger'
         || 'button'
-        ], className
+        ], className,
     ].join(' ');
 
     return (

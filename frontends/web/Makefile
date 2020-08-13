@@ -13,15 +13,15 @@
 # limitations under the License.
 
 dev:
-	yarn run dev
+	npm run dev
 lint:
-	yarn run lint
+	npm run lint
 jstest:
-	yarn run test
+	npm run test
 jstest-watch:
-	yarn run test --watch
+	npm run test -- --watch
 jstest-cover:
-	yarn run test --coverage
+	npm run test --coverage
 listdeps:
 	@echo "Listing javascript production dependencies. Be careful to not pull in many deps accidentally."
-	NODE_ENV=production yarn list
+	NODE_ENV=production npm list

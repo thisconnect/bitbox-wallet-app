@@ -24,15 +24,15 @@ import { runningInAndroid, runningInQtWebEngine } from './env';
 export const apiPort = extConfig('{{ API_PORT }}', '8082');
 export const apiToken = extConfig('{{ API_TOKEN }}', '');
 
-export function isTLS() {
+export function isTLS(): boolean {
     return document.URL.startsWith('https://');
 }
 
-export function apiURL(endpoint) {
+export function apiURL(endpoint: string): string {
     return (isTLS() ? 'https://' : 'http://') + 'localhost:' + apiPort + '/api/' + endpoint;
 }
 
-function handleError(endpoint) {
+function handleError(endpoint: string) {
     return function(json) {
         return new Promise((resolve, reject) => {
             if (json && json.error) {
@@ -52,7 +52,7 @@ function handleError(endpoint) {
     };
 }
 
-export function apiGet(endpoint) {
+export function apiGet(endpoint: string): Promise<any> {
     if (runningInQtWebEngine()) {
         return call(JSON.stringify({
             method: 'GET',
@@ -70,7 +70,7 @@ export function apiGet(endpoint) {
     }).then(response => response.json()).then(handleError(endpoint));
 }
 
-export function apiPost(endpoint, body) {
+export function apiPost(endpoint: string, body?: any): Promise<any> {
     if (runningInQtWebEngine()) {
         return call(JSON.stringify({
             method: 'POST',

@@ -23,49 +23,59 @@ import * as style from '../dialog/dialog.css';
 
 @translate()
 export default class WaitDialog extends Component {
-    state = {
-        active: false,
-    }
+    private overlay?: Element;
+    private modal?: Element;
 
-    componentWillMount() {
+    public readonly state = {
+        active: false,
+    };
+
+    public componentWillMount() {
         document.body.addEventListener('keydown', this.handleKeyDown);
     }
 
-    componentDidMount() {
+    public componentDidMount() {
         setTimeout(this.activate, 10);
     }
 
-    componentWillUnmount() {
+    public componentWillUnmount() {
         document.body.removeEventListener('keydown', this.handleKeyDown);
     }
 
-    handleKeyDown = e => {
-        // @ts-ignore (blur exists only on HTMLElements)
+    private handleKeyDown = (e: Event) => {
+        // @ts-ignore
         document.activeElement.blur();
         e.preventDefault();
         e.stopPropagation();
     }
 
-    setOverlay = ref => {
+    private setOverlay = ref => {
         this.overlay = ref;
     }
 
-    setModal = ref => {
+    private setModal = ref => {
         this.modal = ref;
     }
 
-    activate = () => {
+    private activate = () => {
         this.setState({ active: true }, () => {
+            if (!this.overlay || !this.modal) {
+                return;
+            }
             animate(this.overlay, 'fadeIn', () => {
-                this.overlay.classList.add(style.activeOverlay);
+                if (this.overlay) {
+                    this.overlay.classList.add(style.activeOverlay);
+                }
             });
             animate(this.modal, 'fadeInUp', () => {
-                this.modal.classList.add(style.activeModal);
+                if (this.modal) {
+                    this.modal.classList.add(style.activeModal);
+                }
             });
         });
     }
 
-    render({
+    public render({
         t,
         includeDefault,
         prequel,
