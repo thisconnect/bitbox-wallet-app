@@ -19,10 +19,10 @@ import { qtSubscribePushNotifications } from './qttransport';
 import { androidSubscribePushNotifications } from './androidtransport';
 import { runningInAndroid, runningInQtWebEngine } from './env';
 
-let socket = null;
-const currentListeners = [];
+let socket: any = null;
+const currentListeners: any[] = [];
 
-export function apiWebsocket(msgCallback) {
+export function apiWebsocket(msgCallback: () => void): () => void {
     if (runningInQtWebEngine()) {
         return qtSubscribePushNotifications(msgCallback);
     }
@@ -31,18 +31,19 @@ export function apiWebsocket(msgCallback) {
     }
     currentListeners.push(msgCallback);
     if (!socket) {
+        console.log('socket')
         socket = new WebSocket((isTLS() ? 'wss://' : 'ws://') + 'localhost:' + apiPort + '/api/events');
 
         socket.onopen = function() {
             socket.send('Authorization: Basic ' + apiToken);
         };
 
-        socket.onerror = function(event) {
+        socket.onerror = function(event: ErrorEvent) {
             console.error('websocket error', event);
         };
 
         // Listen for messages
-        socket.onmessage = function(event) {
+        socket.onmessage = function(event: MessageEvent) {
             const payload = JSON.parse(event.data);
             currentListeners.forEach(listener => listener(payload));
         };

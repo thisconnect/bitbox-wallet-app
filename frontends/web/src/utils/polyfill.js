@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+// TODO: do we still need this polyfill?
 // @ts-nocheck
 
 if (!String.prototype.startsWith) {

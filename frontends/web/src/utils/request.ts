@@ -33,7 +33,7 @@ export function apiURL(endpoint: string): string {
 }
 
 function handleError(endpoint: string) {
-    return function(json) {
+    return function(json: any) {
         return new Promise((resolve, reject) => {
             if (json && json.error) {
                 if (json.error.indexOf('hidapi: unknown failure') !== -1) {

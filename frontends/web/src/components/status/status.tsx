@@ -90,10 +90,12 @@ export default class Status extends Component<Props, State> {
         {
             show,
         }: State) {
-        const childrenList = children as ComponentChild[];
-        if (!show || (childrenList && childrenList.length === 1 && !childrenList[0])) {
-            return null;
-        }
+            const childrenList = children as ComponentChild[];
+
+            // b
+            if (!show || !childrenList || !childrenList.length || !childrenList[0]) {
+                return null;
+            }
         return (
             <div className={[style.container, style[type], className ? className : ''].join(' ')}>
                 <div className={style.status}>

@@ -148,7 +148,7 @@ class Account extends Component<Props, State> {
                .then(hasCard => this.setState({ hasCard }));
     }
 
-    private onEvent = data => {
+    private onEvent = (data: any) => {
         if (!this.props.code) {
             return;
         }
@@ -193,8 +193,8 @@ class Account extends Component<Props, State> {
                 });
             }
 
-            this.setState(state);
-            this.onAccountChanged();
+            // b
+            this.setState(state, this.onAccountChanged);
         });
     }
 
@@ -288,7 +288,6 @@ class Account extends Component<Props, State> {
                 defaultValue: 0,
             });
         }
-
         return (
             <div class="contentWithGuide">
                 <div class="container">

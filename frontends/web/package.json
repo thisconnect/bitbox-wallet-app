@@ -4,11 +4,21 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "build": "preact build",
+    "build": "preact build --no-sw --no-inline-css",
     "serve": "sirv build --port 8080 --cors --single",
     "dev": "preact watch",
     "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
-    "test": "jest ./tests"
+    "analyze": "preact build --analyze",
+    "test": "jest ./test"
+  },
+  "babel": {
+    "presets": [
+      "es2017",
+      "preact"
+    ],
+    "plugins": [
+      "@babel/plugin-transform-react-jsx"
+    ]
   },
   "husky": {
     "hooks": {
@@ -19,28 +29,32 @@
     "*.{css,md}": "prettier --write",
     "*.{js,jsx,ts,tsx}": "eslint --fix"
   },
+  "browserslist": [
+    "last 2 Chrome versions"
+  ],
   "eslintIgnore": [
     "build/*"
   ],
   "dependencies": {
     "@zxing/library": "0.17.1",
-    "i18next": "11.3.6",
-    "i18next-locize-backend": "1.6.0",
+    "i18next": "13.1.5",
+    "i18next-locize-backend": "4.1.2",
     "linkstate": "1.1.1",
-    "locize-editor": "1.7.0",
+    "locize-editor": "2.2.2",
     "preact": "10.3.1",
     "preact-jsx-chai": "3.0.0",
     "preact-markup": "2.0.0",
     "preact-render-to-string": "5.1.4",
     "preact-router": "3.2.1",
-    "react-i18next": "^7.9.0",
+    "react-i18next": "7.13.0",
     "sortablejs": "1.10.1"
   },
   "devDependencies": {
-    "@teamsupercell/typings-for-css-modules-loader": "2.2.0",
+    "@babel/plugin-transform-react-jsx-source": "7.10.5",
+    "@teamsupercell/typings-for-css-modules-loader": "2.2.1",
     "@types/enzyme": "3.10.5",
-    "@types/jest": "26.0.8",
-    "@types/webpack-env": "1.15.1",
+    "@types/jest": "26.0.9",
+    "@types/webpack-env": "1.15.2",
     "@typescript-eslint/eslint-plugin": "2.25.0",
     "@typescript-eslint/parser": "2.25.0",
     "css-loader": "3.5.3",
@@ -55,8 +69,9 @@
     "jest-preset-preact": "4.0.2",
     "lint-staged": "10.0.7",
     "preact-cli": "3.0.0",
+    "preact-cli-plugin-env-vars": "1.2.1",
     "prettier": "1.19.1",
     "sirv-cli": "1.0.0-next.3",
-    "typescript": "3.7.5"
+    "typescript": "3.9.7"
   }
 }
