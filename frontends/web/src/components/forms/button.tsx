@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
+import { h, FunctionalComponent, ComponentChild, RenderableProps } from 'preact';
 import { Link } from 'preact-router/match';
 import * as style from './button.css';
 
@@ -56,6 +56,16 @@ export function ButtonLink({
         </Link>
     );
 }
+
+// interface Props {
+//     type: string;
+//     primary?: boolean;
+//     secondary?: boolean;
+//     transparent?: boolean;
+//     danger?: boolean;
+//     className: string;
+//     children: ComponentChild
+// }
 
 export default function Button({
     type = 'button',

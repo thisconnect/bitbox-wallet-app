@@ -1,6 +1,7 @@
 module.exports = {
     env: {
-        browser: true
+        browser: true,
+        es6: true
     },
     plugins: ["@typescript-eslint"],
     extends: [
@@ -10,7 +11,7 @@ module.exports = {
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:react/recommended",
         "plugin:react-hooks/recommended",
-        "plugin:prettier/recommended",
+        // "plugin:prettier/recommended",
         "prettier/@typescript-eslint",
         "prettier/react"
     ],
@@ -21,8 +22,19 @@ module.exports = {
         },
         project: "./tsconfig.eslint.json",
     },
+    ignorePatterns: [
+        "**/*.css.d.ts"
+    ],
     rules: {
+        "@typescript-eslint/ban-ts-ignore": ["warn"],
+        "@typescript-eslint/no-inferrable-types": ["warn"],
+        "@typescript-eslint/no-use-before-define": ["warn", { "functions": false }],
+        "react/no-deprecated": ["warn"],
         "react/no-unknown-property": ["error", { ignore: ["class"] }],
+        "quotes": ["warn", "single", {
+            "avoidEscape": true,
+            "allowTemplateLiterals": true
+        }],
     },
     settings: {
         react: {

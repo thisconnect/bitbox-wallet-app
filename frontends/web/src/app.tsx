@@ -158,7 +158,7 @@ class App extends Component<Props, State> {
         }
     }
 
-    public componentDidUpdate(prevProps) {
+    public componentDidUpdate(prevProps: Props) {
         if (prevProps.accounts !== this.props.accounts || prevProps.devices !== this.props.devices) {
             this.maybeRoute();
         }
