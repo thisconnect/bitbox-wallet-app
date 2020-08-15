@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps, JSX } from 'preact';
 import * as styles from './message.css';
 
 export interface Props {
@@ -26,7 +26,7 @@ export function Message({
     type = 'message',
     style = '',
     children,
-}: RenderableProps<Props>) {
+}: RenderableProps<Props>): JSX.Element {
     return (
         <div className={styles[type]} style={style}>
             {children}

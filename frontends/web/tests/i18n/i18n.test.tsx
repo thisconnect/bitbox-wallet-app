@@ -18,22 +18,21 @@ import 'jest';
 import '../matchmediastub';
 jest.mock('../../src/utils/request');
 
-// See i18next API docs this mock models after:
-// https://www.i18next.com/overview/api
-const i18nextMock:any = {listeners: {}};
-i18nextMock.use = () => i18nextMock;
-i18nextMock.addResourceBundle = () => {};
-i18nextMock.init = (_opts, cb) => {
-    if (cb) {
-        cb(null, (k) => k);
-    }
-    return Promise.resolve((k) => k);
-};
-i18nextMock.on = (eventName, fn) => {
-    i18nextMock.listeners[eventName] = fn;
-};
-
 jest.mock('i18next', () => {
+    // See i18next API docs this mock models after:
+    // https://www.i18next.com/overview/api
+    const i18nextMock:any = {listeners: {}};
+    i18nextMock.use = () => i18nextMock;
+    i18nextMock.addResourceBundle = () => {};
+    i18nextMock.init = (_opts, cb) => {
+        if (cb) {
+            cb(null, (k) => k);
+        }
+        return Promise.resolve((k) => k);
+    };
+    i18nextMock.on = (eventName, fn) => {
+        i18nextMock.listeners[eventName] = fn;
+    };
     return {
         __esModule: true,
         default: i18nextMock,

@@ -16,20 +16,20 @@
 
 import 'jest';
 import { h } from 'preact';
-import { deep, shallow } from 'preact-render-spy';
+import { mount as deep, shallow } from 'enzyme';
 
-import Input, { Props } from '../../../src/components/forms/input';
+import Input from '../../../src/components/forms/input';
 
 describe('components/forms/input', () => {
     it('should preserve style attribute', () => {
-        const input = deep<Props, {}>(<Input type="password" style="width:100%">content</Input>);
-        expect(input.first<Props, {}>().attr('style')).toBe('width:100%');
-        expect(input.first<Props, {}>().attr('type')).toBe('password');
+        const input = deep(<Input type="password" style="width:100%">content</Input>);
+        expect(input.first().prop('style')).toBe('width:100%');
+        expect(input.first().prop('type')).toBe('password');
     });
 
     it('should have child nodes', () => {
         const input = shallow(<Input><span>label</span></Input>);
-        expect(input.children()[0]).toEqual(<span>label</span>);
+        expect(input.children('span'))).to.contain('label');
     });
 
     it('should return the input node with getRef', () => {

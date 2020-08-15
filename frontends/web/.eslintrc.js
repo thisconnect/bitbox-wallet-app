@@ -17,7 +17,8 @@ module.exports = {
         ecmaFeatures: {
             jsx: true
         },
-        project: "./tsconfig.eslint.json",
+        // tsconfigRootDir: require.resolve("./tsconfig.json"),
+        project: require.resolve("./tsconfig.eslint.json"),
     },
     ignorePatterns: [
         "**/*.css.d.ts"

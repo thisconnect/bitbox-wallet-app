@@ -19,7 +19,7 @@ import { h } from 'preact';
 import '../../../matchmediastub';
 jest.mock('../../../../src/i18n/i18n');
 
-import { deep } from 'preact-render-spy';
+import { mount as deep } from 'enzyme';
 
 jest.mock('../../../../src/utils/websocket')
 jest.mock('../../../../src/utils/request');

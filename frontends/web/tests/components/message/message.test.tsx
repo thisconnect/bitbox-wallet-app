@@ -16,33 +16,34 @@
 
 import 'jest';
 import { h } from 'preact';
-import { deep, shallow } from 'preact-render-spy';
+import { mount } from 'enzyme';
 
-import { Message, Props } from '../../../src/components/message/message';
+import { Message } from '../../../src/components/message/message';
 
 describe('components/message/message', () => {
     it('should use type attr as CSS class', () => {
-        const msg = deep(<Message type="warning">content</Message>);
-        expect(msg.find('.warning').length).toBe(1);
+        const msg = mount(<Message type="warning">content</Message>);
+        console.log(msg.find('.warning'))
+        expect(msg.text()).to.contain('content');
     });
 
     it('should preserve style attribute', () => {
-        const msg = deep<Props, {}>(<Message style="width:100%">content</Message>);
-        expect(msg.first<Props, {}>().attr('style')).toBe('width:100%');
+        const msg = mount(<Message style="width:100%">content</Message>);
+        expect(msg.first().prop('style')).toBe('width:100%');
     });
 
     it('should have child nodes', () => {
-        const msg = shallow(<Message><span>hello</span></Message>);
-        expect(msg.children()[0]).toEqual(<span>hello</span>);
+        const msg = mount(<Message><span>hello</span></Message>);
+        expect(msg.children('span').text()).to.contain('hello');
     });
 
     it('should preserve text', () => {
-        const msg = shallow(<Message><span>hello world</span></Message>);
+        const msg = mount(<Message><span>hello world</span></Message>);
         expect(msg.text()).toBe('hello world');
     });
 
     it('should match the snapshot', () => {
-        const msg = deep(
+        const msg = mount(
             <Message type="success" style="width:100%">
                 <span>hello</span>
             </Message>,

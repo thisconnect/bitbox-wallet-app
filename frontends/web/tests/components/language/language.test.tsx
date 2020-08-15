@@ -15,7 +15,7 @@
  */
 
 import 'jest';
-import { deep } from 'preact-render-spy';
+import { mount as deep } from 'enzyme';
 import '../../matchmediastub';
 jest.mock('../../../src/i18n/i18n');
 
