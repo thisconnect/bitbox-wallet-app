@@ -1,4 +1,4 @@
-import { cloneElement, Component, h, RenderableProps } from 'preact';
+import { cloneElement, Component, h, RenderableProps, JSX } from 'preact';
 import * as style from './steps.css';
 
 interface State {
@@ -21,7 +21,8 @@ class Steps extends Component<{}, State> {
     }
 
     private getActiveStep = (children: JSX.Element[]) => {
-        return children.filter(child => child).findIndex(child => child.attributes.active) + 1;
+        // b
+        return children.filter(child => child).findIndex(child => child.props.active) + 1;
     }
 
     public render(

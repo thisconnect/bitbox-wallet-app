@@ -24,7 +24,7 @@ interface BackupsListItemProps {
     backup: Backup;
     selectedBackup?: string;
     handleChange: (value: string) => void;
-    onFocus: ({ target }: { target: HTMLElement; }) => void;
+    onFocus: ({ target }: { target: HTMLDivElement; }) => void;
     radio: boolean;
 }
 

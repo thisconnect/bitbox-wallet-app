@@ -56,8 +56,8 @@ class Reset extends Component<Props, State> {
         });
     }
 
-    private handleUnderstandChange = e => {
-        this.setState({ understand: e.target.checked });
+    private handleUnderstandChange = (e: InputEvent) => {
+        this.setState({ understand: (e.target as HTMLInputElement).checked });
     }
 
     private abort = () => {

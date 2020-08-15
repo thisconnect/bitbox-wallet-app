@@ -23,7 +23,8 @@ module.exports = {
         "**/*.css.d.ts"
     ],
     rules: {
-        "@typescript-eslint/ban-ts-ignore": ["warn"],
+        "@typescript-eslint/ban-ts-comment": ["warn"],
+        "@typescript-eslint/no-explicit-any": ["warn"],
         "@typescript-eslint/no-inferrable-types": ["warn"],
         "@typescript-eslint/no-use-before-define": ["warn", { "functions": false }],
         "react/no-deprecated": ["warn"],
@@ -44,6 +45,12 @@ module.exports = {
             files: ["*.js"],
             rules: {
                 "@typescript-eslint/explicit-function-return-type": "off",
+            }
+        },
+        {
+            files: ["*.ts", "*.tsx"],
+            rules: {
+                "@typescript-eslint/ban-ts-comment": ["warn"]
             }
         }
     ]

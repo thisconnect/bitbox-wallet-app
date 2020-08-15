@@ -103,7 +103,7 @@ class Restore extends Component<Props, State> {
         });
     }
 
-    private handleUnderstandChange = (e: Event) => {
+    private handleUnderstandChange = (e) => {
         this.setState({ understand: (e.target as HTMLInputElement).checked });
     }
 

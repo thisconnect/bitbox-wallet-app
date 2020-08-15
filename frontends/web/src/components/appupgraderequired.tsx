@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps, JSX } from 'preact';
 import { translate, TranslateProps } from '../decorators/translate';
 import A from './anchor/anchor';
 

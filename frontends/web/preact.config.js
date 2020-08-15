@@ -18,6 +18,10 @@ export default {
         console.log(config)
         console.log('----- end config -----')
 
+        console.log('----- config.module.rules -----')
+        console.log(config.module.rules)
+        console.log('----- end config -----')
+
 
         console.log('----- env -----')
         console.log(env)
@@ -26,6 +30,10 @@ export default {
         if (!env.production) {
             config.devServer.overlay = true;
             config.devServer.hot = false;
+
+            console.log('add @babel/plugin-transform-react-jsx-source')
+            const { rule } = helpers.getLoadersByName(config, 'babel-loader')[0];
+            rule.options.plugins.push(require.resolve('@babel/plugin-transform-react-jsx-source'));
         }
         
         config.module.rules[4].use.splice(1, 0, {

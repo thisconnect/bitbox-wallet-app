@@ -22,7 +22,7 @@ import { runningInAndroid, runningInQtWebEngine } from './env';
 let socket: any = null;
 const currentListeners: any[] = [];
 
-export function apiWebsocket(msgCallback: () => void): () => void {
+export function apiWebsocket(msgCallback: (a: any) => void): () => void {
     if (runningInQtWebEngine()) {
         return qtSubscribePushNotifications(msgCallback);
     }
@@ -31,7 +31,6 @@ export function apiWebsocket(msgCallback: () => void): () => void {
     }
     currentListeners.push(msgCallback);
     if (!socket) {
-        console.log('socket')
         socket = new WebSocket((isTLS() ? 'wss://' : 'ws://') + 'localhost:' + apiPort + '/api/events');
 
         socket.onopen = function() {

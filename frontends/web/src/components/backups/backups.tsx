@@ -45,7 +45,7 @@ interface State {
 }
 
 class Backups extends Component<Props, State> {
-    private scrollableContainer!: HTMLElement;
+    private scrollableContainer?: HTMLDivElement | null;
 
     constructor(props) {
         super(props);
@@ -76,18 +76,17 @@ class Backups extends Component<Props, State> {
         this.setState({ selectedBackup: backupID });
     }
 
-    private scrollIntoView = ({ target }: { target: HTMLElement }) => {
+    private scrollIntoView = ({ target }: { target: HTMLDivElement }) => {
+        if (!this.scrollableContainer) {
+            return;
+        }
         const offsetTop = target.offsetTop;
-        const offsetHeight = (target.parentNode as HTMLElement).offsetHeight;
+        const offsetHeight = (target.parentNode as HTMLDivElement).offsetHeight;
         if (offsetTop > this.scrollableContainer.scrollTop + offsetHeight) {
             return;
         }
         const top = Math.max((offsetTop + offsetHeight) - this.scrollableContainer.offsetHeight, 0);
         this.scrollableContainer.scroll({ top, behavior: 'smooth' });
-    }
-
-    private setScrollableContainerRef = (ref: HTMLElement) => {
-        this.scrollableContainer = ref;
     }
 
     public render(
@@ -121,7 +120,7 @@ class Backups extends Component<Props, State> {
         return (
             <div className="box large m-top-default">
                 <SimpleMarkup tagName="p" markup={t('backup.description')} />
-                <div class={style.backupsList} ref={this.setScrollableContainerRef}>
+                <div class={style.backupsList} ref={ref => this.scrollableContainer = ref}>
                     <div className={style.listContainer}>
                         {
                             backupList.length ? backupList.map(backup => (

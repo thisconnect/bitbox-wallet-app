@@ -33,7 +33,7 @@ export default class ManageBackups extends Component {
         super(props);
         this.state = {
             sdCardInserted: this.props.sdCardInserted === 'true',
-            activeDialog: !this.state.sdCardInserted,
+            activeDialog: this.props.sdCardInserted !== 'true',
         };
     }
 

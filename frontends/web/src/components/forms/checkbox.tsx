@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps, JSX } from 'preact';
 import * as style from './checkbox.css';
 
 export interface Props {
@@ -22,7 +22,7 @@ export interface Props {
     disabled?: boolean;
     id?: string;
     label?: string;
-    onChange?: () => void;
+    onChange?: (e: InputEvent) => void;
     // [property: string]: any;
 }
 

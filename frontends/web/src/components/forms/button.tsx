@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, FunctionalComponent, ComponentChild, RenderableProps } from 'preact';
+import { h, JSX } from 'preact';
 import { Link } from 'preact-router/match';
 import * as style from './button.css';
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps, JSX } from 'preact';
 import * as styles from './input.css';
 
 export interface Props {
