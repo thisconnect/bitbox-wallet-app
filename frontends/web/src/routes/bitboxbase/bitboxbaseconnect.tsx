@@ -226,7 +226,7 @@ class BitBoxBaseConnect extends Component<Props, State> {
                                                     (<DetectedBase
                                                         hostname={base[0]}
                                                         ip={base[1]}
-                                                        connect={this.establishConnection}/>)
+                                                        connect={this.establishConnection} />)
                                                 )) : (
                                                     <p className="text-center p-top-default p-bottom-default">
                                                         <span className={style.emptyBases}>{t('bitboxBase.detectedBasesEmpty')}</span>

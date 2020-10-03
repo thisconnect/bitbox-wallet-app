@@ -102,7 +102,7 @@ function Logo({ coinCode, active, ...rest }: Props) {
     }
     return (
         <div>
-            { active ? <img draggable={false} src={logoMap[coinCode][0]} {...rest}/>
+            { active ? <img draggable={false} src={logoMap[coinCode][0]} {...rest} />
               : <div class="stacked">
                   <img draggable={false} src={logoMap[coinCode][1]} {...rest} />
                   <img draggable={false} src={logoMap[coinCode][0]} {...rest} />

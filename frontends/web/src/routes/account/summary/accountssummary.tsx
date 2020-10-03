@@ -105,7 +105,7 @@ class AccountsSummary extends Component<Props, State> {
                     </Header>
                     <div className="innerContainer scrollableContainer">
                         <div className="content padded">
-                            <Chart data={data.accounts[0].chartData}/>
+                            <Chart data={data.accounts[0].chartData} />
                             {
                                 coins.length > 0 ?
                                                coins.map((coin, index) =>

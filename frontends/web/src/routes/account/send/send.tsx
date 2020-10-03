@@ -687,7 +687,7 @@ class Send extends Component<Props, State> {
                                                 showCalculatingFeeLabel={isUpdatingProposal}
                                                 onFeeTargetChange={this.feeTargetChange}
                                                 onFeePerByte={fee => this.setState({ feePerByte: fee }, this.validateAndDisplayFee)}
-                                                error={feeError}/>
+                                                error={feeError} />
                                         </div>
                                         <div className="column column-1-2">
                                             <Input
@@ -775,7 +775,7 @@ class Send extends Component<Props, State> {
                                             </span>
                                         )}
                                         {feePerByte ? (
-                                            <span key="feeperbyte"><br/><small>({feePerByte} sat/vB)</small></span>
+                                            <span key="feeperbyte"><br /><small>({feePerByte} sat/vB)</small></span>
                                         ) : null}
                                     </p>
                                 </div>

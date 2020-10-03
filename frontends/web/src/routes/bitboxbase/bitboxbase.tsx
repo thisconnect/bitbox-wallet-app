@@ -515,7 +515,7 @@ class BitBoxBase extends Component<Props, State> {
         if (!showWizard) {
             if (locked) {
                 return (
-                    <UnlockBitBoxBase bitboxBaseID={bitboxBaseID}/>
+                    <UnlockBitBoxBase bitboxBaseID={bitboxBaseID} />
                 );
             }
 
