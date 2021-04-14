@@ -34,7 +34,7 @@ import TranslationHelper from './components/translationhelper/translationhelper'
 import { Update } from './components/update/update';
 import { translate, TranslateProps } from './decorators/translate';
 import { i18nEditorActive } from './i18n/i18n';
-import { Account } from './routes/account/account';
+import { AccountOverview } from './routes/account/overview/overview';
 import { AddAccount } from './routes/account/add/addaccount';
 import { Moonpay } from './routes/buy/moonpay';
 import { BuyInfo } from './routes/buy/info';
@@ -249,7 +249,7 @@ class App extends Component<Props, State> {
                             <Info
                                 path="/account/:code/info"
                                 accounts={accounts} />
-                            <Account
+                            <AccountOverview
                                 path="/account/:code"
                                 code={'' /* dummy to satisfy TS */}
                                 devices={devices}

@@ -16,24 +16,23 @@
  */
 
 import { Component, h, RenderableProps } from 'preact';
-import * as accountApi from '../../api/account';
-import { syncAddressesCount } from '../../api/accountsync';
-import { TDevices } from '../../api/devices';
-import { unsubscribe, UnsubscribeList } from '../../utils/subscriptions';
-import { statusChanged, syncdone } from '../../api/subscribe-legacy';
-import { Balance } from '../../components/balance/balance';
-import { Entry } from '../../components/guide/entry';
-import { Guide } from '../../components/guide/guide';
-import { HeadersSync } from '../../components/headerssync/headerssync';
-import { Header } from '../../components/layout';
-import { Spinner } from '../../components/spinner/Spinner';
-import Status from '../../components/status/status';
-import { Transactions } from '../../components/transactions/transactions';
-import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
-import { apiGet } from '../../utils/request';
-import * as style from './account.css';
-import { isBitcoinBased } from './utils';
+import * as accountApi from '../../../api/account';
+import { syncAddressesCount } from '../../../api/accountsync';
+import { TDevices } from '../../../api/devices';
+import { unsubscribe, UnsubscribeList } from '../../../utils/subscriptions';
+import { statusChanged, syncdone } from '../../../api/subscribe-legacy';
+import { Balance } from '../../../components/balance/balance';
+import { HeadersSync } from '../../../components/headerssync/headerssync';
+import { Header } from '../../../components/layout';
+import { Spinner } from '../../../components/spinner/Spinner';
+import Status from '../../../components/status/status';
+import { Transactions } from '../../../components/transactions/transactions';
+import { load } from '../../../decorators/load';
+import { translate, TranslateProps } from '../../../decorators/translate';
+import { apiGet } from '../../../utils/request';
+import * as style from './overview.css';
+import { isBitcoinBased } from '../utils';
+import { BuyGuide } from './guide';
 
 interface AccountProps {
     code: string;
@@ -216,18 +215,6 @@ class Account extends Component<Props, State> {
             .catch(console.error);
     }
 
-    private isBTCScriptType = (
-        scriptType: accountApi.ScriptType,
-        account: accountApi.IAccount,
-        accountInfo?: accountApi.ISigningConfigurationList,
-    ): boolean => {
-        if (!accountInfo || accountInfo.signingConfigurations.length !== 1) {
-            return false;
-        }
-        return (account.coinCode === 'btc' || account.coinCode === 'tbtc') &&
-            accountInfo.signingConfigurations[0].scriptType === scriptType;
-    }
-
     private deviceIDs = (devices: TDevices) => {
         return Object.keys(devices);
     }
@@ -364,44 +351,12 @@ class Account extends Component<Props, State> {
                         </div>
                     </div>
                 </div>
-                <Guide>
-                    <Entry key="accountDescription" entry={t('guide.accountDescription')} />
-                    {this.isBTCScriptType('p2pkh', account, accountInfo) && (
-                        <Entry key="guide.settings.btc-p2pkh" entry={t('guide.settings.btc-p2pkh')} />
-                    )}
-                    {this.isBTCScriptType('p2wpkh-p2sh', account, accountInfo) && (
-                        <Entry key="guide.settings.btc-p2sh" entry={t('guide.settings.btc-p2sh')} />
-                    )}
-                    {this.isBTCScriptType('p2wpkh', account, accountInfo) && (
-                    <Entry key="guide.settings.btc-p2wpkh" entry={t('guide.settings.btc-p2wpkh')} />
-                    )}
-                    {balance && balance.available.amount === '0' && (
-                        <Entry key="accountSendDisabled" entry={t('guide.accountSendDisabled', { unit: balance.available.unit })} />
-                    )}
-                    <Entry key="accountReload" entry={t('guide.accountReload')} />
-                    {transactions !== undefined && transactions.length > 0 && (
-                        <Entry key="accountTransactionLabel" entry={t('guide.accountTransactionLabel')} />
-                    )}
-                    {transactions !== undefined && transactions.length > 0 && (
-                        <Entry key="accountTransactionTime" entry={t('guide.accountTransactionTime')} />
-                    )}
-                    {this.isBTCScriptType('p2pkh', account, accountInfo) && (
-                        <Entry key="accountLegacyConvert" entry={t('guide.accountLegacyConvert')} />
-                    )}
-                    {transactions !== undefined &&  transactions.length > 0 && (
-                        <Entry key="accountTransactionAttributesGeneric" entry={t('guide.accountTransactionAttributesGeneric')} />
-                    )}
-                    {transactions !== undefined && transactions.length > 0 && isBitcoinBased(account.coinCode) && (
-                        <Entry key="accountTransactionAttributesBTC" entry={t('guide.accountTransactionAttributesBTC')} />
-                    )}
-                    {balance && balance.hasIncoming && (
-                        <Entry key="accountIncomingBalance" entry={t('guide.accountIncomingBalance')} />
-                    )}
-                    <Entry key="accountTransactionConfirmation" entry={t('guide.accountTransactionConfirmation')} />
-                    <Entry key="accountFiat" entry={t('guide.accountFiat')} />
-                    { /* careful, also used in Settings */ }
-                    <Entry key="accountRates" entry={t('guide.accountRates')} />
-                </Guide>
+                <BuyGuide
+                    t={t}
+                    account={account}
+                    accountInfo={accountInfo}
+                    balance={balance}
+                    transactions={transactions} />
             </div>
         );
     }
@@ -413,4 +368,4 @@ const loadHOC = load<LoadedAccountProps, AccountProps & TranslateProps>(({ code 
 }))(Account);
 
 const HOC = translate<AccountProps>()(loadHOC);
-export { HOC as Account };
+export { HOC as AccountOverview };
