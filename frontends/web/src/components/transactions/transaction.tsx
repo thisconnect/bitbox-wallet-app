@@ -53,12 +53,11 @@ class Transaction extends Component<Props, State> {
     };
 
     private parseTimeShort = time => {
-        const options = {
+        return new Date(Date.parse(time)).toLocaleString(this.context.i18n.language, {
             year: 'numeric',
             month: 'numeric',
             day: 'numeric',
-        };
-        return new Date(Date.parse(time)).toLocaleString(this.context.i18n.language, options);
+        });
     }
 
     private showDetails = () => {
