@@ -34,7 +34,7 @@ import TranslationHelper from './components/translationhelper/translationhelper'
 import { Update } from './components/update/update';
 import { translate, TranslateProps } from './decorators/translate';
 import { i18nEditorActive } from './i18n/i18n';
-import { AccountOverview } from './routes/account/overview/overview';
+import { AccountOverview } from './routes/account/overview';
 import { AddAccount } from './routes/account/add/addaccount';
 import { Moonpay } from './routes/buy/moonpay';
 import { BuyInfo } from './routes/buy/info';

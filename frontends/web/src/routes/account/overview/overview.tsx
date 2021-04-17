@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, Fragment, h, RenderableProps } from 'preact';
 import * as accountApi from '../../../api/account';
 import { syncAddressesCount } from '../../../api/accountsync';
 import { TDevices } from '../../../api/devices';
@@ -29,7 +29,6 @@ import Status from '../../../components/status/status';
 import { Transactions } from '../../../components/transactions/transactions';
 import { load } from '../../../decorators/load';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import { apiGet } from '../../../utils/request';
 import * as style from './overview.css';
 import { isBitcoinBased } from '../utils';
 import { BuyGuide } from './guide';
@@ -49,7 +48,7 @@ interface State {
     status?: accountApi.IStatus;
     transactions?: accountApi.ITransaction[];
     balance?: accountApi.IBalance;
-    hasCard: boolean;
+    // hasCard: boolean;
     exported: string;
     accountInfo?:accountApi. ISigningConfigurationList;
     syncedAddressesCount?: number;
@@ -57,12 +56,12 @@ interface State {
 
 type Props = LoadedAccountProps & AccountProps & TranslateProps;
 
-class Account extends Component<Props, State> {
+class Overview extends Component<Props, State> {
     public readonly state: State = {
         status: undefined,
         transactions: undefined,
         balance: undefined,
-        hasCard: false,
+        // hasCard: false,
         exported: '',
         accountInfo: undefined,
         syncedAddressesCount: undefined,
@@ -71,7 +70,7 @@ class Account extends Component<Props, State> {
     private subscribtions: UnsubscribeList = [];
 
     public componentDidMount() {
-        this.checkSDCards();
+        // this.checkSDCards();
         if (!this.props.code) {
             return;
         }
@@ -100,13 +99,13 @@ class Account extends Component<Props, State> {
         }
         if (this.props.code !== prevProps.code) {
             this.onStatusChanged();
-            this.checkSDCards();
+            // this.checkSDCards();
             unsubscribe(this.subscribtions);
             this.subscribe();
         }
-        if (this.deviceIDs(this.props.devices).length !== this.deviceIDs(prevProps.devices).length) {
-            this.checkSDCards();
-        }
+        // if (this.deviceIDs(this.props.devices).length !== this.deviceIDs(prevProps.devices).length) {
+        //     this.checkSDCards();
+        // }
     }
 
     private subscribe() {
@@ -121,28 +120,28 @@ class Account extends Component<Props, State> {
         );
     }
 
-    private checkSDCards() {
-        Promise.all(this.deviceIDs(this.props.devices).map(deviceID => {
-            switch (this.props.devices[deviceID]) {
-                case 'bitbox':
-                    return apiGet(`devices/${deviceID}/info`)
-                        .then(info => {
-                            if (!info) {
-                                return false;
-                            }
-                            return info.sdcard;
-                        });
-                case 'bitbox02':
-                    return apiGet(`devices/bitbox02/${deviceID}/check-sdcard`)
-                        .then(sdcard => sdcard);
-                default:
-                    return;
-            }
-        }))
-            .then(sdcards => sdcards.some(sdcard => sdcard))
-            .then(hasCard => this.setState({ hasCard }))
-            .catch(console.error);
-    }
+    // private checkSDCards() {
+    //     Promise.all(this.deviceIDs(this.props.devices).map(deviceID => {
+    //         switch (this.props.devices[deviceID]) {
+    //             case 'bitbox':
+    //                 return apiGet(`devices/${deviceID}/info`)
+    //                     .then(info => {
+    //                         if (!info) {
+    //                             return false;
+    //                         }
+    //                         return info.sdcard;
+    //                     });
+    //             case 'bitbox02':
+    //                 return apiGet(`devices/bitbox02/${deviceID}/check-sdcard`)
+    //                     .then(sdcard => sdcard);
+    //             default:
+    //                 return;
+    //         }
+    //     }))
+    //         .then(sdcards => sdcards.some(sdcard => sdcard))
+    //         .then(hasCard => this.setState({ hasCard }))
+    //         .catch(console.error);
+    // }
 
     private onStatusChanged() {
         const code = this.props.code;
@@ -215,9 +214,9 @@ class Account extends Component<Props, State> {
             .catch(console.error);
     }
 
-    private deviceIDs = (devices: TDevices) => {
-        return Object.keys(devices);
-    }
+    // private deviceIDs = (devices: TDevices) => {
+    //     return Object.keys(devices);
+    // }
 
     private dataLoaded = () => {
         return this.state.balance !== undefined && this.state.transactions !== undefined;
@@ -239,7 +238,7 @@ class Account extends Component<Props, State> {
             status,
             transactions,
             balance,
-            hasCard,
+            // hasCard,
             exported,
             accountInfo,
             syncedAddressesCount,
@@ -272,83 +271,78 @@ class Account extends Component<Props, State> {
         }
 
         return (
-            <div class="contentWithGuide">
-                <div class="container">
-                    <Status key="warning.sdcard" hidden={!hasCard} type="warning">
-                        {t('warning.sdcard')}
-                    </Status>
-                    <Status key="info.connection" hidden={status.offlineError === null}>
-                        <p>{t('account.reconnecting')}</p>
-                    </Status>
-                    <Header
-                        title={<h2><span>{account.name}</span></h2>}>
-                        {isBitcoinBased(account.coinCode) ? (
-                            <a href={`/account/${code}/info`} title={t('accountInfo.title')} className="flex flex-row flex-items-center">
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    className={style.accountIcon}>
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                                    <line x1="12" y1="8" x2="12" y2="8"></line>
-                                </svg>
-                                <span>{t('accountInfo.label')}</span>
-                            </a>
-                        ) : null}
-                    </Header>
-                    {status.synced && this.dataLoaded() && isBitcoinBased(account.coinCode) && <HeadersSync coinCode={account.coinCode} />}
-                    <div className="innerContainer scrollableContainer">
-                        <div className="content padded">
-                            <Status
-                                className="m-bottom-default"
-                                hidden={!coinCodeInfo}
-                                dismissable={`info-${code}`}
-                                type="info">
-                                {coinCodeInfo}
-                            </Status>
-                            <div class="flex flex-row flex-between flex-items-center flex-column-mobile flex-reverse-mobile">
-                                <label className="labelXLarge flex-self-start-mobile">{t('accountSummary.availableBalance')}</label>
-                                <div className={style.actionsContainer}>
-                                    {canSend ? (
-                                        <a href={`/account/${code}/send`} className={style.send}><span>{t('button.send')}</span></a>
-                                    ) : (
-                                        <span className={`${style.send} ${style.disabled}`}>{t('button.send')}</span>
-                                    )}
-                                    <a href={`/account/${code}/receive`} className={style.receive}><span>{t('button.receive')}</span></a>
-                                    { this.supportsBuy() && (
-                                        <a href={`/buy/info/${code}`} className={style.buy}><span>{t('button.buy')}</span></a>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="box large">
-                                <Balance balance={balance} />
-                            </div>
-                            {
-                                !status.synced || offlineErrorTextLines.length || !this.dataLoaded() || status.fatalError ? (
-                                    <Spinner text={
-                                        status.fatalError && t('account.fatalError') ||
-                                        offlineErrorTextLines.join('\n') ||
-                                        !status.synced && (
-                                            t('account.initializing')
-                                            + initializingSpinnerText
-                                        ) || ''
-                                    } />
+            <Fragment>
+                <Status key="info.connection" hidden={status.offlineError === null}>
+                    <p>{t('account.reconnecting')}</p>
+                </Status>
+                <Header
+                    title={<h2><span>{account.name}</span></h2>}>
+                    {isBitcoinBased(account.coinCode) ? (
+                        <a href={`/account/${code}/info`} title={t('accountInfo.title')} className="flex flex-row flex-items-center">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                className={style.accountIcon}>
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="16" x2="12" y2="12"></line>
+                                <line x1="12" y1="8" x2="12" y2="8"></line>
+                            </svg>
+                            <span>{t('accountInfo.label')}</span>
+                        </a>
+                    ) : null}
+                </Header>
+                {status.synced && this.dataLoaded() && isBitcoinBased(account.coinCode) && <HeadersSync coinCode={account.coinCode} />}
+                <div className="innerContainer scrollableContainer">
+                    <div className="content padded">
+                        <Status
+                            className="m-bottom-default"
+                            hidden={!coinCodeInfo}
+                            dismissable={`info-${code}`}
+                            type="info">
+                            {coinCodeInfo}
+                        </Status>
+                        <div class="flex flex-row flex-between flex-items-center flex-column-mobile flex-reverse-mobile">
+                            <label className="labelXLarge flex-self-start-mobile">{t('accountSummary.availableBalance')}</label>
+                            <div className={style.actionsContainer}>
+                                {canSend ? (
+                                    <a href={`/account/${code}/send`} className={style.send}><span>{t('button.send')}</span></a>
                                 ) : (
-                                    <Transactions
-                                        accountCode={code}
-                                        exported={exported}
-                                        handleExport={this.export}
-                                        explorerURL={account.blockExplorerTxPrefix}
-                                        transactions={transactions}
-                                    />
-                                )
-                            }
+                                    <span className={`${style.send} ${style.disabled}`}>{t('button.send')}</span>
+                                )}
+                                <a href={`/account/${code}/receive`} className={style.receive}><span>{t('button.receive')}</span></a>
+                                { this.supportsBuy() && (
+                                    <a href={`/buy/info/${code}`} className={style.buy}><span>{t('button.buy')}</span></a>
+                                )}
+                            </div>
                         </div>
+                        <div className="box large">
+                            <Balance balance={balance} />
+                        </div>
+                        {
+                            !status.synced || offlineErrorTextLines.length || !this.dataLoaded() || status.fatalError ? (
+                                <Spinner text={
+                                    status.fatalError && t('account.fatalError') ||
+                                    offlineErrorTextLines.join('\n') ||
+                                    !status.synced && (
+                                        t('account.initializing')
+                                        + initializingSpinnerText
+                                    ) || ''
+                                } />
+                            ) : (
+                                <Transactions
+                                    accountCode={code}
+                                    exported={exported}
+                                    handleExport={this.export}
+                                    explorerURL={account.blockExplorerTxPrefix}
+                                    transactions={transactions}
+                                />
+                            )
+                        }
                     </div>
                 </div>
                 <BuyGuide
@@ -357,7 +351,7 @@ class Account extends Component<Props, State> {
                     accountInfo={accountInfo}
                     balance={balance}
                     transactions={transactions} />
-            </div>
+            </Fragment>
         );
     }
 }
@@ -365,7 +359,7 @@ class Account extends Component<Props, State> {
 const loadHOC = load<LoadedAccountProps, AccountProps & TranslateProps>(({ code }) => ({
     moonpayBuySupported: `exchange/moonpay/buy-supported/${code}`,
     config: 'config',
-}))(Account);
+}))(Overview);
 
 const HOC = translate<AccountProps>()(loadHOC);
-export { HOC as AccountOverview };
+export { HOC as Overview };
