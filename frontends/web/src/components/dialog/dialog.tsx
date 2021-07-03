@@ -214,4 +214,10 @@ class Dialog extends Component<Props, State> {
     }
 }
 
-export { Dialog };
+function DialogButtons({ children }) {
+    return (
+        <div class={style.dialogButtons}>{children}</div>
+    );
+}
+
+export { Dialog, DialogButtons };
