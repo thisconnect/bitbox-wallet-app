@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +15,15 @@
  * limitations under the License.
  */
 
-export { default as Button } from './button';
-export { ButtonLink } from './button';
-export { default as Checkbox } from './checkbox';
-export { default as Radio } from './radio';
-export { default as Field } from './field';
-export { default as Input } from './input';
-export { default as Label } from './label';
-export { default as Select } from './select';
+import { h, JSX } from 'preact';
+import * as style from './field.css';
+
+export function Field({
+    children, ...props
+}: JSX.IntrinsicElements['div']) {
+    return (
+        <div className={style.field} {...props}>
+            {children}
+        </div>
+    );
+}

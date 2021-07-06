@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +15,29 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
-import * as style from './field.css';
+import { h, JSX } from 'preact';
+import * as style from './radio.css';
 
-export default function Field({
-    children, ...props
-}) {
+export function Radio({
+    disabled = false,
+    label,
+    id,
+    children,
+    ...props
+}: JSX.IntrinsicElements['input']) {
     return (
-        <div className={style.field} {...props}>
-            {children}
-        </div>
+        <span className={style.radio}>
+            <input
+                type="radio"
+                id={id}
+                name={id}
+                disabled={disabled}
+                {...props}
+            />
+            <label for={id}>
+                {label}
+                {children}
+            </label>
+        </span>
     );
 }

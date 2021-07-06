@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +15,18 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
+import { h, JSX } from 'preact';
+import * as style from './label.css';
 
-export default function Label({
+export function Label({
     className,
-    style,
     children,
+    id,
     ...props
-}) {
-    const classes = ['label', className].join(' ');
+}: JSX.IntrinsicElements['label']) {
+    const classes = [style.label, className].join(' ');
     return (
-        <label className={classes} style={style} {...props}>
+        <label for={id} className={classes} {...props}>
             {children}
         </label>
     );
