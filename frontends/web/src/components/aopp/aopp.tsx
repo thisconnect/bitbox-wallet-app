@@ -141,12 +141,12 @@ class Aopp extends Component<Props, State> {
                             <form onSubmit={this.chooseAccount}>
                                 <Content>
                                     <Select
-                                        label={t('buy.info.selectLabel')}
-                                        options={options}
                                         defaultValue={options[0].value}
-                                        value={accountCode}
-                                        onChange={e => this.setState({ accountCode: e.target.value })}
-                                        id="account" />
+                                        id="account"
+                                        label={t('buy.info.selectLabel')}
+                                        onChange={e => this.setState({ accountCode: (e.target as HTMLSelectElement).value })}
+                                        options={options}
+                                        value={accountCode} />
                                 </Content>
                                 <FullscreenButtons>
                                     <Button primary type="submit">{t('button.next')}</Button>
