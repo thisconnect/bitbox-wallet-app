@@ -121,44 +121,33 @@ class Aopp extends Component<Props, State> {
                     <Banner>{t('aopp.banner')}</Banner>
                 );
             case 'choosing-account':
-                if (aopp.accounts) {
-                    const options = aopp.accounts.map(account => {
-                        return {
-                            text: account.name,
-                            value: account.code,
-                        };
-                    });
-                    return (
-                        <Fullscreen>
-                            <FullscreenHeader title={t('aopp.title')}>
-                                <p>{domain}</p>
-                            </FullscreenHeader>
-                            <form onSubmit={this.chooseAccount}>
-                                <FullscreenContent>
-                                    <Select
-                                        label={t('buy.info.selectLabel')}
-                                        options={options}
-                                        defaultValue={options[0].value}
-                                        value={accountCode}
-                                        onChange={e => this.setState({ accountCode: e.target.value })}
-                                        id="account" />
-                                </FullscreenContent>
-                                <FullscreenButtons>
-                                    <Button primary type="submit">{t('button.next')}</Button>
-                                    <Button secondary onClick={aoppAPI.cancel}>{t('dialog.cancel')}</Button>
-                                </FullscreenButtons>
-                            </form>
-                        </Fullscreen>
-                    );
-                }
-                // show syncing message when no aopp.accounts are found
-                // technically we don't need this return and could let it fall to case 'syncing'
+                // eslint-disable-next-line no-case-declarations
+                const options = aopp?.accounts?.map(account => {
+                    return {
+                        text: account.name,
+                        value: account.code,
+                    };
+                });
                 return (
                     <Fullscreen>
                         <FullscreenHeader title={t('aopp.title')}>
                             <p>{domain}</p>
                         </FullscreenHeader>
-                        <FullscreenContent>{t('aopp.syncing')}</FullscreenContent>
+                        <form onSubmit={this.chooseAccount}>
+                            <FullscreenContent>
+                                <Select
+                                    label={t('buy.info.selectLabel')}
+                                    options={options}
+                                    defaultValue={options![0].value}
+                                    value={accountCode}
+                                    onChange={e => this.setState({ accountCode: e.target.value })}
+                                    id="account" />
+                            </FullscreenContent>
+                            <FullscreenButtons>
+                                <Button primary type="submit">{t('button.next')}</Button>
+                                <Button secondary onClick={aoppAPI.cancel}>{t('dialog.cancel')}</Button>
+                            </FullscreenButtons>
+                        </form>
                     </Fullscreen>
                 );
             case 'syncing':
