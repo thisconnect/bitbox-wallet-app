@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +19,12 @@ const isArray = Array.isArray;
 const keyList = Object.keys;
 const hasProp = Object.prototype.hasOwnProperty;
 
-export function equal(a, b) {
+export function equal(a, b): boolean {
     if (a === b) return true;
 
     if (a && b && typeof a === 'object' && typeof b === 'object') {
-        let arrA = isArray(a), arrB = isArray(b), i, length, key;
+        const arrA = isArray(a), arrB = isArray(b);
+        let i, length, key;
 
         if (arrA && arrB) {
             length = a.length;
@@ -35,7 +37,7 @@ export function equal(a, b) {
 
         if (arrA !== arrB) return false;
 
-        let keys = keyList(a);
+        const keys = keyList(a);
         length = keys.length;
 
         if (length !== keyList(b).length) return false;

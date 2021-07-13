@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +74,18 @@ describe('equal', () => {
             const b = [11, 42];
             expect(equal(a, b)).toBeFalsy();
             expect(equal(b, a)).toBeFalsy();
+        });
+
+        it('is true for array with same objects', () => {
+            const a = [{a: 1}, {a: 2}, {a: 3}];
+            const b = [{a: 1}, {a: 2}, {a: 3}];
+            expect(equal(a, b)).toBeTruthy();
+        });
+
+        it('is true for array with different objects', () => {
+            const a = [{a: 1}, {a: 2}, {a: 3, b: 4}];
+            const b = [{a: 1}, {a: 2}, {a: 3}];
+            expect(equal(a, b)).toBeFalsy();
         });
     });
 
