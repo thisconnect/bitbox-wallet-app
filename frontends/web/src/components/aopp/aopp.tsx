@@ -19,12 +19,17 @@ import { AccountCode } from '../../api/account';
 import * as aoppAPI from '../../api/aopp';
 import { subscribe } from '../../decorators/subscribe';
 import { translate, TranslateProps } from '../../decorators/translate';
-import { Fullscreen, FullscreenButtons } from '../fullscreen/fullscreen';
+import { equal } from '../../utils/equal';
+import { Fullscreen, FullscreenHeader, FullscreenContent, FullscreenButtons } from '../fullscreen/fullscreen';
 import { Message } from '../message/message';
 import { Button, Field, Input, Label, Select } from '../forms';
 import { CopyableInput } from '../copy/Copy';
 import { AppLogo, ArrowDown, BitBox02Stylized, Cancel, Checked } from '../icon';
 import * as styles from './aopp.css';
+
+const Banner = ({ children }: RenderableProps<{}>) => (
+    <div className={styles.banner}>{children}</div>
+);
 
 interface State {
     accountCode: AccountCode;
@@ -49,7 +54,7 @@ class Aopp extends Component<Props, State> {
     }
 
     public componentDidUpdate(prevProps) {
-        if (this.props.aopp?.accounts !== prevProps.aopp?.accounts) {
+        if (!equal(this.props.aopp?.accounts, prevProps.aopp?.accounts)) {
             this.setAccountCodeDefault();
         }
     }
@@ -68,15 +73,6 @@ class Aopp extends Component<Props, State> {
         e.preventDefault();
     }
 
-    private Banner = ({ children }) => (<div className={styles.banner}>{children}</div>);
-    private Content = ({ children }) => (<div className={styles.content}>{children}</div>);
-    private Header = (props) => (
-        <header className={styles.header}>
-            <h1 className={styles.title}>{props.title}</h1>
-            {props.children}
-        </header>
-    );
-
     public render(
         { t, aopp }: RenderableProps<Props>,
         { accountCode }: State,
@@ -85,20 +81,19 @@ class Aopp extends Component<Props, State> {
             return null;
         }
         const domain = aopp.callback ? new URL(aopp.callback).host : '';
-        const { Banner, Content, Header } = this;
         switch (aopp.state) {
             case 'error':
                 return (
                     <Fullscreen>
-                        <Header title={t('aopp.errorTitle')}>
+                        <FullscreenHeader title={t('aopp.errorTitle')}>
                             <p>{domain}</p>
-                        </Header>
-                        <Content>
+                        </FullscreenHeader>
+                        <FullscreenContent>
                             <Message type="error">
                                 <Cancel className={styles.smallIcon} /><br />
                                 {t(`error.${aopp.errorCode}`, { host: domain })}
                             </Message>
-                        </Content>
+                        </FullscreenContent>
                         <FullscreenButtons>
                             <Button danger onClick={aoppAPI.cancel}>Dismiss</Button>
                         </FullscreenButtons>
@@ -111,10 +106,10 @@ class Aopp extends Component<Props, State> {
                 return (
                     <Fullscreen>
                         <AppLogo />
-                        <Header title={t('aopp.title')} />
-                        <Content>
+                        <FullscreenHeader title={t('aopp.title')} />
+                        <FullscreenContent>
                             <p>{t('aopp.addressRequest', { host: domain })}</p>
-                        </Content>
+                        </FullscreenContent>
                         <FullscreenButtons>
                             <Button primary onClick={aoppAPI.approve}>{t('button.continue')}</Button>
                             <Button secondary onClick={aoppAPI.cancel}>{t('dialog.cancel')}</Button>
@@ -135,11 +130,11 @@ class Aopp extends Component<Props, State> {
                     });
                     return (
                         <Fullscreen>
-                            <Header title={t('aopp.title')}>
+                            <FullscreenHeader title={t('aopp.title')}>
                                 <p>{domain}</p>
-                            </Header>
+                            </FullscreenHeader>
                             <form onSubmit={this.chooseAccount}>
-                                <Content>
+                                <FullscreenContent>
                                     <Select
                                         label={t('buy.info.selectLabel')}
                                         options={options}
@@ -147,7 +142,7 @@ class Aopp extends Component<Props, State> {
                                         value={accountCode}
                                         onChange={e => this.setState({ accountCode: e.target.value })}
                                         id="account" />
-                                </Content>
+                                </FullscreenContent>
                                 <FullscreenButtons>
                                     <Button primary type="submit">{t('button.next')}</Button>
                                     <Button secondary onClick={aoppAPI.cancel}>{t('dialog.cancel')}</Button>
@@ -160,32 +155,32 @@ class Aopp extends Component<Props, State> {
                 // technically we don't need this return and could let it fall to case 'syncing'
                 return (
                     <Fullscreen>
-                        <Header title={t('aopp.title')}>
+                        <FullscreenHeader title={t('aopp.title')}>
                             <p>{domain}</p>
-                        </Header>
-                        <Content>{t('aopp.syncing')}</Content>
+                        </FullscreenHeader>
+                        <FullscreenContent>{t('aopp.syncing')}</FullscreenContent>
                     </Fullscreen>
                 );
             case 'syncing':
                 return (
                     <Fullscreen>
-                        <Header title={t('aopp.title')}>
+                        <FullscreenHeader title={t('aopp.title')}>
                             <p>{domain}</p>
-                        </Header>
-                        <Content>{t('aopp.syncing')}</Content>
+                        </FullscreenHeader>
+                        <FullscreenContent>{t('aopp.syncing')}</FullscreenContent>
                     </Fullscreen>
                 );
             case 'signing':
                 return (
                     <Fullscreen>
-                        <Header title={t('aopp.title')}>
+                        <FullscreenHeader title={t('aopp.title')}>
                             <p className={styles.domainName}>{domain}</p>
-                        </Header>
-                        <Content>
+                        </FullscreenHeader>
+                        <FullscreenContent>
                             <p>{t('aopp.signing')}</p>
                             <ArrowDown />
                             <BitBox02Stylized className={styles.device} />
-                        </Content>
+                        </FullscreenContent>
                         <FullscreenButtons>
                             <Button secondary onClick={aoppAPI.cancel}>{t('dialog.cancel')}</Button>
                         </FullscreenButtons>
@@ -194,10 +189,10 @@ class Aopp extends Component<Props, State> {
             case 'success':
                 return (
                     <Fullscreen>
-                        <Header title={t('aopp.title')}>
+                        <FullscreenHeader title={t('aopp.title')}>
                             <p className={styles.domainName}>{domain}</p>
-                        </Header>
-                        <Content>
+                        </FullscreenHeader>
+                        <FullscreenContent>
                             <Checked className={styles.largeIcon} />
                             <h2 className={styles.title}>{t('aopp.success.title')}</h2>
                             <p>{t('aopp.success.message', { host: domain })}</p>
@@ -209,7 +204,7 @@ class Aopp extends Component<Props, State> {
                                 <Label>{t('aopp.labelMessage')}</Label>
                                 <Input readOnly value={aopp.message} />
                             </Field>
-                        </Content>
+                        </FullscreenContent>
                         <FullscreenButtons>
                             <Button primary onClick={aoppAPI.cancel}>{t('button.complete')}</Button>
                             <div className={styles.buttonWithInfo}>

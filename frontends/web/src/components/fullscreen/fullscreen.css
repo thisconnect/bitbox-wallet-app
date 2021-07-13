@@ -21,6 +21,20 @@
     text-align: center;
 }
 
+.header {
+    margin-bottom: var(--space-default);
+}
+
+.title {
+    font-weight: 400;
+    font-size: var(--size-subheader);
+    margin-bottom: var(--space-default);
+}
+
+.content {
+    min-height: 80px;
+}
+
 .buttons {
     display: flex;
     flex-direction: row-reverse;

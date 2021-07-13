@@ -34,6 +34,25 @@ export function Fullscreen({
     );
 }
 
+export function FullscreenContent({ children }: RenderableProps<{}>) {
+    return (
+        <div className={style.content}>{children}</div>
+    );
+}
+
+interface HeaderProps {
+    title: string;
+}
+
+export function FullscreenHeader(props: RenderableProps<HeaderProps>) {
+    return (
+        <header className={style.header}>
+            <h1 className={style.title}>{props.title}</h1>
+            {props.children}
+        </header>
+    );
+}
+
 export function FullscreenButtons({ children }) {
     return (
         <div className={style.buttons}>
