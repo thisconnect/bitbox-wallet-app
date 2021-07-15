@@ -21,7 +21,6 @@ import BB02Stylized from '../../assets/device/bitbox02-stylized-reflection.png';
 import info from './assets/icons/info.svg';
 import arrowDownSVG from './assets/icons/arrow-down-active.svg';
 import checkSVG from './assets/icons/check.svg';
-import checkedSVG from './assets/icons/checked.svg';
 import cancelSVG from './assets/icons/cancel.svg';
 import copySVG from './assets/icons/copy.svg';
 import * as style from './icon.css';
@@ -80,6 +79,11 @@ export const Info = (props: IconProps) => (<img src={info} draggable={false} {..
 export const BitBox02Stylized = (props: IconProps) => (<img src={BB02Stylized} draggable={false} {...props} />);
 export const ArrowDown = (props: IconProps) => (<img src={arrowDownSVG} draggable={false} {...props} />);
 export const Check = (props: IconProps) => (<img src={checkSVG} draggable={false} {...props} />);
-export const Checked = (props: IconProps) => (<img src={checkedSVG} draggable={false} {...props} />);
 export const Cancel = (props: IconProps) => (<img src={cancelSVG} draggable={false} {...props} />);
 export const Copy = (props: IconProps) => (<img src={copySVG} draggable={false} {...props} />);
+export const Checked = (props: IconProps) => (
+    <svg class="checked" viewBox="0 0 52 52" draggable={false} {...props}>
+        <circle class="checked-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checked-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+    </svg>
+);
