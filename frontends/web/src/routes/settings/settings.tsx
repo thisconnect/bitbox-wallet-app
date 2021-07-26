@@ -254,7 +254,16 @@ class Settings extends Component<Props, State> {
                                                         </SettingsButton>
                                                         {
                                                             activeProxyDialog && (
-                                                                <Dialog onClose={this.hideProxyDialog} title={t('settings.expert.setProxyAddress')} small>
+                                                                <Dialog onClose={this.hideProxyDialog} title={t('settings.expert.setProxyAddress')}>
+                                                                    { restart && (
+                                                                        <div class="row m-bottom-default">
+                                                                            <InlineMessage
+                                                                                type="success"
+                                                                                align="left"
+                                                                                message={t('settings.restart')}
+                                                                                onEnd={this.handleRestartDismissMessage} />
+                                                                        </div>
+                                                                    ) }
                                                                     <div className="flex flex-row flex-between flex-items-center">
                                                                         <div>
                                                                             <p className="m-none">{t('settings.expert.useProxy')}</p>
@@ -275,8 +284,11 @@ class Settings extends Component<Props, State> {
                                                                         <div className={dialogStyle.actions}>
                                                                             <Button primary
                                                                                 onClick={this.setProxyAddress}
-                                                                                disabled={!config.backend.proxy.useProxy || proxyAddress === config.backend.proxy.proxyAddress}>
+                                                                                disabled={!config.backend.proxy.useProxy}>
                                                                                 {t('settings.expert.setProxyAddress')}
+                                                                            </Button>
+                                                                            <Button secondary onClick={this.hideProxyDialog}>
+                                                                                {t('button.back')}
                                                                             </Button>
                                                                         </div>
                                                                     </div>
@@ -287,17 +299,6 @@ class Settings extends Component<Props, State> {
                                                     </div>
                                                 </div>
                                             </div>
-                                            {
-                                                restart && (
-                                                    <div class="row">
-                                                        <InlineMessage
-                                                            type="success"
-                                                            align="left"
-                                                            message={t('settings.restart')}
-                                                            onEnd={this.handleRestartDismissMessage} />
-                                                    </div>
-                                                )
-                                            }
                                         </div>
                                     </div>
                                 )
