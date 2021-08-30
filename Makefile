@@ -36,7 +36,6 @@ envinit:
 #  - add to $PATH: /usr/local/opt/go@1.16/bin
 osx-init:
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-	brew install yarn
 	brew install go@1.16
 	$(MAKE) envinit
 servewallet:
@@ -48,10 +47,9 @@ servewallet-regtest:
 servewallet-prodservers:
 	go run -mod=vendor ./cmd/servewallet -devservers=false
 buildweb:
-	node --version
 	rm -rf ${WEBROOT}/build
-	yarn --cwd=${WEBROOT} install
-	yarn --cwd=${WEBROOT} run build
+	npm --prefix=${WEBROOT} install
+	npm --prefix=${WEBROOT} run build
 webdev:
 	cd frontends/web && $(MAKE) dev
 weblint:
