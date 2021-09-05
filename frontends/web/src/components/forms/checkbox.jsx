@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
+import React from 'react';
 import * as style from './checkbox.css';
 
 export default function Checkbox({
