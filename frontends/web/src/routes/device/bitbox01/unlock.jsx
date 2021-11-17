@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
-import { route } from 'preact-router';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
+import {route} from '../../../utils/compat-router'
 import { apiGet, apiPost } from '../../../utils/request';
 import { Button } from '../../../components/forms';
 import { PasswordSingleInput } from '../../../components/password';
@@ -33,8 +33,7 @@ const stateEnum = Object.freeze({
     ERROR: 'error'
 });
 
-@translate()
-export default class Unlock extends Component {
+class Unlock extends Component {
     state = {
         status: stateEnum.DEFAULT,
         errorMessage: '',
@@ -179,3 +178,5 @@ export default class Unlock extends Component {
         );
     }
 }
+
+export default withTranslation()(Unlock)

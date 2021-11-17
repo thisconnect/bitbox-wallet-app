@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component} from 'react';
 import { apiPost } from '../../../utils/request';
 import { Backup, BackupsListItem } from '../components/backup';
 import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { Button } from '../../../components/forms';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface CheckProps {
     deviceID: string;
@@ -27,7 +27,7 @@ interface CheckProps {
     disabled: boolean;
 }
 
-type Props = CheckProps & TranslateProps;
+type Props = CheckProps & WithTranslation;
 
 interface State {
     activeDialog: boolean;
@@ -44,7 +44,7 @@ class Check extends Component<Props, State> {
         userVerified: false,
     };
 
-    private checkBackup = (silent: boolean, backups) => {
+    private checkBackup = (silent: boolean, backups: any) => {
         apiPost('devices/bitbox02/' + this.props.deviceID + '/backups/check', {
             silent,
         }).then( response => {
@@ -74,7 +74,9 @@ class Check extends Component<Props, State> {
         this.setState({ activeDialog: false, userVerified: false });
     }
 
-    public render({ t, backups }: RenderableProps<Props>, { activeDialog, message, foundBackup, userVerified }: State) {
+    public render() {
+        const { t, backups } = this.props;
+        const { activeDialog, message, foundBackup, userVerified } = this.state;
         return (
             <div>
                 <Button
@@ -125,5 +127,5 @@ class Check extends Component<Props, State> {
     }
 }
 
-const HOC = translate<CheckProps>()(Check);
+const HOC = withTranslation()(Check);
 export { HOC as Check };

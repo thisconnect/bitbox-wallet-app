@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
+import { h, JSX, RenderableProps } from 'react';
 import { Fiat } from '../../../../api/account';
 import {
     currencies,
@@ -26,7 +26,7 @@ import {
 } from '../../../../components/rates/rates';
 import { Toggle } from '../../../../components/toggle/toggle';
 import { share } from '../../../../decorators/share';
-import { translate, TranslateProps } from '../../../../decorators/translate';
+import { translate, WithTranslation } from '../../../../decorators/translate';
 import * as parentStyle from '../../settings.css';
 import * as style from './fiat.css';
 
@@ -45,7 +45,7 @@ function setDefault(event: Event): void {
     event.preventDefault();
 }
 
-type Props = SharedProps & TranslateProps;
+type Props = SharedProps & WithTranslation;
 
 function Selection({
     t,
@@ -108,4 +108,4 @@ function Selection({
     );
 }
 
-export const FiatSelection = translate()(share<SharedProps, TranslateProps>(store)(Selection));
+export const FiatSelection = translate()(share<SharedProps, WithTranslation>(store)(Selection));

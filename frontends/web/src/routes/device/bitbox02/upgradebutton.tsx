@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { Dialog } from '../../../components/dialog/dialog';
 // TODO: use DialogButtons
 import dialogStyle from '../../../components/dialog/dialog.module.css';
 import { Button } from '../../../components/forms';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 export interface VersionInfo {
     newVersion: string;
@@ -37,7 +37,7 @@ interface UpgradeButtonProps {
     asButton?: boolean;
 }
 
-type Props = UpgradeButtonProps & TranslateProps;
+type Props = UpgradeButtonProps & WithTranslation;
 
 interface State {
     activeDialog: boolean;
@@ -57,15 +57,14 @@ class UpgradeButton extends Component<Props, State> {
         this.setState({ activeDialog: false });
     }
 
-    public render(
-        { t,
-          versionInfo,
-          asButton,
-        }: RenderableProps<Props>,
-        { activeDialog,
-          confirming,
-        }: State,
-    ) {
+    public render() {
+        const { t,
+            versionInfo,
+            asButton,
+          } = this.props;
+          const { activeDialog,
+            confirming,
+          } = this.state;
         if (!versionInfo || !versionInfo.canUpgrade) {
             return null;
         }
@@ -113,5 +112,5 @@ class UpgradeButton extends Component<Props, State> {
     }
 }
 
-const HOC = translate<UpgradeButtonProps>()(UpgradeButton);
+const HOC = withTranslation()(UpgradeButton);
 export { HOC as UpgradeButton };

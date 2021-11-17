@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
 import * as accountAPI from '../../api/account';
 import * as backendAPI from '../../api/backend';
@@ -26,14 +26,14 @@ import { Header } from '../../components/layout';
 import { Toggle } from '../../components/toggle/toggle';
 import { Dialog, DialogButtons } from '../../components/dialog/dialog';
 import { Message } from '../../components/message/message';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import Guide from './manage-account-guide';
 import * as style from './manage-accounts.css';
 
 interface ManageAccountsProps {
 }
 
-type Props = ManageAccountsProps & TranslateProps;
+type Props = ManageAccountsProps & WithTranslation;
 
 export type TFavorites = {
     readonly [key in string]: boolean;
@@ -299,5 +299,5 @@ class ManageAccounts extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ManageAccountsProps>()(ManageAccounts);
+const HOC = withTranslation()(ManageAccounts);
 export { HOC as ManageAccounts };

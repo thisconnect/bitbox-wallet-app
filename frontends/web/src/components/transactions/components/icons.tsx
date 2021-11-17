@@ -1,4 +1,4 @@
-import { h, JSX } from 'preact';
+import { h, JSX } from 'react';
 import * as style from './icons.css';
 
 export const ArrowIn = (): JSX.Element => (

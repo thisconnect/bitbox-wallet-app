@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
 import * as accountApi from '../../../api/account';
 import * as backendAPI from '../../../api/backend';
@@ -22,7 +22,7 @@ import { SimpleMarkup } from '../../../utils/simplemarkup';
 import { Message } from '../../../components/message/message';
 import { Button, Input } from '../../../components/forms';
 import { Header } from '../../../components/layout';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { Step, Steps } from './components/steps';
 import { CoinDropDown } from './components/coin-dropdown';
 import * as styles from './add.css';
@@ -33,7 +33,7 @@ import Guide from '../../settings/manage-account-guide';
 interface AddAccountProps {
 }
 
-type Props = AddAccountProps & TranslateProps;
+type Props = AddAccountProps & WithTranslation;
 
 type TStep = 'select-coin' | 'choose-name' | 'success';
 
@@ -290,6 +290,6 @@ class AddAccount extends Component<Props, State> {
     }
 }
 
-const HOC = translate<AddAccountProps>()(AddAccount);
+const HOC = withTranslation()(AddAccount);
 
 export { HOC as AddAccount };

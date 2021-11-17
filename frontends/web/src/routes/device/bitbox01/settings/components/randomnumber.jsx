@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { apiPost } from '../../../../../utils/request';
 import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
 import { CopyableInput } from '../../../../../components/copy/Copy';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
 
-@translate()
-export default class RandomNumber extends Component {
+class RandomNumber extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -75,3 +74,5 @@ export default class RandomNumber extends Component {
         );
     }
 }
+
+export default withTranslation()(RandomNumber)

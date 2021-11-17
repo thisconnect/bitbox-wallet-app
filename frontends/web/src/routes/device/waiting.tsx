@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { Entry } from '../../components/guide/entry';
 import { Guide, store as panelStore } from '../../components/guide/guide';
 import { AppLogo, SwissMadeOpenSource } from '../../components/icon/logo';
 import { Footer, Header } from '../../components/layout';
 import { setSidebarStatus } from '../../components/sidebar/sidebar';
 import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
 import { debug } from '../../utils/env';
 import * as style from './bitbox01/bitbox01.css';
 import { SkipForTesting } from './components/skipfortesting';
@@ -30,7 +30,7 @@ interface TestingProps {
     testing?: boolean;
 }
 
-type WaitingProps = TestingProps & TranslateProps;
+type WaitingProps = TestingProps & WithTranslation;
 
 class Waiting extends Component<WaitingProps> {
     public componentWillMount() {
@@ -40,11 +40,10 @@ class Waiting extends Component<WaitingProps> {
         }
     }
 
-    public render(
-        { t, testing }: RenderableProps<WaitingProps>,
-    ) {
+    public render() {
+        const{ t, testing } = this.props;
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('welcome.title')}</h2>} />
                     <div className="content padded narrow isVerticallyCentered">
@@ -80,6 +79,6 @@ class Waiting extends Component<WaitingProps> {
     }
 }
 
-const loadHOC = load<TestingProps, TranslateProps>(() => debug ? { testing: 'testing' } : {})(Waiting);
-const translateHOC = translate()(loadHOC);
+const loadHOC = load<TestingProps, WithTranslation>(() => debug ? { testing: 'testing' } : {})(Waiting);
+const translateHOC = withTranslation()(loadHOC as any);
 export { translateHOC as Waiting };

@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet, apiPost } from '../../../../utils/request';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { BitBox } from '../../../../components/icon/logo';
 import { Button } from '../../../../components/forms';
 import * as style from '../bitbox01.css';
 
-@translate()
-export default class Bootloader extends Component {
+class Bootloader extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -130,3 +129,5 @@ export default class Bootloader extends Component {
         );
     }
 }
+
+export default withTranslation()(Bootloader)

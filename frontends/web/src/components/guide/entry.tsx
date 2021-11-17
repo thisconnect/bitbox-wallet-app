@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import A from '../anchor/anchor';
 import * as style from './guide.css';
 

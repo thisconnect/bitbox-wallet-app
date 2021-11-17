@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { share } from '../../decorators/share';
 import { Store } from '../../decorators/store';
-import { translate, TranslateProps } from '../../decorators/translate';
 import { setConfig } from '../../utils/config';
 import { apiGet } from '../../utils/request';
 import A from '../anchor/anchor';
@@ -62,7 +62,7 @@ export function hide() {
     setGuideShown(false);
 }
 
-type Props = SharedProps & TranslateProps;
+type Props = SharedProps & WithTranslation;
 
 class Guide extends Component<Props> {
     public componentDidMount() {
@@ -73,9 +73,8 @@ class Guide extends Component<Props> {
         store.setState({ guideExists: false });
     }
 
-    public render(
-        { shown, t, children }: RenderableProps<Props>,
-    ) {
+    public render() {
+        const { shown, t, children } = this.props;
         return (
             <div className={style.wrapper}>
                 <div className={[style.overlay, shown && style.show].join(' ')} onClick={toggle}></div>
@@ -109,5 +108,5 @@ class Guide extends Component<Props> {
     }
 }
 
-const HOC = translate()(share<SharedProps, TranslateProps>(store)(Guide));
+const HOC = withTranslation()(share<SharedProps, WithTranslation>(store)(Guide) as any);
 export { HOC as Guide };

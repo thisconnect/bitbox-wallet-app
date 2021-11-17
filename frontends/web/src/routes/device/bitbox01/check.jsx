@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../components/forms';
 import { Dialog } from '../../../components/dialog/dialog';
 import { PasswordSingleInput } from '../../../components/password';
@@ -23,8 +23,7 @@ import { apiPost } from '../../../utils/request';
 // TODO: use DialogButtons
 import style from '../../../components/dialog/dialog.module.css';
 
-@translate()
-export default class Check extends Component {
+class Check extends Component {
     state = {
         password: null,
         activeDialog: false,
@@ -127,3 +126,5 @@ export default class Check extends Component {
         );
     }
 }
+
+export default withTranslation()(Check)

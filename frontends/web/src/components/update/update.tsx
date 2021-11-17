@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
+import { FunctionComponent } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
 import A from '../anchor/anchor';
 import Status from '../status/status';
 
@@ -33,9 +33,9 @@ interface LoadedProps {
     file: File | null;
 }
 
-type Props = LoadedProps & TranslateProps;
+type Props = LoadedProps & WithTranslation;
 
-function Update({ file, t }: RenderableProps<Props>): JSX.Element | null {
+const Update:FunctionComponent<Props> = ({file, t}) => {
     return file && (
         <Status dismissable={`update-${file.version}`} type="info">
             {t('app.upgrade', {
@@ -51,6 +51,6 @@ function Update({ file, t }: RenderableProps<Props>): JSX.Element | null {
     );
 }
 
-const HOC = translate()(load<LoadedProps, TranslateProps>({ file: 'update' })(Update));
+const HOC = withTranslation()(load<LoadedProps, WithTranslation>({ file: 'update' })(Update) as any);
 
 export { HOC as Update };

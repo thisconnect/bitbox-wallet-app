@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory, h, JSX, RenderableProps } from 'preact';
+import { Component, ComponentFactory, h, JSX, RenderableProps } from 'react';
 import { getDisplayName } from '../utils/component';
 import { apiSubscribe, Event } from '../utils/event';
 import { apiGet } from '../utils/request';

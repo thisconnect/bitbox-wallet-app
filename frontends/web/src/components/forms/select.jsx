@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
 import { select } from './select.css';
 
 export default function Select({

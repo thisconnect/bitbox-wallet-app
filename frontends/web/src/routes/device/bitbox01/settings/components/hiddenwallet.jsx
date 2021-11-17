@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { alertUser } from '../../../../../components/alert/Alert';
 import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
@@ -26,8 +26,7 @@ import { apiPost } from '../../../../../utils/request';
 import { SimpleMarkup } from '../../../../../utils/simplemarkup';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
 
-@translate()
-export default class HiddenWallet extends Component {
+class HiddenWallet extends Component {
     state = {
         password: null,
         pin: null,
@@ -138,3 +137,5 @@ export default class HiddenWallet extends Component {
         );
     }
 }
+
+export default withTranslation()(HiddenWallet);

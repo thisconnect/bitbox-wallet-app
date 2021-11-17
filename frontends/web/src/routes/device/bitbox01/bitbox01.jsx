@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { AppUpgradeRequired } from '../../../components/appupgraderequired';
 import { apiGet } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
@@ -46,8 +46,7 @@ const GOAL = Object.freeze({
     RESTORE: 'restore'
 });
 
-@translate()
-export default class Device extends Component {
+class Device extends Component {
     state = {
         firmwareVersion: null,
         deviceRegistered: false,
@@ -191,3 +190,5 @@ export default class Device extends Component {
         }
     }
 }
+
+export default withTranslation()(Device)

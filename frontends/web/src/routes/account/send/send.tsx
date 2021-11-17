@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
 import { BrowserQRCodeReader } from '@zxing/library';
 import * as accountApi from '../../../api/account';
@@ -34,7 +34,7 @@ import { store as fiat } from '../../../components/rates/rates';
 import { Spinner } from '../../../components/spinner/Spinner';
 import Status from '../../../components/status/status';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { debug } from '../../../utils/env';
 import { apiGet, apiPost } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
@@ -55,7 +55,7 @@ interface SignProgress {
     step: number;
 }
 
-type Props = SendProps & TranslateProps;
+type Props = SendProps & WithTranslation;
 
 interface State {
     account?: accountApi.IAccount;
@@ -875,5 +875,5 @@ class Send extends Component<Props, State> {
     }
 }
 
-const TranslatedSend = translate<SendProps>()(Send);
+const TranslatedSend = withTranslation()(Send);
 export { TranslatedSend as Send };

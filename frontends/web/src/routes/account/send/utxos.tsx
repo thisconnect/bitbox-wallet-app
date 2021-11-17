@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { Coin } from '../../../api/account';
 import A from '../../../components/anchor/anchor';
 import { Dialog } from '../../../components/dialog/dialog';
 import { Button, Checkbox } from '../../../components/forms';
 import { ExpandOpen } from '../../../components/icon/icon';
 import { FiatConversion } from '../../../components/rates/rates';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { apiGet } from '../../../utils/request';
 import * as style from './utxos.css';
 
@@ -53,7 +53,7 @@ export interface SelectedUTXO {
     [key: string]: boolean;
 }
 
-export type Props = UTXOsProps & TranslateProps;
+export type Props = UTXOsProps & WithTranslation;
 
 interface State {
     utxos: UTXOwithTX[];
@@ -172,5 +172,5 @@ class UTXOs extends Component<Props, State> {
     }
 }
 
-const TranslatedUTXOs = translate<UTXOsProps>(undefined, { withRef: true })(UTXOs);
+const TranslatedUTXOs = withTranslation(undefined, { withRef: true })(UTXOs);
 export { TranslatedUTXOs as UTXOs };

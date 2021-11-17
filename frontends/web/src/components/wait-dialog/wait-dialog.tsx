@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, ComponentChild, h, JSX, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { Component} from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import approve from '../../assets/icons/hold.png';
 import reject from '../../assets/icons/tap.png';
 import style from '../dialog/dialog.module.css';
@@ -29,7 +29,7 @@ interface WaitDialogProps {
     touchConfirm?: boolean;
 }
 
-type Props = WaitDialogProps & TranslateProps;
+type Props = WaitDialogProps & WithTranslation;
 
 interface State {
     active: boolean;
@@ -82,16 +82,16 @@ class WaitDialog extends Component<Props, State> {
         });
     }
 
-    public render({
-        t,
-        includeDefault,
-        prequel,
-        title,
-        paired = false,
-        touchConfirm = true,
-        children,
-    }: RenderableProps<Props>,
-    {}: State) {
+    public render() {
+        const {
+            t,
+            includeDefault,
+            prequel,
+            title,
+            paired = false,
+            touchConfirm = true,
+            children,
+        } = this.props;
         const defaultContent = (
             <div>
                 {
@@ -170,5 +170,5 @@ class WaitDialog extends Component<Props, State> {
     }
 }
 
-const TranslatedWaitDialog = translate<WaitDialogProps>()(WaitDialog);
+const TranslatedWaitDialog = withTranslation()(WaitDialog);
 export { TranslatedWaitDialog as WaitDialog };

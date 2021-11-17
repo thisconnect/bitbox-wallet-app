@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../decorators/translate';
+import { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 import A from './anchor/anchor';
 
-type Props = TranslateProps;
-
-function AppUpgradeRequired({ t }: RenderableProps<Props>): JSX.Element {
+export const AppUpgradeRequired:FunctionComponent = () => {
+    const { t } = useTranslation();
     return (
         <div className="contentWithGuide">
             <div className="container">
@@ -40,6 +39,3 @@ function AppUpgradeRequired({ t }: RenderableProps<Props>): JSX.Element {
         </div>
     );
 }
-
-const HOC = translate<{}>()(AppUpgradeRequired);
-export { HOC as AppUpgradeRequired };

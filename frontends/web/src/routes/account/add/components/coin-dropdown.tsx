@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps } from 'react';
 import * as backendAPI from '../../../../api/backend';
 import { Select } from '../../../../components/forms';
-import { translate, TranslateProps } from '../../../../decorators/translate';
+import { translate, WithTranslation } from '../../../../decorators/translate';
 
 interface CoinDropDownProps {
     onChange: (coin: backendAPI.ICoin) => void;
@@ -25,7 +25,7 @@ interface CoinDropDownProps {
     value: string;
 }
 
-type Props = CoinDropDownProps & TranslateProps;
+type Props = CoinDropDownProps & WithTranslation;
 
 function CoinDropDown({
     onChange,
@@ -58,6 +58,6 @@ function CoinDropDown({
     );
 }
 
-const HOC = translate<CoinDropDownProps>()(CoinDropDown);
+const HOC = withTranslation()(CoinDropDown);
 
 export { HOC as CoinDropDown };

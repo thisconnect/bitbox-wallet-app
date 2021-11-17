@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { alertUser } from '../../../components/alert/Alert';
 import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { Button, Checkbox } from '../../../components/forms';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface ResetProps {
     apiPrefix: string;
 }
 
-type Props = ResetProps & TranslateProps;
+type Props = ResetProps & WithTranslation;
 
 interface State {
     understand: boolean;
@@ -56,7 +56,7 @@ class Reset extends Component<Props, State> {
         });
     }
 
-    private handleUnderstandChange = e => {
+    private handleUnderstandChange = (e: any) => {
         this.setState({ understand: e.target.checked });
     }
 
@@ -68,12 +68,12 @@ class Reset extends Component<Props, State> {
         });
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        { understand,
-          isConfirming,
-          activeDialog,
-        }: State) {
+    public render() {
+            const { t } = this.props;
+            const  { understand,
+                isConfirming,
+                activeDialog,
+              } = this.state;
         return (
             <div>
                 <SettingsButton
@@ -123,5 +123,5 @@ class Reset extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ResetProps>()(Reset);
+const HOC = withTranslation()(Reset);
 export { HOC as Reset };

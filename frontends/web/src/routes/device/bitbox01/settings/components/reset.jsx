@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { route } from 'preact-router';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
+import {route} from '../../../../../utils/compat-router';
 import { Button, Checkbox } from '../../../../../components/forms';
 import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
 import { WaitDialog } from '../../../../../components/wait-dialog/wait-dialog';
@@ -27,8 +27,7 @@ import { alertUser } from '../../../../../components/alert/Alert';
 import * as style from '../../bitbox01.css';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
 
-@translate()
-export default class Reset extends Component {
+class Reset extends Component {
     state = {
         pin: null,
         isConfirming: false,
@@ -123,3 +122,5 @@ export default class Reset extends Component {
         );
     }
 }
+
+export default withTranslation()(Reset)

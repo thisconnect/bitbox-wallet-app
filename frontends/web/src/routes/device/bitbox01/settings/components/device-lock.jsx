@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { Dialog } from '../../../../../components/dialog/dialog';
 import { WaitDialog } from '../../../../../components/wait-dialog/wait-dialog';
@@ -25,8 +25,7 @@ import { SettingsButton } from '../../../../../components/settingsButton/setting
 // TODO: use DialogButtons
 import style from '../../../../../components/dialog/dialog.module.css';
 
-@translate()
-export default class DeviveLock extends Component {
+class DeviceLock extends Component {
     state = {
         isConfirming: false,
         activeDialog: false,
@@ -96,3 +95,5 @@ export default class DeviveLock extends Component {
         );
     }
 }
+
+export default withTranslation()(DeviceLock)

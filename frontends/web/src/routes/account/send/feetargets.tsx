@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import * as accountApi from '../../../api/account';
 import { Input, Select } from '../../../components/forms';
 import { load } from '../../../decorators/load';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { customFeeUnit, getCoinCode, isEthereumBased } from '../utils';
 import * as style from './feetargets.css';
 
@@ -40,7 +40,7 @@ interface FeeTargetsProps {
     error?: string;
 }
 
-export type Props = LoadedProps & FeeTargetsProps & TranslateProps;
+export type Props = LoadedProps & FeeTargetsProps & WithTranslation;
 
 interface Options {
     value: accountApi.FeeTargetCode;
@@ -242,8 +242,8 @@ class FeeTargets extends Component<Props, State> {
     }
 }
 
-const loadedHOC = load<LoadedProps, FeeTargetsProps & TranslateProps>(
+const loadedHOC = load<LoadedProps, FeeTargetsProps & WithTranslation>(
     { config: 'config' },
 )(FeeTargets);
-const TranslatedFeeTargets = translate<FeeTargetsProps>()(loadedHOC);
+const TranslatedFeeTargets = withTranslation()(loadedHOC);
 export { TranslatedFeeTargets as FeeTargets };

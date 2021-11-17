@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { SimpleMarkup } from '../../../utils/simplemarkup';
 import { alertUser } from '../../../components/alert/Alert';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface MnemonicPassphraseButtonProps {
     apiPrefix: string;
@@ -33,7 +33,7 @@ interface State {
     inProgress: boolean;
 }
 
-type Props = MnemonicPassphraseButtonProps & TranslateProps;
+type Props = MnemonicPassphraseButtonProps & WithTranslation;
 
 class MnemonicPassphraseButton  extends Component<Props, State> {
     private toggle = () => {
@@ -53,12 +53,11 @@ class MnemonicPassphraseButton  extends Component<Props, State> {
                 });
     }
 
-    public render(
-        { t,
-          mnemonicPassphraseEnabled,
-        }: RenderableProps<Props>,
-        { inProgress }: State,
-    ) {
+    public render() {
+        const  { t,
+            mnemonicPassphraseEnabled,
+          } = this.props;
+          const { inProgress } = this.state;
         const title = mnemonicPassphraseEnabled ? t('bitbox02Settings.mnemonicPassphrase.disable') : t('bitbox02Settings.mnemonicPassphrase.enable');
         const message = t('bitbox02Settings.mnemonicPassphrase.description');
         return (
@@ -93,5 +92,5 @@ class MnemonicPassphraseButton  extends Component<Props, State> {
     }
 }
 
-const HOC = translate<MnemonicPassphraseButtonProps>()(MnemonicPassphraseButton );
+const HOC = withTranslation()(MnemonicPassphraseButton );
 export { HOC as MnemonicPassphraseButton  };

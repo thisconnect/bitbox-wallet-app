@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
+import { h } from 'react';
 import * as style from './ascii.css';
 
 export default function AsciiSpinner() {

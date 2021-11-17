@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet, apiPost } from '../../../../utils/request';
 import { PasswordRepeatInput } from '../../../../components/password';
 import { Button, Input, Checkbox } from '../../../../components/forms';
@@ -34,8 +34,7 @@ const STATUS = Object.freeze({
     ERROR: 'error',
 });
 
-@translate()
-export default class SeedCreateNew extends Component {
+class SeedCreateNew extends Component {
     state = {
         showInfo: true,
         status: STATUS.CHECKING,
@@ -255,3 +254,5 @@ export default class SeedCreateNew extends Component {
         );
     }
 }
+
+export default withTranslation()(SeedCreateNew)

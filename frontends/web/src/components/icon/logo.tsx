@@ -17,7 +17,7 @@
 
  /* Imported svg source (excluding BitBox logos): http://cryptoicons.co/ */
 
-import { h } from 'preact';
+import { h } from 'react';
 import AppLogoInvertedImg from './assets/app-logo-inverted.svg';
 import AppLogoImg from './assets/app-logo.svg';
 import BitBoxLogo from './assets/bitbox-logo.svg';

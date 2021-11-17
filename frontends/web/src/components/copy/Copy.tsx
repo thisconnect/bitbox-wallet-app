@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { Component } from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { Check, Copy } from '../icon/icon';
 import * as style from './Copy.css';
 
@@ -30,7 +30,7 @@ interface CopyableInputProps {
     value: string;
 }
 
-type Props = CopyableInputProps & TranslateProps;
+type Props = CopyableInputProps & WithTranslation;
 
 interface State {
     success: boolean;
@@ -79,10 +79,9 @@ class CopyableInput extends Component<Props, State> {
         }
     }
 
-    public render(
-        { alignLeft, alignRight, borderLess, t, value, className, disabled, flexibleHeight }: RenderableProps<Props>,
-        { success }: State,
-    ) {
+    public render() {
+        const { alignLeft, alignRight, borderLess, t, value, className, disabled, flexibleHeight } = this.props;
+        const { success } = this.state;
         const copyButton = disabled ? null : (
             <button
                 onClick={this.copy}
@@ -92,7 +91,7 @@ class CopyableInput extends Component<Props, State> {
             </button>
         );
         return (
-            <div class={[
+            <div className={[
                 'flex flex-row flex-start flex-items-start',
                 style.container,
                 className ? className : ''
@@ -117,5 +116,5 @@ class CopyableInput extends Component<Props, State> {
     }
 }
 
-const TranslatedCopyableInput = translate<CopyableInputProps>()(CopyableInput);
+const TranslatedCopyableInput = withTranslation()(CopyableInput);
 export { TranslatedCopyableInput as CopyableInput };

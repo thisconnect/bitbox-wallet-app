@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-import { Component, h, JSX, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import MenuIcon from '../../assets/icons/menu.svg';
 import { share } from '../../decorators/share';
-import { translate, TranslateProps } from '../../decorators/translate';
 import { SharedProps as SharedPanelProps, store as panelStore, toggle as toggleGuide } from '../guide/guide';
 import { toggleSidebar } from '../sidebar/sidebar';
 import * as style from './header.css';
@@ -27,7 +27,7 @@ interface HeaderProps {
     title?: JSX.Element | JSX.Element[];
     narrow?: boolean;
 }
-type Props = HeaderProps & SharedPanelProps & TranslateProps;
+type Props = HeaderProps & SharedPanelProps & WithTranslation;
 
 class Header extends Component<Props> {
     private toggle = (e: Event) => {
@@ -38,9 +38,8 @@ class Header extends Component<Props> {
         return false;
     }
 
-    public render(
-        { t, title, narrow, children, guideExists, shown, sidebarStatus }: RenderableProps<Props>,
-    ) {
+    public render() {
+        const { t, title, narrow, children, guideExists, shown, sidebarStatus } = this.props;
         const hasChildren = Array.isArray(children) && children.length > 0;
         return (
             <div className={[style.container, sidebarStatus ? style[sidebarStatus] : ''].join(' ')}>
@@ -83,6 +82,6 @@ class Header extends Component<Props> {
     }
 }
 
-const SharedHeader = share<SharedPanelProps, HeaderProps & TranslateProps>(panelStore)(Header);
-const TranslatedHeader = translate<HeaderProps>()(SharedHeader);
+const SharedHeader = share<SharedPanelProps, HeaderProps & WithTranslation>(panelStore)(Header);
+const TranslatedHeader = withTranslation()(SharedHeader as any);
 export { TranslatedHeader as Header };

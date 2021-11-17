@@ -15,9 +15,9 @@
  */
 
 import { createChart, IChartApi, BarsInfo, LineData, LineStyle, LogicalRange, ISeriesApi, UTCTimestamp, MouseEventHandler } from 'lightweight-charts';
-import { Component, createRef, h, RenderableProps } from 'preact';
+import { Component, createRef, h, RenderableProps } from 'react';
 import { Fiat } from '../../../api/account';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { formatCurrency, formatNumber } from '../../../components/rates/rates';
 import * as styles from './chart.css';
 
@@ -44,7 +44,7 @@ interface State {
     toolTipTime: number;
 }
 
-type Props = ChartProps & TranslateProps;
+type Props = ChartProps & WithTranslation;
 
 class Chart extends Component<Props, State> {
     private ref = createRef();
@@ -444,7 +444,7 @@ class Chart extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ChartProps>()(Chart);
+const HOC = withTranslation()(Chart);
 
 export { HOC as Chart };
 

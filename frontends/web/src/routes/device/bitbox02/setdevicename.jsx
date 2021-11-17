@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button, Input } from '../../../components/forms';
 import { apiPost } from '../../../utils/request';
 import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
@@ -24,8 +24,7 @@ import { alertUser } from '../../../components/alert/Alert';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
 
-@translate()
-export class SetDeviceName extends Component {
+class SetDeviceNameClass extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -122,3 +121,5 @@ export class SetDeviceName extends Component {
         );
     }
 }
+
+export const SetDeviceName =  withTranslation()(SetDeviceNameClass)

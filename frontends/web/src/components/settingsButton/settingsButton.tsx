@@ -1,4 +1,5 @@
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { SyntheticEvent } from 'react';
 import * as style from './settingsButton.css';
 
 interface SettingsButtonProps {
@@ -12,14 +13,14 @@ interface SettingsButtonProps {
 }
 
 class SettingsButton extends Component<SettingsButtonProps> {
-    private handleLink = (e: Event) => {
+    private handleLink = (e: SyntheticEvent) => {
         if (this.props.disabled) {
             e.preventDefault();
         }
     }
 
-    public render(
-        {
+    public render() {
+        const {
             onClick,
             link,
             href,
@@ -28,8 +29,7 @@ class SettingsButton extends Component<SettingsButtonProps> {
             secondaryText,
             disabled,
             children,
-        }: RenderableProps<SettingsButtonProps>,
-    ) {
+        } = this.props;
         if (link) {
             return (
                 <a className={[style.container, danger ? style.danger : '', disabled ? style.disabled : ''].join(' ')} href={disabled ? '#' : href} onClick={this.handleLink}>
@@ -43,7 +43,7 @@ class SettingsButton extends Component<SettingsButtonProps> {
                         <span className={style.optionalText}>{optionalText}</span>
                     ) : null }
                     <svg
-                        style={secondaryText ? 'margin-left: auto;' : ''}
+                        style={secondaryText ? {marginLeft: 'auto'} : {}}
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"
                         fill="none"

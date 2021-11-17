@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps } from 'react';
 import * as styles from './message.css';
 
 export interface Props {

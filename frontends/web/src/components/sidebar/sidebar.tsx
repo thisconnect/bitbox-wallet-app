@@ -15,8 +15,9 @@
  * limitations under the License.
  */
 
-import { Component, h, JSX, RenderableProps } from 'preact';
-import { Link, Match } from 'preact-router/match';
+import { Component, FunctionComponent } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { Link, useLocation } from 'react-router-dom';
 import { IAccount } from '../../api/account';
 import coins from '../../assets/icons/coins.svg';
 import ejectIcon from '../../assets/icons/eject.svg';
@@ -27,7 +28,6 @@ import deviceSettings from '../../assets/icons/wallet-light.svg';
 import { SharedProps as SharedPanelProps, store as panelStore } from '../../components/guide/guide';
 import { share } from '../../decorators/share';
 import { subscribe } from '../../decorators/subscribe';
-import { translate, TranslateProps } from '../../decorators/translate';
 import { debug } from '../../utils/env';
 import { apiPost } from '../../utils/request';
 import Logo, { AppLogoInverted } from '../icon/logo';
@@ -41,12 +41,34 @@ interface SubscribedProps {
     keystores: Array<{ type: 'hardware' | 'software' }>;
 }
 
-type Props = SubscribedProps & SharedPanelProps & SidebarProps & TranslateProps;
+type Props = SubscribedProps & SharedPanelProps & SidebarProps & WithTranslation;
 
 interface SwipeAttributes {
     x: number;
     y: number;
     active?: boolean;
+}
+
+const BackLink : FunctionComponent<{coinCode: string, code: string, name: string}> = ({coinCode, code, name}) => {
+    const {pathname} = useLocation();
+    const active = pathname.startsWith(`/account/${code}/`);
+    const handleSidebarItemClick = (e: any) => {
+        const el = (e.target as Element).closest('a');
+        if (el!.classList.contains('sidebar-active') && window.innerWidth <= 901) {
+            toggleSidebar();
+        }
+    }
+    return (
+        <Link
+            // activeClassName="sidebar-active"
+            className={active ? 'sidebar-active' : ''}
+            to={`/account/${code}`}
+            onClick={handleSidebarItemClick}
+            title={name}>
+            <Logo stacked coinCode={coinCode} className="sidebar_icon" alt={name} />
+            <span className="sidebar_label">{name}</span>
+        </Link>
+    );
 }
 
 export function toggleSidebar() {
@@ -115,39 +137,21 @@ class Sidebar extends Component<Props> {
         }
     }
 
-    private handleSidebarItemClick = (e: MouseEvent) => {
+    private handleSidebarItemClick = (e: any) => {
         const el = (e.target as Element).closest('a');
         if (el!.classList.contains('sidebar-active') && window.innerWidth <= 901) {
             toggleSidebar();
         }
     }
 
-    private getAccountLink = ({ coinCode, code, name }: IAccount): JSX.Element => {
+    private getAccountLink = (account: IAccount): JSX.Element => {
         return (
-            <div key={code} className="sidebarItem">
-                <Match>
-                    {({ url }) => this.getBackLink(coinCode, code, name, url === `/account/${code}` || url.startsWith(`/account/${code}/`))}
-                </Match>
-            </div>
+            <BackLink {...account}/>
         );
     }
 
-    private getBackLink = (coinCode: string, code: string, name: string, active: boolean): JSX.Element => {
-        return (
-            <Link
-                activeClassName="sidebar-active"
-                className={active ? 'sidebar-active' : ''}
-                href={`/account/${code}`}
-                onClick={this.handleSidebarItemClick}
-                title={name}>
-                <Logo stacked coinCode={coinCode} className="sidebar_icon" alt={name} />
-                <span className="sidebar_label">{name}</span>
-            </Link>
-        );
-    }
-
-    public render(
-        {
+    public render() {
+        const {
             t,
             deviceIDs,
             accounts,
@@ -155,16 +159,15 @@ class Sidebar extends Component<Props> {
             shown,
             activeSidebar,
             sidebarStatus,
-        }: RenderableProps<Props>,
-    ) {
+        } = this.props;
         const hidden = ['forceHidden', 'forceCollapsed'].includes(sidebarStatus);
         return (
             <div className={['sidebarContainer', hidden ? 'forceHide' : ''].join(' ')}>
                 <div className={['sidebarOverlay', activeSidebar ? 'active' : ''].join(' ')} onClick={toggleSidebar}></div>
                 <nav className={['sidebar', activeSidebar ? 'forceShow' : '', shown ? 'withGuide' : ''].join(' ')}>
                     <Link
-                        activeClassName=""
-                        href="/"
+                        // activeClassName=""
+                        to="/"
                         onClick={this.handleSidebarItemClick}>
                         <div className="sidebarLogoContainer">
                             <AppLogoInverted className="sidebarLogo" />
@@ -205,8 +208,8 @@ class Sidebar extends Component<Props> {
                     { accounts.length ? (
                         <div className="sidebarItem">
                             <Link
-                                activeClassName="sidebar-active"
-                                href={`/account-summary`}
+                                // activeClassName="sidebar-active"
+                                to={`/account-summary`}
                                 title={t('accountSummary.title')}
                                 onClick={this.handleSidebarItemClick}>
                                 <div className="single">
@@ -221,8 +224,8 @@ class Sidebar extends Component<Props> {
                     { accounts.length ? (
                     <div key="buy" className="sidebarItem">
                         <Link
-                            activeClassName="sidebar-active"
-                            href="/buy/info"
+                            // activeClassName="sidebar-active"
+                            to="/buy/info"
                         >
                             <div className="single">
                                 <img draggable={false} className="sidebar_settings" src={coins} alt={t('sidebar.exchanges')} />
@@ -236,8 +239,8 @@ class Sidebar extends Component<Props> {
                     { deviceIDs.map(deviceID => (
                         <div key={deviceID} className="sidebarItem">
                             <Link
-                                href={`/device/${deviceID}`}
-                                activeClassName="sidebar-active"
+                                to={`/device/${deviceID}`}
+                                // activeClassName="sidebar-active"
                                 title={t('sidebar.device')}
                                 onClick={this.handleSidebarItemClick}>
                                 <div className="single">
@@ -249,8 +252,8 @@ class Sidebar extends Component<Props> {
                     )) }
                     <div key="settings" className="sidebarItem">
                         <Link
-                            activeClassName="sidebar-active"
-                            href={`/settings`}
+                            // activeClassName="sidebar-active"
+                            to={`/settings`}
                             title={t('sidebar.settings')}
                             onClick={this.handleSidebarItemClick}>
                             <div className="stacked">
@@ -284,12 +287,12 @@ function eject(e: Event): void {
     e.preventDefault();
 }
 
-const subscribeHOC = subscribe<SubscribedProps, SharedPanelProps & SidebarProps & TranslateProps>(
+const subscribeHOC = subscribe<SubscribedProps, SharedPanelProps & SidebarProps & WithTranslation>(
     { keystores: 'keystores' },
     true,
     false,
 )(Sidebar);
 
-const guideShareHOC = share<SharedPanelProps, SidebarProps & TranslateProps>(panelStore)(subscribeHOC);
-const translateHOC = translate<SidebarProps>()(guideShareHOC);
+const guideShareHOC = share<SharedPanelProps, SidebarProps & WithTranslation>(panelStore)(subscribeHOC);
+const translateHOC = withTranslation()(guideShareHOC as any);
 export { translateHOC as Sidebar };

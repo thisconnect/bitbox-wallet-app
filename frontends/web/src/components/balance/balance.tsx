@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps } from 'react';
 import { IBalance } from '../../api/account';
 import { FiatConversion } from '../../components/rates/rates';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import * as style from './balance.css';
 
 interface BalanceProps {
     balance?: IBalance;
 }
 
-type Props = BalanceProps & TranslateProps;
+type Props = BalanceProps & WithTranslation;
 
 function Balance({
     t,
@@ -60,6 +60,6 @@ function Balance({
     );
 }
 
-const TranslatedBalance = translate<BalanceProps>()(Balance);
+const TranslatedBalance = withTranslation()(Balance);
 
 export { TranslatedBalance as Balance };

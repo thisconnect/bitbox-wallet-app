@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
 import { TDevices } from '../../api/devices';
 import BitBox01 from './bitbox01/bitbox01';
 import { BitBox02 } from './bitbox02/bitbox02';
 import { BitBox02Bootloader } from '../../components/devices/bitbox02bootloader/bitbox02bootloader';
 import { Waiting } from './waiting';
+import { useParams } from 'react-router';
+import { FunctionComponent } from 'react';
 
 interface Props {
     devices: TDevices;
-    deviceID: string | null;
 }
 
-class DeviceSwitch extends Component<Props, {}> {
-    public render({ deviceID, devices }: RenderableProps<Props>) {
-        if (this.props.default || deviceID === null || !Object.keys(devices).includes(deviceID)) {
+interface Params {
+    deviceID?: string
+}
+
+export const DeviceSwitch: FunctionComponent<Props> = ({ devices }) => {
+    const params = useParams() as Params;
+        if (params.deviceID === undefined || !Object.keys(devices).includes(params.deviceID)) {
             return <Waiting />;
         }
-        switch (devices[deviceID]) {
+        switch (devices[params.deviceID]) {
         case 'bitbox':
             return <BitBox01 deviceID={deviceID} />;
         case 'bitbox02':
@@ -42,6 +46,3 @@ class DeviceSwitch extends Component<Props, {}> {
             return <Waiting />;
         }
     }
-}
-
-export { DeviceSwitch };

@@ -16,10 +16,10 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { CoinCode } from '../../api/account';
 import { subscribe } from '../../decorators/subscribe';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import Spinner from '../spinner/ascii';
 import * as style from './headerssync.css';
 
@@ -42,7 +42,7 @@ interface IState {
     show: number;
 }
 
-type Props = ISubscribedHeadersSyncProps & IHeadersSyncProps & TranslateProps;
+type Props = ISubscribedHeadersSyncProps & IHeadersSyncProps & WithTranslation;
 
 class HeadersSync extends Component<Props, IState> {
     public readonly state: IState = {
@@ -96,9 +96,9 @@ class HeadersSync extends Component<Props, IState> {
     }
 }
 
-const subscribeHOC = subscribe<ISubscribedHeadersSyncProps, IHeadersSyncProps & TranslateProps>(({ coinCode }) => ({
+const subscribeHOC = subscribe<ISubscribedHeadersSyncProps, IHeadersSyncProps & WithTranslation>(({ coinCode }) => ({
     status: `coins/${coinCode}/headers/status`,
 }), false, true)(HeadersSync);
 
-const HOC = translate<IHeadersSyncProps>()(subscribeHOC);
+const HOC = withTranslation()(subscribeHOC);
 export { HOC as HeadersSync };

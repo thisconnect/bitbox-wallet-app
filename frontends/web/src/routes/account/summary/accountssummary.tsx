@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { translate } from 'react-i18next';
 import * as accountApi from '../../../api/account';
 import A from '../../../components/anchor/anchor';
@@ -23,7 +23,7 @@ import { Header } from '../../../components/layout';
 import { Entry } from '../../../components/guide/entry';
 import { Guide } from '../../../components/guide/guide';
 import { FiatConversion, formatCurrency } from '../../../components/rates/rates';
-import { TranslateProps } from '../../../decorators/translate';
+import { WithTranslation } from '../../../decorators/translate';
 import { Check } from '../../../components/icon/icon';
 import Logo from '../../../components/icon/logo';
 import Spinner from '../../../components/spinner/ascii';
@@ -51,7 +51,7 @@ interface State {
     syncStatus?: SyncStatus;
 }
 
-type Props = TranslateProps & AccountSummaryProps;
+type Props = WithTranslation & AccountSummaryProps;
 
 interface BalanceRowProps {
     code: string;

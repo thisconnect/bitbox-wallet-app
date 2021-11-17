@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, FormEventHandler, FunctionComponent, SyntheticEvent } from 'react';
 import * as accountAPI from '../../api/account';
 import * as aoppAPI from '../../api/aopp';
 import { subscribe } from '../../decorators/subscribe';
-import { translate, TranslateProps } from '../../decorators/translate';
 import { equal } from '../../utils/equal';
 import { SimpleMarkup } from '../../utils/simplemarkup';
 import { Fullscreen, FullscreenHeader, FullscreenContent, FullscreenButtons } from '../fullscreen/fullscreen';
@@ -29,8 +28,9 @@ import { BitBox02Stylized, Cancel, CaretDown, Checked } from '../icon';
 import { VerifyAddress } from './verifyaddress';
 import { Vasp } from './vasp';
 import * as styles from './aopp.css';
+import { withTranslation, WithTranslation, WithTranslationProps } from 'react-i18next';
 
-const Banner = ({ children }: RenderableProps<{}>) => (
+const Banner:FunctionComponent = ({ children }) => (
     <div className={styles.banner}>{children}</div>
 );
 
@@ -45,7 +45,7 @@ interface SubscribedProps {
     aopp?: aoppAPI.Aopp;
 }
 
-type Props = SubscribedProps & AoppProps & TranslateProps;
+type Props = SubscribedProps & AoppProps & WithTranslation;
 
 const domain = (callback: string): string => new URL(callback).host;
 
@@ -58,7 +58,7 @@ class Aopp extends Component<Props, State> {
         this.setAccountCodeDefault();
     }
 
-    public componentDidUpdate(prevProps) {
+    public componentDidUpdate(prevProps: any) {
         if (this.props.aopp === undefined) {
             return;
         }
@@ -79,17 +79,16 @@ class Aopp extends Component<Props, State> {
         }
     }
 
-    private chooseAccount = (e: Event) => {
+    private chooseAccount = (e: SyntheticEvent) => {
         if (this.state.accountCode) {
             aoppAPI.chooseAccount(this.state.accountCode);
         }
-        e.preventDefault();
+        e.preventDefault()
     }
 
-    public render(
-        { t, aopp }: RenderableProps<Props>,
-        { accountCode }: State,
-    ) {
+    public render() {
+        const { t, aopp } = this.props;
+        const { accountCode } = this.state;
         if (!aopp) {
             return null;
         }
@@ -157,7 +156,7 @@ class Aopp extends Component<Props, State> {
                                     options={options}
                                     defaultValue={options[0].value}
                                     value={accountCode}
-                                    onChange={e => this.setState({ accountCode: e.target.value })}
+                                    onChange={(e: any) => this.setState({ accountCode: e.target.value })}
                                     id="account" />
                             </FullscreenContent>
                             <FullscreenButtons>
@@ -218,7 +217,7 @@ class Aopp extends Component<Props, State> {
                                 <Label>{t('aopp.labelAddress')}</Label>
                                 <CopyableInput alignLeft flexibleHeight value={aopp.address} />
                             </Field>
-                            <Field style="margin-bottom: 0;">
+                            <Field style={{marginBottom: 0}}>
                                 <Label>{t('aopp.labelMessage')}</Label>
                                 <div className={styles.message}>
                                     {aopp.message}
@@ -238,11 +237,11 @@ class Aopp extends Component<Props, State> {
     }
 }
 
-const subscribeHOC = subscribe<SubscribedProps, AoppProps & TranslateProps>(
+const subscribeHOC = subscribe<SubscribedProps, AoppProps & WithTranslation>(
     { aopp: 'aopp' },
     false,
     false,
 )(Aopp);
 
-const translateHOC = translate<AoppProps>()(subscribeHOC);
+const translateHOC = withTranslation()(subscribeHOC as any);
 export { translateHOC as Aopp };

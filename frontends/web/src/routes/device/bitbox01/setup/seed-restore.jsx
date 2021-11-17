@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet } from '../../../../utils/request';
 import { Button } from '../../../../components/forms';
 import { Backups } from '../backups';
@@ -33,8 +33,7 @@ const STATUS = Object.freeze({
     ERROR: 'error',
 });
 
-@translate()
-export default class SeedRestore extends Component {
+class SeedRestore extends Component {
     state = {
         showInfo: true,
         status: STATUS.CHECKING,
@@ -158,3 +157,5 @@ export default class SeedRestore extends Component {
         );
     }
 }
+
+export default withTranslation()(SeedRestore)

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { Button } from '../../../../components/forms';
 import { SwissMadeOpenSource } from '../../../../components/icon/logo';
 import { LanguageSwitch } from '../../../../components/language/language';
@@ -22,7 +23,6 @@ import { Header } from '../../../../components/layout';
 import { Message } from '../../../../components/message/message';
 import { PasswordRepeatInput } from '../../../../components/password';
 import { Spinner } from '../../../../components/spinner/Spinner';
-import { translate, TranslateProps } from '../../../../decorators/translate';
 import { apiPost } from '../../../../utils/request';
 import * as style from '../bitbox01.css';
 
@@ -38,7 +38,7 @@ interface InitializeProps {
     deviceID: string;
 }
 
-type Props = InitializeProps & TranslateProps;
+type Props = InitializeProps & WithTranslation;
 
 interface State {
     showInfo: boolean;
@@ -51,7 +51,7 @@ interface State {
 class Initialize extends Component<Props, State> {
     private passwordInput!: HTMLInputElement;
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             showInfo: true,
@@ -62,7 +62,7 @@ class Initialize extends Component<Props, State> {
         };
     }
 
-    private handleSubmit = event => {
+    private handleSubmit = (event:any) => {
         event.preventDefault();
         if (!this.state.password) {
             return;
@@ -94,7 +94,7 @@ class Initialize extends Component<Props, State> {
         this.passwordInput = ref;
     }
 
-    private setValidPassword = password => {
+    private setValidPassword = (password:string) => {
         this.setState({ password });
     }
 
@@ -102,10 +102,9 @@ class Initialize extends Component<Props, State> {
         this.setState({ showInfo: false });
     }
 
-    public render(
-        { t, goBack }: RenderableProps<Props>,
-        { showInfo, password, status, errorCode, errorMessage }: State,
-    ) {
+    public render() {
+        const { t, goBack } = this.props;
+        const { showInfo, password, status, errorCode, errorMessage } = this.state;
         let formSubmissionState;
         switch (status) {
         case stateEnum.DEFAULT:
@@ -126,8 +125,8 @@ class Initialize extends Component<Props, State> {
 
         const content = showInfo ? (
             <div className="box large">
-                <div class="subHeaderContainer first">
-                    <div class="subHeader">
+                <div className="subHeaderContainer first">
+                    <div className="subHeader">
                         <h3>{t('initialize.info.subtitle')}</h3>
                     </div>
                 </div>
@@ -148,7 +147,7 @@ class Initialize extends Component<Props, State> {
                 </div>
             </div>
         ) : (
-            <form onSubmit={this.handleSubmit} class="box large">
+            <form onSubmit={this.handleSubmit} className="box large">
                 <PasswordRepeatInput
                     pattern="^.{4,}$"
                     label={t('initialize.input.label')}
@@ -174,7 +173,7 @@ class Initialize extends Component<Props, State> {
         );
 
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('welcome.title')}</h2>}>
                         <LanguageSwitch />
@@ -200,5 +199,5 @@ class Initialize extends Component<Props, State> {
     }
 }
 
-const TranslatedInitialize = translate<InitializeProps>()(Initialize);
+const TranslatedInitialize = withTranslation()(Initialize);
 export { TranslatedInitialize as Initialize };

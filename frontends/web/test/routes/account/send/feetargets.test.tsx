@@ -17,7 +17,7 @@
 import 'jest';
 import '../../../matchmediastub';
 
-import { h } from 'preact';
+import { h } from 'react';
 import { deep, shallow } from 'preact-render-spy';
 
 jest.mock('../../../../src/utils/request');

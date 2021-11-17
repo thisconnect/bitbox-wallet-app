@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import * as accountAPI from '../../api/account';
-import { translate, TranslateProps } from '../../decorators/translate';
 import { Button } from '../forms';
 import { WaitDialog } from '../wait-dialog/wait-dialog';
 
@@ -30,7 +30,7 @@ interface VerifyAddressProps {
     addressID: string;
 }
 
-type Props = VerifyAddressProps & TranslateProps;
+type Props = VerifyAddressProps & WithTranslation;
 
 class VerifyAddress extends Component<Props, State> {
     private verifyAddress = () => {
@@ -40,10 +40,9 @@ class VerifyAddress extends Component<Props, State> {
         });
     }
 
-    public render(
-        { t, address }: RenderableProps<Props>,
-        { verifying }: State,
-    ) {
+    public render() {
+        const  { t, address } = this.props;
+        const  { verifying } = this.state;
         return (
             <div className="flex flex-column">
                 <Button secondary onClick={this.verifyAddress}>
@@ -59,5 +58,5 @@ class VerifyAddress extends Component<Props, State> {
     }
 }
 
-const translateHOC = translate<VerifyAddressProps>()(VerifyAddress);
+const translateHOC = withTranslation()(VerifyAddress);
 export { translateHOC as VerifyAddress };

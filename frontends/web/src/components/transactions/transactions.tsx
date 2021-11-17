@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { ITransaction } from '../../api/account';
 import A from '../../components/anchor/anchor';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import { runningInAndroid } from '../../utils/env';
 import { Transaction } from './transaction';
 import * as style from './transactions.css';
@@ -31,7 +31,7 @@ interface TransactionsProps {
     handleExport: () => void;
 }
 
-type Props = TransactionsProps & TranslateProps;
+type Props = TransactionsProps & WithTranslation;
 
 class Transactions extends Component<Props> {
     public render({
@@ -87,6 +87,6 @@ class Transactions extends Component<Props> {
     }
 }
 
-const HOC = translate<TransactionsProps>()(Transactions);
+const HOC = withTranslation()(Transactions);
 
 export { HOC as Transactions };

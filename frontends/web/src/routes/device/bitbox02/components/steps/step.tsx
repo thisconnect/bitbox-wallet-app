@@ -1,4 +1,4 @@
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
 import * as style from './steps.css';
 
 interface StepProps {
@@ -17,7 +17,7 @@ interface State {
 }
 
 class Step extends Component<StepProps, State> {
-    constructor(props) {
+    constructor(props: StepProps) {
         super(props);
         this.state = {
             isComplete: this.isComplete(),
@@ -25,10 +25,10 @@ class Step extends Component<StepProps, State> {
         };
     }
 
-    public componentWillReceiveProps(nextProps) {
+    public componentWillReceiveProps(nextProps:Partial<StepProps>) {
         const { empty, order, activeStep } = nextProps;
         this.setState({
-            isComplete: empty || order < activeStep,
+            isComplete: empty || order! < activeStep!,
             visible: (empty && activeStep === 1) || [activeStep! - 1, activeStep, activeStep! + 1].includes(order),
         });
     }
@@ -42,10 +42,9 @@ class Step extends Component<StepProps, State> {
         return [this.props.activeStep].includes(this.props.order);
     }
 
-    public render(
-        { active, empty, title, large, width, children }: RenderableProps<StepProps>,
-        { isComplete, visible }: State,
-    ) {
+    public render() {
+        const { active, empty, title, large, width, children } = this.props;
+        const { isComplete, visible } = this.state;
         return (
             <div
                 className={[
@@ -55,7 +54,7 @@ class Step extends Component<StepProps, State> {
                     visible ? '' : style.hide,
                     large ? style.large : '',
                 ].join(' ')}
-                style={width ? `max-width: ${width}px` : ''}
+                style={width ? {maxWidth: width} : {}}
                 >
                 <div className={style.stepContentContainer}>
                     <div className={style.stepContent}>

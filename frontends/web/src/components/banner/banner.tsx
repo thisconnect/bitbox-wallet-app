@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { subscribe } from '../../decorators/subscribe';
-import { translate, TranslateProps } from '../../decorators/translate';
 import A from '../anchor/anchor';
 import Status from '../status/status';
 
@@ -37,15 +36,15 @@ interface BannerProps {
     msgKey: 'bitbox01';
 }
 
-type Props = LoadedProps & BannerProps & TranslateProps;
+type Props = LoadedProps & BannerProps & WithTranslation;
 
-function Banner({ banner, i18n, t }: RenderableProps<Props>): JSX.Element | null {
+function Banner({ banner, i18n, t }: Props): JSX.Element | null {
     if (!i18n.options.fallbackLng) {
         return null;
     }
     return banner && (
         <Status dismissable="" type="info">
-            { banner.message[i18n.language] || banner.message[i18n.options.fallbackLng[0]] }&nbsp;
+            {/* { banner.message[i18n.language] || banner.message[i18n.options.fallbackLng] }&nbsp; */}
             { banner.link && (
                 <A href={banner.link.href}>
                     {t('clickHere')}
@@ -54,13 +53,14 @@ function Banner({ banner, i18n, t }: RenderableProps<Props>): JSX.Element | null
         </Status>
     );
 }
+//TODO fix
 
-const HOC = translate<BannerProps>()(
-    subscribe<LoadedProps, BannerProps & TranslateProps>(
+const HOC = withTranslation()(
+    subscribe<LoadedProps, BannerProps & WithTranslation>(
         ({ msgKey }) => ({ banner: 'banners/' + msgKey }),
         true,
         false,
-    )(Banner),
+    )(Banner) as any,
 );
 
 export { HOC as Banner };

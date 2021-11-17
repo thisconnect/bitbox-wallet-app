@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps} from 'preact';
+import { h, RenderableProps} from 'react';
 import PasswordGestureVideo from './assets/password-gestures.webm';
 import * as styles from './password-entry.css';
 

@@ -15,18 +15,19 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { FunctionComponent } from 'react';
+import { useTranslation, withTranslation, WithTranslation } from 'react-i18next';
 import { subscribe } from '../decorators/subscribe';
-import { translate, TranslateProps } from '../decorators/translate';
 import Status from './status/status';
 
 interface LoadedProps {
     usingMobileData: boolean;
 }
 
-type Props = LoadedProps & TranslateProps;
+type Props = LoadedProps & WithTranslation;
 
-function MobileDataWarning({ usingMobileData, t }: RenderableProps<Props>) {
+const MobileDataWarning : FunctionComponent<Props> = ({ usingMobileData}) =>{
+    const {t} = useTranslation();
     return (
         <Status dismissable="mobile-data-warning" type="warning" hidden={!usingMobileData}>
             {t('mobile.usingMobileDataWarning')}
@@ -34,8 +35,8 @@ function MobileDataWarning({ usingMobileData, t }: RenderableProps<Props>) {
     );
 }
 
-const HOC = translate()(
-    subscribe<LoadedProps, TranslateProps>({ usingMobileData: 'using-mobile-data' })(MobileDataWarning),
+const HOC = withTranslation()(
+    subscribe<LoadedProps, WithTranslation>({ usingMobileData: 'using-mobile-data' })(MobileDataWarning) as any
 );
 
 export { HOC as MobileDataWarning };

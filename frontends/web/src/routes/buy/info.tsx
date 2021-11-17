@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
 import { AccountCode, IAccount } from '../../api/account';
 import { TDevices } from '../../api/devices';
@@ -23,7 +23,7 @@ import A from '../../components/anchor/anchor';
 import { Header } from '../../components/layout';
 import { Spinner } from '../../components/spinner/Spinner';
 import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import { Button, Checkbox, Select } from '../../components/forms';
 import { setConfig } from '../../utils/config';
 import { apiGet } from '../../utils/request';
@@ -51,7 +51,7 @@ interface State {
     options?: Option[]
 }
 
-type Props = BuyInfoProps & LoadedBuyInfoProps & TranslateProps;
+type Props = BuyInfoProps & LoadedBuyInfoProps & WithTranslation;
 
 class BuyInfo extends Component<Props, State> {
     public readonly state: State = {
@@ -240,9 +240,9 @@ class BuyInfo extends Component<Props, State> {
     }
 }
 
-const loadHOC = load<LoadedBuyInfoProps, BuyInfoProps & TranslateProps>({
+const loadHOC = load<LoadedBuyInfoProps, BuyInfoProps & WithTranslation>({
     config: 'config'
 })(BuyInfo);
 
-const HOC = translate<BuyInfoProps>()(loadHOC);
+const HOC = withTranslation()(loadHOC);
 export { HOC as BuyInfo };

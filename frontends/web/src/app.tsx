@@ -17,41 +17,27 @@
 
 import { Component } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { Route } from 'react-router';
 // import { getCurrentUrl, route } from 'preact-router';
 import { getAccounts, IAccount } from './api/account';
 import { syncAccountsList } from './api/accountsync';
 import { getDeviceList, TDevices } from './api/devices';
 import { syncDeviceList } from './api/devicessync';
 import { unsubscribe, UnsubscribeList } from './utils/subscriptions';
-// import { ConnectedApp } from './connected';
-// import { Alert } from './components/alert/Alert';
-// import { Aopp } from './components/aopp/aopp';
-// import { Banner } from './components/banner/banner';
-// import { Confirm } from './components/confirm/Confirm';
-// import { Container } from './components/container/container';
-// import { store as panelStore } from './components/guide/guide';
-// import { MobileDataWarning } from './components/mobiledatawarning';
-// import { Sidebar, toggleSidebar } from './components/sidebar/sidebar';
-// import { Update } from './components/update/update';
-// import { translate, TranslateProps } from './decorators/translate';
-// import { Account } from './routes/account/account';
-// import { AddAccount } from './routes/account/add/add';
-// import { Moonpay } from './routes/buy/moonpay';
-// import { BuyInfo } from './routes/buy/info';
-// import { Info } from './routes/account/info/info';
-// import { Receive } from './routes/account/receive/receive';
-// import { Send } from './routes/account/send/send';
-// import { AccountsSummary } from './routes/account/summary/accountssummary';
-// import { DeviceSwitch } from './routes/device/deviceswitch';
-// import ManageBackups from './routes/device/manage-backups/manage-backups';
-// import { ManageAccounts } from './routes/settings/manage-accounts';
-// import { Exchanges } from './routes/exchanges/exchanges';
-// import ElectrumSettings from './routes/settings/electrum';
-// import { Settings } from './routes/settings/settings';
+import { ConnectedApp } from './connected';
+import { Alert } from './components/alert/Alert';
+import { Aopp } from './components/aopp/aopp';
+import { Banner } from './components/banner/banner';
+import { Confirm } from './components/confirm/Confirm';
+import { Container } from './components/container/container';
+import { MobileDataWarning } from './components/mobiledatawarning';
+import { Sidebar } from './components/sidebar/sidebar';
+import { Update } from './components/update/update';
+import { DeviceSwitch } from './routes/device/deviceswitch';
 import { apiPost } from './utils/request';
 import { apiWebsocket } from './utils/websocket';
+import { Routes } from 'react-router-dom';
 
-import { LanguageSwitch } from './components/language/language';
 
 interface State {
     accounts: IAccount[];
@@ -82,7 +68,7 @@ class App extends Component<WithTranslation, State> {
     }
 
     public componentDidMount() {
-        this.unsubscribe = apiWebsocket(({ type, data, meta }) => {
+        this.unsubscribe = apiWebsocket(({ type, data, meta }:  any) => {
             switch (type) {
             case 'backend':
                 switch (data) {
@@ -182,93 +168,44 @@ class App extends Component<WithTranslation, State> {
 
     public render() {
         const { t } = this.props;
-        // const { accounts, devices } = this.state;
-        // const deviceIDs: string[] = Object.keys(devices);
-        // const activeAccounts = this.activeAccounts();
+        const { accounts, devices } = this.state;
+        const deviceIDs: string[] = Object.keys(devices);
+        const activeAccounts = this.activeAccounts();
         return (
-            <div>
-                <h1>
-                    {t('app.upgrade')}
-                </h1>
-                <LanguageSwitch />
-            </div>
-            // <ConnectedApp>
-            //     <div className="app">
-            //         <Sidebar
-            //             accounts={activeAccounts}
-            //             deviceIDs={deviceIDs} />
-            //         <div class="appContent flex flex-column flex-1" style="min-width: 0;">
-            //             <Update />
-            //             <Banner msgKey="bitbox01" />
-            //             <MobileDataWarning />
-            //             <Aopp />
-            //             <Container toggleSidebar={this.toggleSidebar} onChange={this.handleRoute}>
-            //                 <Send
-            //                     path="/account/:code/send"
-            //                     devices={devices}
-            //                     deviceIDs={deviceIDs}
-            //                     accounts={activeAccounts} />
-            //                 <Receive
-            //                     path="/account/:code/receive"
-            //                     devices={devices}
-            //                     accounts={activeAccounts}
-            //                     deviceIDs={deviceIDs} />
-            //                 <BuyInfo
-            //                     path="/buy/info/:code?"
-            //                     devices={devices}
-            //                     accounts={activeAccounts} />
-            //                 <Moonpay
-            //                     path="/buy/moonpay/:code"
-            //                     code={'' /* dummy to satisfy TS */}
-            //                     devices={devices}
-            //                     accounts={activeAccounts} />
-            //                 <Exchanges
-            //                     path="/exchanges" />
-            //                 <Info
-            //                     path="/account/:code/info"
-            //                     code={'' /* dummy to satisfy TS */}
-            //                     accounts={activeAccounts} />
-            //                 <Account
-            //                     path="/account/:code"
-            //                     code={'' /* dummy to satisfy TS */}
-            //                     devices={devices}
-            //                     accounts={activeAccounts} />
-            //                 <AddAccount
-            //                     path="/add-account" />
-            //                 <AccountsSummary accounts={activeAccounts}
-            //                     path="/account-summary" />
-            //                 <ElectrumSettings
-            //                     path="/settings/electrum" />
-            //                 <Settings
-            //                     manageAccountsLen={accounts.length}
-            //                     deviceIDs={deviceIDs}
-            //                     path="/settings" />
-            //                 <ManageAccounts
-            //                     key={'manage-accounts'}
-            //                     path="/settings/manage-accounts" />
-            //                 {/* Use with TypeScript: {Route<{ deviceID: string }>({ path: '/manage-backups/:deviceID', component: ManageBackups })} */}
-            //                 {/* ManageBackups and DeviceSwitch need a key to trigger (re-)mounting when devices change, to handle routing */}
-            //                 <ManageBackups
-            //                     path="/manage-backups/:deviceID"
-            //                     key={this.devicesKey('manage-backups')}
-            //                     devices={devices}
-            //                 />
-            //                 <DeviceSwitch
-            //                     path="/device/:deviceID"
-            //                     key={this.devicesKey('device-switch')}
-            //                     deviceID={null /* dummy to satisfy TS */}
-            //                     devices={devices} />
-            //                 <DeviceSwitch
-            //                     default
-            //                     key={this.devicesKey('device-switch-default')}
-            //                     deviceID={null}
-            //                     devices={devices} />
-            //             </Container>
-            //         </div>
-            //         <Alert />
-            //         <Confirm />
-            //     </div>
-            // </ConnectedApp>
+            // <div>
+            //     <h1>
+            //         {t('app.upgrade')}
+            //     </h1>
+            //     <LanguageSwitch />
+            // </div>
+            <ConnectedApp>
+                <div className="app">
+                    <Sidebar
+                        accounts={activeAccounts}
+                        deviceIDs={deviceIDs} />
+                    <div className="appContent flex flex-column flex-1" style={{minWidth: 0}}>
+                        <Update />
+                        <Banner msgKey="bitbox01" />
+                        <MobileDataWarning />
+                        <Aopp />
+                        <Container toggleSidebar={this.toggleSidebar} onChange={this.handleRoute}>
+                            <Routes>
+                            <Route
+                             path="/device/:deviceID" element={<DeviceSwitch
+                                    key={this.devicesKey('device-switch')}
+                                    devices={devices} />} />
+                            <Route path="/" element={ <DeviceSwitch
+                                    key={this.devicesKey('device-switch-default')}
+                                    devices={devices} />
+                            } />
+                               
+                            </Routes>
+                        </Container>
+                    </div>
+                    <Alert />
+                    <Confirm />
+                </div>
+            </ConnectedApp>
         );
     }
 }

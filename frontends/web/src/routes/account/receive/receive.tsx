@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
 import * as accountApi from '../../../api/account';
 import { TDevices } from '../../../api/devices';
@@ -29,7 +29,7 @@ import { Header } from '../../../components/layout';
 import { QRCode } from '../../../components/qrcode/qrcode';
 import Status from '../../../components/status/status';
 import { load } from '../../../decorators/load';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { apiGet } from '../../../utils/request';
 import { isEthereumBased } from '../utils';
 import * as style from './receive.css';
@@ -57,7 +57,7 @@ interface LoadedReceiveProps {
     };
 }
 
-type Props = LoadedReceiveProps & ReceiveProps & TranslateProps;
+type Props = LoadedReceiveProps & ReceiveProps & WithTranslation;
 
 class Receive extends Component<Props, State> {
     public readonly state: State = {
@@ -349,9 +349,9 @@ class Receive extends Component<Props, State> {
     }
 }
 
-const loadHOC = load<LoadedReceiveProps, ReceiveProps & TranslateProps>(({ code }) => ({
+const loadHOC = load<LoadedReceiveProps, ReceiveProps & WithTranslation>(({ code }) => ({
     secureOutput: `account/${code}/has-secure-output`,
     receiveAddresses: `account/${code}/receive-addresses`,
 }))(Receive);
-const HOC = translate<ReceiveProps>()(loadHOC);
+const HOC = withTranslation()(loadHOC);
 export { HOC as Receive };

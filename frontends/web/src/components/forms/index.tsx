@@ -21,4 +21,4 @@ export { Radio } from './radio';
 export { Field } from './field';
 export { default as Input } from './input';
 export { Label } from './label';
-// export { default as Select } from './select';
+export { default as Select } from './select';

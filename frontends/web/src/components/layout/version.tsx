@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
-import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { FunctionComponent } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface VersionProps {
     version: string;
 }
 
-type Props = VersionProps & TranslateProps;
-
-function Version({ t, version }: RenderableProps<Props>) {
+export const Version:FunctionComponent<VersionProps> = ({ version }) => {
+    const {t} = useTranslation();
     return <p>{t('footer.appVersion')} {version}</p>;
 }
-
-const HOC = translate()(load<VersionProps, TranslateProps>({ version: 'version' })(Version));
-export { HOC as Version };

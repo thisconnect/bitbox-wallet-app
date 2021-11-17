@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { Component, createRef, h, RenderableProps } from 'preact';
+import { Component, createRef, h, RenderableProps } from 'react';
 import { IAccount } from '../../api/account';
 import { TDevices } from '../../api/devices';
 import Guide from './guide';
 import { Header } from '../../components/layout';
 import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import { Spinner } from '../../components/spinner/Spinner';
 import { isBitcoinOnly } from '../account/utils';
 import * as style from './moonpay.css';
@@ -40,7 +40,7 @@ interface State {
     height: number;
 }
 
-type Props = LoadedBuyProps & BuyProps & TranslateProps;
+type Props = LoadedBuyProps & BuyProps & WithTranslation;
 
 class Moonpay extends Component<Props, State> {
     private ref = createRef();
@@ -118,8 +118,8 @@ class Moonpay extends Component<Props, State> {
     }
 }
 
-const loadHOC = load<LoadedBuyProps, BuyProps & TranslateProps>(({ code }) => ({
+const loadHOC = load<LoadedBuyProps, BuyProps & WithTranslation>(({ code }) => ({
     moonpay: `exchange/moonpay/buy/${code}`,
 }))(Moonpay);
-const HOC = translate<BuyProps>()(loadHOC);
+const HOC = withTranslation()(loadHOC);
 export { HOC as Moonpay };

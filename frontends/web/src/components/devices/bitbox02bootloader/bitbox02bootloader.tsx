@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { load } from '../../../decorators/load';
-import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiGet, apiPost } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
 import { CenteredContent } from '../../centeredcontent/centeredcontent';
@@ -39,7 +39,7 @@ interface LoadedProps {
     };
 }
 
-type Props = BitBox02BootloaderProps & LoadedProps & TranslateProps;
+type Props = BitBox02BootloaderProps & LoadedProps & WithTranslation;
 
 interface State {
     status: {
@@ -52,7 +52,7 @@ interface State {
 }
 
 class BitBox02Bootloader extends Component<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             status: {
@@ -69,7 +69,7 @@ class BitBox02Bootloader extends Component<Props, State> {
 
     public componentDidMount() {
         this.onStatusChanged();
-        this.unsubscribe = apiWebsocket(({ type, data, deviceID }) => {
+        this.unsubscribe = apiWebsocket(({ type, data, deviceID }: any) => {
             switch (type) {
                 case 'device':
                     if (deviceID !== this.props.deviceID) {
@@ -107,20 +107,19 @@ class BitBox02Bootloader extends Component<Props, State> {
         apiPost('devices/bitbox02-bootloader/' + this.props.deviceID + '/screen-rotate');
     }
 
-    public render(
-        { t,
-          deviceID,
-          versionInfo,
-        }: RenderableProps<Props>,
-        { status,
-        }: State,
-    ) {
+    public render() {
+        const { t,
+            deviceID,
+            versionInfo,
+          } =this.props;
+        const { status,
+        } =this.state;
         let contents;
         if (status.upgrading) {
             if (status.upgradeSuccessful) {
                 contents = (
                     <div className="box large">
-                        <p style="margin-bottom: 0;">
+                        <p style={{marginBottom: 0}}>
                             {t('bb02Bootloader.success', {
                                 rebootSeconds: status.rebootSeconds.toString(),
                                 context: (versionInfo.erased ? 'install' : ''),
@@ -133,7 +132,7 @@ class BitBox02Bootloader extends Component<Props, State> {
                 contents = (
                     <div className="box large">
                         <progress value={value} max="100">{value}%</progress>
-                        <p style="margin-bottom: 0;">
+                        <p style={{marginBottom: 0}}>
                             {t('bootloader.progress', {
                                 progress: value.toString(),
                                 context: (versionInfo.erased ? 'install' : ''),
@@ -144,10 +143,10 @@ class BitBox02Bootloader extends Component<Props, State> {
             }
         } else {
             contents = (
-                <div className="box large" style="min-height: 390px">
+                <div className="box large" style={{minHeight: 390}}>
                     {versionInfo.erased && (
-                        <div class="subHeaderContainer first">
-                            <div class="subHeader">
+                        <div className="subHeaderContainer first">
+                            <div className="subHeader">
                               <h2>{t('welcome.title')}</h2>
                               <h3>{t('welcome.getStarted')}</h3>
                             </div>
@@ -169,11 +168,11 @@ class BitBox02Bootloader extends Component<Props, State> {
                             </Button>
                         )}
                     </div>
-                    <div className="flex flex-center" style="margin-top: 32px">
+                    <div className="flex flex-center" style={{marginTop: 32}}>
                         {t('bb02Bootloader.orientation')}&nbsp;
                         <a
                             onClick={this.screenRotate}
-                            style="text-decoration: underline; cursor: pointer;" >
+                            style={{textDecoration: "underline", cursor: "pointer"}} >
                             {t('bb02Bootloader.flipscreen')}
                         </a>
                     </div>
@@ -200,6 +199,6 @@ class BitBox02Bootloader extends Component<Props, State> {
     }
 }
 
-const loadHOC = load<LoadedProps, BitBox02BootloaderProps & TranslateProps>(({ deviceID }) => ({ versionInfo: 'devices/bitbox02-bootloader/' + deviceID + '/version-info' }))(BitBox02Bootloader);
-const HOC = translate<BitBox02BootloaderProps>()(loadHOC);
+const loadHOC = load<LoadedProps, BitBox02BootloaderProps & WithTranslation>(({ deviceID }) => ({ versionInfo: 'devices/bitbox02-bootloader/' + deviceID + '/version-info' }))(BitBox02Bootloader);
+const HOC = withTranslation()(loadHOC as any);
 export { HOC as BitBox02Bootloader };

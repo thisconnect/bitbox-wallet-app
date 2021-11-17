@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Input, Checkbox, Field } from './forms';
 import { alertUser } from './alert/Alert';
 import * as style from './password.css';
@@ -30,8 +30,7 @@ export function PasswordInput (props) {
     );
 }
 
-@translate(null, { withRef: true })
-export class PasswordSingleInput extends Component {
+class PasswordSingleInputClass extends Component {
     state = {
         password: '',
         seePlaintext: false,
@@ -146,9 +145,9 @@ export class PasswordSingleInput extends Component {
     }
 
 }
+export const PasswordSingleInput = withTranslation(null, { withRef: true })(PasswordSingleInputClass)
 
-@translate(null, { withRef: true })
-export class PasswordRepeatInput extends Component {
+class PasswordRepeatInputClass extends Component {
     state = {
         password: '',
         passwordRepeat: '',
@@ -295,6 +294,8 @@ export class PasswordRepeatInput extends Component {
     }
 }
 
+export const PasswordRepeatInput = withTranslation(null, { withRef: true })(PasswordRepeatInputClass)
+
 function MatchesPattern({ regex, value = '', text }) {
     if (!regex || !value.length || regex.test(value)) {
         return null;
@@ -314,5 +315,6 @@ function hasCaps({ key }) {
     }
     // ideally we return event.getModifierState('CapsLock')) but this currently does always return false in Qt
     // @ts-ignore (event can be undefined and shiftKey exists only on MouseEvent but not Event)
+    // eslint-disable-next-line no-restricted-globals
     return key.toUpperCase() === key && key.toLowerCase() !== key && !event.shiftKey;
 }

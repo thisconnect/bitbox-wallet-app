@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component, h } from 'react';
+import { translate, withTranslation } from 'react-i18next';
 import { apiGet } from '../../../../utils/request';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { Guide } from '../../../../components/guide/guide';
@@ -34,8 +34,7 @@ import UpgradeFirmware from '../components/upgradefirmware';
 import { SettingsButton } from '../../../../components/settingsButton/settingsButton';
 import { SettingsItem } from '../../../../components/settingsButton/settingsItem';
 
-@translate()
-export default class Settings extends Component {
+class Settings extends Component {
     state = {
         firmwareVersion: null,
         newVersion: null,
@@ -242,3 +241,5 @@ export default class Settings extends Component {
         );
     }
 }
+
+export default withTranslation()(Settings)

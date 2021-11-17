@@ -1,4 +1,4 @@
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import * as style from './badge.css';
 
 interface BadgeProps {

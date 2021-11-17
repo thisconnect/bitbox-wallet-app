@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../components/forms';
 import { SwissMadeOpenSource } from '../../../../components/icon/logo';
 import { Header } from '../../../../components/layout';
 import { LanguageSwitch } from '../../../../components/language/language';
 
-@translate()
-export default class Goal extends Component {
+class Goal extends Component {
     render({
         t,
         onCreate,
@@ -57,3 +56,5 @@ export default class Goal extends Component {
         );
     }
 }
+
+export default withTranslation()(Goal)

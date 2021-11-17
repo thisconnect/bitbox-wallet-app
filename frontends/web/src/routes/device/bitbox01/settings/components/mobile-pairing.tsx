@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import {withTranslation, WithTranslation} from 'react-i18next';
 import appStoreBadge from '../../../../../assets/badges/app-store-badge.svg';
 import playStoreBadge from '../../../../../assets/badges/google-play-badge.png';
 import { alertUser } from '../../../../../components/alert/Alert';
@@ -23,7 +24,6 @@ import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
 import { Button } from '../../../../../components/forms';
 import { QRCode } from '../../../../../components/qrcode/qrcode';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
-import { translate, TranslateProps } from '../../../../../decorators/translate';
 import { apiPost } from '../../../../../utils/request';
 import { apiWebsocket } from '../../../../../utils/websocket';
 import * as style from '../../bitbox01.css';
@@ -36,7 +36,7 @@ interface PairingProps {
     onPairingEnabled: () => void;
 }
 
-type Props = PairingProps & TranslateProps;
+type Props = PairingProps & WithTranslation;
 
 interface State {
     channel: string | null;
@@ -53,7 +53,7 @@ interface OnDeviceStatusProps {
 class MobilePairing extends Component<Props, State> {
     private unsubscribe: (() => void) | undefined;
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             channel: null,
@@ -153,15 +153,14 @@ class MobilePairing extends Component<Props, State> {
         this.setState({ showQRCode: !this.state.showQRCode });
     }
 
-    public render(
-        { t, deviceLocked, paired, hasMobileChannel }: RenderableProps<Props>,
-        { channel, status, showQRCode }: State,
-    ) {
+    public render() {
+        const { t, deviceLocked, paired, hasMobileChannel } = this.props;
+        const { channel, status, showQRCode } = this.state;
         let content;
         if (status === 'start') {
             content = (
                 <div>
-                    <div class="flex flex-row flex-start">
+                    <div className="flex flex-row flex-start">
                         <div>
                             <p className="m-top-none"><strong className="m-right-quarter">1.</strong> {t('pairing.start.step1')}</p>
                             <p>
@@ -247,5 +246,5 @@ class MobilePairing extends Component<Props, State> {
     }
 }
 
-const translatedMobilePairing = translate<PairingProps>()(MobilePairing);
+const translatedMobilePairing = withTranslation()(MobilePairing);
 export { translatedMobilePairing as MobilePairing };

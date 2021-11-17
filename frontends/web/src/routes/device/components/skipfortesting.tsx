@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { Button } from '../../../components/forms';
 import { PasswordSingleInput } from '../../../components/password';
 import { apiPost } from '../../../utils/request';

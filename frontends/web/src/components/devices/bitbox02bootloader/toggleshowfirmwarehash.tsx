@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { load } from '../../../decorators/load';
-import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiPost } from '../../../utils/request';
 import { Toggle } from '../../toggle/toggle';
 
@@ -28,7 +28,7 @@ interface LoadedProps {
     enabled: boolean;
 }
 
-type Props = ToggleProps & LoadedProps & TranslateProps;
+type Props = ToggleProps & LoadedProps & WithTranslation;
 
 class ToggleFWHash extends Component<Props, {}> {
     private handleToggle = event => {
@@ -38,15 +38,13 @@ class ToggleFWHash extends Component<Props, {}> {
         );
     }
 
-    public render(
-        { t,
-          enabled,
-        }: RenderableProps<Props>,
-        {}: {},
-    ) {
+    public render() { 
+        const{ t,
+            enabled,
+          } = this.props;
         return (
             <div className="box slim divide">
-                <div class="flex flex-row flex-between flex-items-center">
+                <div className="flex flex-row flex-between flex-items-center">
                     <p className="m-none">{t('bb02Bootloader.advanced.toggleShowFirmwareHash')}</p>
                     <Toggle
                         checked={enabled}
@@ -59,6 +57,6 @@ class ToggleFWHash extends Component<Props, {}> {
     }
 }
 
-const loadHOC = load<LoadedProps, ToggleProps & TranslateProps>(({ deviceID }) => ({ enabled: 'devices/bitbox02-bootloader/' + deviceID + '/show-firmware-hash-enabled' }))(ToggleFWHash);
-const HOC = translate<ToggleProps>()(loadHOC);
+const loadHOC = load<LoadedProps, ToggleProps & WithTranslation>(({ deviceID }) => ({ enabled: 'devices/bitbox02-bootloader/' + deviceID + '/show-firmware-hash-enabled' }))(ToggleFWHash);
+const HOC = withTranslation()(loadHOC as any);
 export { HOC as ToggleShowFirmwareHash };

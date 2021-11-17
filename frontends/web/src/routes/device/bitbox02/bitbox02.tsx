@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import { Component } from 'react';
 import warning from '../../../assets/icons/warning.png';
 import { AppUpgradeRequired } from '../../../components/appupgraderequired';
 import { CenteredContent } from '../../../components/centeredcontent/centeredcontent';
@@ -25,7 +24,6 @@ import { Step, Steps } from './components/steps';
 import { Fullscreen, FullscreenContent, FullscreenHeader } from '../../../components/fullscreen/fullscreen';
 import * as style from './components/steps/steps.css';
 import Toast from '../../../components/toast/Toast';
-import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiGet, apiPost } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
 import { alertUser } from '../../../components/alert/Alert';
@@ -38,12 +36,14 @@ import { PasswordEntry } from './components/password-entry/password-entry';
 import { BackupsV2 } from './backups';
 import { Settings } from './settings';
 import { UpgradeButton, VersionInfo } from './upgradebutton';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { route } from '../../../utils/compat-router';
 
 interface BitBox02Props {
     deviceID: string;
 }
 
-type Props = BitBox02Props & TranslateProps;
+type Props = BitBox02Props & WithTranslation;
 
 interface State {
     versionInfo?: VersionInfo;
@@ -82,7 +82,7 @@ interface State {
 }
 
 class BitBox02 extends Component<Props, State> {
-    constructor(props) {
+    constructor(props : Props) {
         super(props);
         this.state = {
             hash: undefined,
@@ -126,7 +126,7 @@ class BitBox02 extends Component<Props, State> {
         });
         this.onChannelHashChanged();
         this.onStatusChanged();
-        this.unsubscribe = apiWebsocket(({ type, data, deviceID }) => {
+        this.unsubscribe = apiWebsocket(({ type, data, deviceID }: any) => {
             switch (type) {
                 case 'device':
                     if (deviceID !== this.props.deviceID) {
@@ -206,7 +206,7 @@ class BitBox02 extends Component<Props, State> {
         this.unsubscribe();
     }
 
-    private channelVerify = ok => {
+    private channelVerify = (ok: any) => {
         apiPost(this.apiPrefix() + '/channel-hash-verify', ok);
     }
 
@@ -359,14 +359,13 @@ class BitBox02 extends Component<Props, State> {
     private handleDisclaimerCheck = (event: InputEvent) => {
         const target = event.target as HTMLInputElement;
         const key = target.id as 'agreement1' | 'agreement2' | 'agreement3' | 'agreement4' | 'agreement5';
-        const obj = {};
-        obj[key] = target.checked;
-        this.setState(obj);
+        const obj = {[key]: target.checked};
+        this.setState(obj as any);
     }
 
-    public render(
-        { t, deviceID }: RenderableProps<Props>,
-        {
+    public render() {
+        const { t, deviceID } = this.props;
+        const {
             attestationResult,
             versionInfo,
             hash,
@@ -388,8 +387,8 @@ class BitBox02 extends Component<Props, State> {
             agreement4,
             agreement5,
             waitDialog,
-        }: State,
-    ) {
+        } = this.state;
+
         if (status === '') {
             return null;
         }
@@ -492,15 +491,15 @@ class BitBox02 extends Component<Props, State> {
                                         title={t('bitbox02Wizard.stepUninitialized.title')}
                                         large>
                                         <Toast theme="info">
-                                            <div class="flex flex-items-center">
-                                                <img src={warning} style="width: 18px; margin-right: 10px" />
+                                            <div className="flex flex-items-center">
+                                                <img src={warning} style={{width: 18, marginRight: 10}} />
                                                 {t('bitbox02Wizard.initialize.tip')}
                                             </div>
                                         </Toast>
                                         <div className="columnsContainer m-top-default">
                                             <div className="columns">
                                                 <div className="column column-1-2">
-                                                    <div className={style.stepContext} style="min-height: 330px">
+                                                    <div className={style.stepContext} style={{minHeight: 330}}>
                                                         <h3 className={style.stepSubHeader}>{t('button.create')}</h3>
                                                         <p className="text-center">{t('bitbox02Wizard.stepUninitialized.create')}</p>
                                                         <div className={['buttons text-center', style.fullWidth].join(' ')}>
@@ -514,7 +513,7 @@ class BitBox02 extends Component<Props, State> {
                                                     </div>
                                                 </div>
                                                 <div className="column column-1-2">
-                                                    <div className={style.stepContext} style="min-height: 330px">
+                                                    <div className={style.stepContext} style={{minHeight: 330}}>
                                                         <h3 className={style.stepSubHeader}>{t('button.restore')}</h3>
                                                         <p className="text-center">{t('bitbox02Wizard.stepUninitialized.restore')}</p>
                                                         <div className={['buttons text-center', style.fullWidth].join(' ')}>
@@ -802,5 +801,5 @@ class BitBox02 extends Component<Props, State> {
     }
 }
 
-const HOC = translate<BitBox02Props>()(BitBox02);
+const HOC = withTranslation()(BitBox02);
 export { HOC as BitBox02 };

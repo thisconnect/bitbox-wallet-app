@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps } from 'react';
 import * as style from './progressRing.css';
 
 interface ProgressRingProps {

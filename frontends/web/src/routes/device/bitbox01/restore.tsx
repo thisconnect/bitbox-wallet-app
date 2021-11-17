@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { alertUser } from '../../../components/alert/Alert';
 import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
@@ -26,6 +24,8 @@ import { PasswordRepeatInput } from '../../../components/password';
 import { Spinner } from '../../../components/spinner/Spinner';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
 import * as style from '../components/backups.css';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { route } from '../../../utils/compat-router';
 
 interface RestoreProps {
     selectedBackup?: string;
@@ -34,7 +34,7 @@ interface RestoreProps {
     onRestore: () => void;
 }
 
-type Props = RestoreProps & TranslateProps;
+type Props = RestoreProps & WithTranslation;
 
 interface State {
     isConfirming: boolean;
@@ -111,19 +111,20 @@ class Restore extends Component<Props, State> {
         this.setState({ password });
     }
 
-    public render(
-        {
+    public render() {
+        const {
             t,
             selectedBackup,
             requireConfirmation,
-        }: RenderableProps<Props>,
-        {
+        } = this.props;
+        const {
             isConfirming,
             activeDialog,
             isLoading,
             understand,
-        }: State) {
+        } = this.state;
         return (
+
             <span>
                 <Button
                     danger={requireConfirmation}
@@ -186,5 +187,5 @@ class Restore extends Component<Props, State> {
     }
 }
 
-const TranslatedRestore = translate<RestoreProps>()(Restore);
+const TranslatedRestore = withTranslation()(Restore);
 export { TranslatedRestore as Restore };

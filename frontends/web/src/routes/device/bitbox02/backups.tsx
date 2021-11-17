@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
 import Toast from '../../../components/toast/Toast';
 import { subscribe } from '../../../decorators/subscribe';
-import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiPost } from '../../../utils/request';
 import { Backup, BackupsListItem } from '../components/backup';
 import * as backupStyle from '../components/backups.css';
 import { Button } from '../../../components/forms';
 import { Check } from './checkbackup';
 import { Create } from './createbackup';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface SubscribedBackupsProps {
     backups: {
@@ -41,7 +41,7 @@ interface BackupsProps {
     backupOnAfterRestore?: (success: boolean) => void;
 }
 
-type Props = SubscribedBackupsProps & BackupsProps & TranslateProps;
+type Props = SubscribedBackupsProps & BackupsProps & WithTranslation;
 
 interface State {
     selectedBackup?: string;
@@ -51,7 +51,7 @@ interface State {
 }
 
 class Backups extends Component<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             restoring: false,
@@ -82,23 +82,24 @@ class Backups extends Component<Props, State> {
         );
     }
 
-    public render(
-        { t,
-          children,
-          backups,
-          showRestore,
-          showCreate,
-          showRadio,
-          deviceID,
-        }: RenderableProps<Props>,
-        { selectedBackup,
-          restoring,
-          errorText,
-        }: State) {
+    public render() {
+            const { t,
+                children,
+                backups,
+                showRestore,
+                showCreate,
+                showRadio,
+                deviceID,
+              } = this.props;
+            const { selectedBackup,
+                restoring,
+                errorText,
+              } = this.state;
         if (!backups.success) {
             return <div>Error fetching backups</div>;
         }
         return (
+            
             <div>
                 <div className={backupStyle.stepContext}>
                     {
@@ -108,7 +109,7 @@ class Backups extends Component<Props, State> {
                             </Toast>
                         )
                     }
-                    <div class={backupStyle.backupsList}>
+                    <div className={backupStyle.backupsList}>
                         {
                             backups.backups!.length ? (
                                 <div className={backupStyle.listContainer}>
@@ -164,6 +165,6 @@ class Backups extends Component<Props, State> {
     }
 }
 
-const subscribeHOC = subscribe<SubscribedBackupsProps, BackupsProps & TranslateProps>(({ deviceID }) => ({ backups: 'devices/bitbox02/' + deviceID + '/backups/list' }))(Backups);
-const HOC = translate<BackupsProps>()(subscribeHOC);
+const subscribeHOC = subscribe<SubscribedBackupsProps, BackupsProps & WithTranslation>(({ deviceID }) => ({ backups: 'devices/bitbox02/' + deviceID + '/backups/list' }))(Backups);
+const HOC = withTranslation()(subscribeHOC as any);
 export { HOC as BackupsV2 };

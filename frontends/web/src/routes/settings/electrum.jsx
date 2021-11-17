@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
+import { Component, h } from 'react';
 import { translate } from 'react-i18next';
 import { Guide } from '../../components/guide/guide';
 import { Entry } from '../../components/guide/entry';

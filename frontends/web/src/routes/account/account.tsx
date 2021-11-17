@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import * as accountApi from '../../api/account';
 import { syncAddressesCount } from '../../api/accountsync';
 import { TDevices } from '../../api/devices';
@@ -31,7 +31,7 @@ import { Spinner } from '../../components/spinner/Spinner';
 import Status from '../../components/status/status';
 import { Transactions } from '../../components/transactions/transactions';
 import { load } from '../../decorators/load';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import { apiGet } from '../../utils/request';
 import * as style from './account.css';
 import { isBitcoinBased } from './utils';
@@ -67,7 +67,7 @@ interface State {
     syncedAddressesCount?: number;
 }
 
-type Props = LoadedAccountProps & AccountProps & TranslateProps;
+type Props = LoadedAccountProps & AccountProps & WithTranslation;
 
 class Account extends Component<Props, State> {
     public readonly state: State = {
@@ -410,10 +410,10 @@ class Account extends Component<Props, State> {
     }
 }
 
-const loadHOC = load<LoadedAccountProps, AccountProps & TranslateProps>(({ code }) => ({
+const loadHOC = load<LoadedAccountProps, AccountProps & WithTranslation>(({ code }) => ({
     moonpayBuySupported: `exchange/moonpay/buy-supported/${code}`,
     config: 'config',
 }))(Account);
 
-const HOC = translate<AccountProps>()(loadHOC);
+const HOC = withTranslation()(loadHOC);
 export { HOC as Account };

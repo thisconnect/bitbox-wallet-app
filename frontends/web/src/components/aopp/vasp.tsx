@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
+import { h, JSX, RenderableProps } from 'react';
 import * as styles from './vasp.css';
 import AOPPGroupLogo from '../../assets/exchanges/logos/aoppgroup.svg';
 import BitcoinSuisseLogo from '../../assets/exchanges/logos/bitcoin_suisse.png';

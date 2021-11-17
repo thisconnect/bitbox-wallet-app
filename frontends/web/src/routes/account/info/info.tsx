@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { getInfo, IAccount, ISigningConfigurationList } from '../../../api/account';
 import { isBitcoinBased } from '../utils';
 import { ButtonLink } from '../../../components/forms';
@@ -36,7 +36,7 @@ interface State {
     viewXPub: number;
 }
 
-type Props = InfoProps & TranslateProps;
+type Props = InfoProps & WithTranslation;
 
 class Info extends Component<Props, State> {
     public readonly state: State = {
@@ -137,5 +137,5 @@ class Info extends Component<Props, State> {
     }
 }
 
-const HOC = translate<InfoProps>()(Info);
+const HOC = withTranslation()(Info);
 export { HOC as Info };

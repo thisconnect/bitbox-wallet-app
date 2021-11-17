@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import * as accountApi from '../../api/account';
 import { Input } from '../../components/forms';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import A from '../anchor/anchor';
 import { Dialog } from '../dialog/dialog';
 import { CopyableInput } from '../copy/Copy';
@@ -41,7 +41,7 @@ interface TransactionProps extends accountApi.ITransaction {
     explorerURL: string;
 }
 
-type Props = TransactionProps & TranslateProps;
+type Props = TransactionProps & WithTranslation;
 
 class Transaction extends Component<Props, State> {
     private input!: HTMLInputElement;
@@ -394,6 +394,6 @@ class Transaction extends Component<Props, State> {
     }
 }
 
-const HOC = translate<TransactionProps>()(Transaction);
+const HOC = withTranslation()(Transaction);
 
 export { HOC as Transaction };

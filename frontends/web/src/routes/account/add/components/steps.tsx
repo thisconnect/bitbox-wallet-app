@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, cloneElement, JSX, RenderableProps } from 'preact';
+import { h, cloneElement, JSX, RenderableProps } from 'react';
 import * as style from './steps.css';
 
 interface Props {

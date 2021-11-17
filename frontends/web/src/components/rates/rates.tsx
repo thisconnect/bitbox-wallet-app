@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
+import { h, JSX, RenderableProps } from 'react';
 import { Coin, Fiat, MainnetCoin } from '../../api/account';
 import { share } from '../../decorators/share';
 import { Store } from '../../decorators/store';

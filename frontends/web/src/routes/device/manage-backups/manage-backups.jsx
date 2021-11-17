@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
+import { Component, h } from 'react';
 import { route } from 'preact-router';
 import { translate } from 'react-i18next';
 import { ButtonLink } from '../../../components/forms';

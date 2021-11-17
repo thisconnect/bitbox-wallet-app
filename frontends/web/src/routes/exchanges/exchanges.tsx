@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, h, JSX, RenderableProps } from 'preact';
+import { Component, h, JSX, RenderableProps } from 'react';
 import A from '../../components/anchor/anchor';
 import Button from '../../components/forms/button';
 import { Entry } from '../../components/guide/entry';
 import { Guide } from '../../components/guide/guide';
 import { SwissMadeOpenSource } from '../../components/icon/logo';
 import { Footer, Header } from '../../components/layout';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 
 import externalIcon from './assets/external-link.svg';
 import { data, ExchangeData, Method, Region } from './exchanges-data';
@@ -30,7 +30,7 @@ import * as styles from './exchanges.css';
 interface ExchangesProps {
 }
 
-type Props = ExchangesProps & TranslateProps;
+type Props = ExchangesProps & WithTranslation;
 
 interface State {
     region: Region | null;
@@ -208,5 +208,5 @@ function Row({
     );
 }
 
-const HOC = translate<ExchangesProps>()(Exchanges);
+const HOC = withTranslation()(Exchanges);
 export { HOC as Exchanges };

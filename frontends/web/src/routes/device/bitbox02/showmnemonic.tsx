@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { SimpleMarkup } from '../../../utils/simplemarkup';
 import { confirmation } from '../../../components/confirm/Confirm';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 interface ShowMnemonicProps {
     apiPrefix: string;
 }
 
-type Props = ShowMnemonicProps & TranslateProps;
+type Props = ShowMnemonicProps & WithTranslation;
 
 interface State {
     inProgress: boolean;
@@ -54,10 +54,9 @@ class ShowMnemonic extends Component<Props, State> {
 
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        { inProgress,
-        }: State) {
+    public render() {
+            const { t } = this.props;
+           const { inProgress  } =this.state; 
         return (
             <div>
                 <SettingsButton
@@ -83,5 +82,5 @@ class ShowMnemonic extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ShowMnemonicProps>()(ShowMnemonic);
+const HOC = withTranslation()(ShowMnemonic);
 export { HOC as ShowMnemonic };

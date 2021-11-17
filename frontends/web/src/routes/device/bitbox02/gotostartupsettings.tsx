@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface GotoStartupSettingsProps {
     apiPrefix: string;
 }
 
-type Props = GotoStartupSettingsProps & TranslateProps;
+type Props = GotoStartupSettingsProps & WithTranslation;
 
 interface State {
     isConfirming: boolean;
@@ -42,9 +42,9 @@ class GotoStartupSettings extends Component<Props, State> {
         });
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        { isConfirming }: State) {
+    public render() {
+            const { t } = this.props;
+            const { isConfirming } = this.state;
         return (
             <div>
                 <SettingsButton
@@ -64,5 +64,5 @@ class GotoStartupSettings extends Component<Props, State> {
     }
 }
 
-const HOC = translate<GotoStartupSettingsProps>()(GotoStartupSettings);
+const HOC = withTranslation()(GotoStartupSettings);
 export { HOC as GotoStartupSettings };

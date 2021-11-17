@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'preact';
+import { h, JSX, RenderableProps } from 'react';
 import * as style from './style.css';
 
 export function CenteredContent({ children }: RenderableProps<{}>): JSX.Element {

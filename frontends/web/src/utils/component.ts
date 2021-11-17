@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { ComponentFactory } from 'preact';
+import { ComponentFactory } from 'react';
 
 export function getDisplayName(component: ComponentFactory<any>): string {
     return component.displayName || (component as any).name || 'Component';

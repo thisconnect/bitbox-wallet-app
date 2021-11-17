@@ -14,64 +14,56 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { route } from 'preact-router';
-import { translate } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { SwissMadeOpenSource } from '../../../../components/icon';
 import { LanguageSwitch } from '../../../../components/language/language';
 import { Header } from '../../../../components/layout';
 import { Button } from '../../../../components/forms';
 import * as style from '../bitbox01.css';
+import { useNavigate } from 'react-router';
 
-@translate()
-export default class Success extends Component {
+const Success = ({ handleHideSuccess, goal }) => {
+    const {t} = useTranslation();
+    const navigate = useNavigate();
+    navigate('/account-summary', { replace: true });
 
-    handleGetStarted = () => {
-        route('/account-summary', true);
-    }
-
-    render({
-        t,
-        handleHideSuccess,
-        goal,
-    }, {
-    }) {
-        return (
-            <div class="contentWithGuide">
-                <div className="container">
-                    <Header title={<h2>{t('welcome.title')}</h2>}>
-                        <LanguageSwitch />
-                    </Header>
-                    <div className="innerContainer scrollableContainer">
-                        <div className="content padded narrow isVerticallyCentered">
-                            <h1 className={[style.title, 'text-center'].join(' ')}>{t(`success.${goal}.title`)}</h1>
-                            <div className="box large">
-                                <p style="text-align: center;">
-                                    {t(`success.${goal}.summary`)}
-                                </p>
-                                { goal === 'create' ? (
-                                    <ul class={style.summary}>
-                                        <li>{t('success.create.info1')}</li>
-                                        <li>{t('success.create.info2')}</li>
-                                        <li>{t('success.create.info3')}</li>
-                                    </ul>
-                                ) : null}
-                                <div class="buttons">
-                                    <Button primary onClick={this.handleGetStarted}>
-                                        {t('success.getstarted')}
-                                    </Button>
-                                    <Button secondary onClick={handleHideSuccess}>
-                                        {t('sidebar.device')}
-                                    </Button>
-                                </div>
+    return (
+        <div class="contentWithGuide">
+            <div className="container">
+                <Header title={<h2>{t('welcome.title')}</h2>}>
+                    <LanguageSwitch />
+                </Header>
+                <div className="innerContainer scrollableContainer">
+                    <div className="content padded narrow isVerticallyCentered">
+                        <h1 className={[style.title, 'text-center'].join(' ')}>{t(`success.${goal}.title`)}</h1>
+                        <div className="box large">
+                            <p style="text-align: center;">
+                                {t(`success.${goal}.summary`)}
+                            </p>
+                            {goal === 'create' ? (
+                                <ul class={style.summary}>
+                                    <li>{t('success.create.info1')}</li>
+                                    <li>{t('success.create.info2')}</li>
+                                    <li>{t('success.create.info3')}</li>
+                                </ul>
+                            ) : null}
+                            <div class="buttons">
+                                <Button primary onClick={() => navigate('/account-summary', { replace: true })}>
+                                    {t('success.getstarted')}
+                                </Button>
+                                <Button secondary onClick={handleHideSuccess}>
+                                    {t('sidebar.device')}
+                                </Button>
                             </div>
-                            <div className="text-center m-top-large">
-                                <SwissMadeOpenSource large />
-                            </div>
+                        </div>
+                        <div className="text-center m-top-large">
+                            <SwissMadeOpenSource large />
                         </div>
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
+
+export default Success

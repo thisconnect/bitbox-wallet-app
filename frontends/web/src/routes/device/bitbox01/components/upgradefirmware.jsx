@@ -15,16 +15,15 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../components/forms';
 import { Dialog, DialogButtons } from '../../../../components/dialog/dialog';
 import { WaitDialog } from '../../../../components/wait-dialog/wait-dialog';
 import { apiGet, apiPost } from '../../../../utils/request';
 import { SettingsButton } from '../../../../components/settingsButton/settingsButton';
 
-@translate()
-export default class UpgradeFirmware extends Component {
+class UpgradeFirmware extends Component {
     state = {
         unlocked: false,
         newVersion: '',
@@ -133,3 +132,5 @@ export default class UpgradeFirmware extends Component {
         );
     }
 }
+
+export default withTranslation()(UpgradeFirmware)

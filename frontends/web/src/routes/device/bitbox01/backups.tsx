@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiGet } from '../../../utils/request';
 import { SimpleMarkup } from '../../../utils/simplemarkup';
 import { alertUser } from '../../../components/alert/Alert';
@@ -25,6 +24,7 @@ import * as style from '../components/backups.css';
 import Check from './check';
 import Create from './create';
 import { Restore } from './restore';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface BackupsProps {
     deviceID: string;
@@ -36,7 +36,7 @@ interface BackupsProps {
     onRestore?: () => void;
 }
 
-type Props = BackupsProps & TranslateProps;
+type Props = BackupsProps & WithTranslation;
 
 interface State {
     backupList: Backup[];
@@ -48,7 +48,7 @@ interface State {
 class Backups extends Component<Props, State> {
     private scrollableContainer!: HTMLElement;
 
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             backupList: [],
@@ -97,8 +97,8 @@ class Backups extends Component<Props, State> {
         this.scrollableContainer = ref;
     }
 
-    public render(
-        {
+    public render() {
+        const {
             t,
             children,
             showCreate = false,
@@ -106,17 +106,16 @@ class Backups extends Component<Props, State> {
             deviceID,
             requireConfirmation = true,
             onRestore,
-        }: RenderableProps<Props>,
-        { backupList, selectedBackup, sdCardInserted, lock }: State,
-    ) {
+        } = this.props;
+        const { backupList, selectedBackup, sdCardInserted, lock } = this.state;
         if (lock === undefined) {
             return null;
         }
         if (sdCardInserted === false) {
             return (
                 <div className="box m-top-default">
-                    <p class="first">{t('backup.insert')}</p>
-                    <div class="buttons">
+                    <p className="first">{t('backup.insert')}</p>
+                    <div className="buttons">
                         <Button primary onClick={this.refresh}>
                             {t('backup.insertButton')}
                         </Button>
@@ -144,14 +143,14 @@ class Backups extends Component<Props, State> {
                                         radio={true} />
                                 </div>
                             )) : (
-                                <p class={style.emptyText}>
+                                <p className={style.emptyText}>
                                     {t('backup.noBackups')}
                                 </p>
                             )
                         }
                     </div>
                 </div>
-                <div class="buttons">
+                <div className="buttons">
                     {
                         showCreate && !lock && (
                             <Create
@@ -189,5 +188,5 @@ class Backups extends Component<Props, State> {
     }
 }
 
-const TranslatedBackups = translate<BackupsProps>()(Backups);
+const TranslatedBackups = withTranslation()(Backups);
 export { TranslatedBackups as Backups };

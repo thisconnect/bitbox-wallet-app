@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'preact';
+import { h, RenderableProps } from 'react';
 import { LanguageSwitch } from '../language/language';
 import * as style from './footer.css';
 import { Version } from './version';

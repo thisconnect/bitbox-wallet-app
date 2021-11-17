@@ -14,25 +14,26 @@
  * limitations under the License.
  */
 
-import { cloneElement, h, JSX, RenderableProps } from 'preact';
-import { Router } from 'preact-router';
+import { cloneElement, FunctionComponent } from 'react';
+import { BrowserRouter as Router, Routes } from 'react-router-dom';
 
 interface Props {
-    children: JSX.Element[];
     toggleSidebar: () => void;
     onChange: () => void;
 }
 
-const Container = ({
+const Container: FunctionComponent<Props> = ({
     children,
     toggleSidebar,
     onChange,
-}: RenderableProps<Props>) => {
+}) => {
     return (
-        <Router onChange={onChange}>
-            { children.map(child => cloneElement(child, { toggleSidebar })) }
+        <Router>
+                { children }
         </Router>
     );
 };
+
+// TODO fix onchange
 
 export { Container };

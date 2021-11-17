@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiPost } from '../../../utils/request';
 import { alertUser } from '../../../components/alert/Alert';
 import { confirmation } from '../../../components/confirm/Confirm';
 import { Button } from '../../../components/forms';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface CreateProps {
     deviceID: string;
 }
 
-type Props = CreateProps & TranslateProps;
+type Props = CreateProps & WithTranslation;
 
 interface State {
     creatingBackup: boolean;
@@ -69,12 +69,12 @@ class Create extends Component<Props, State> {
         });
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        {
-            creatingBackup,
-            disabled,
-        }: State) {
+    public render() {
+            const { t } = this.props;
+            const {
+                creatingBackup,
+                disabled,
+            } = this.state;
         return (
             <span>
                 <Button
@@ -93,5 +93,5 @@ class Create extends Component<Props, State> {
     }
 }
 
-const HOC = translate<CreateProps>()(Create);
+const HOC = withTranslation()(Create);
 export { HOC as Create };

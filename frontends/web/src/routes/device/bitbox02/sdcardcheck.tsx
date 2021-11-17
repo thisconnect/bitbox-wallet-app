@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component, h, RenderableProps } from 'react';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { apiGet } from '../../../utils/request';
 import { Button, ButtonLink } from '../../../components/forms';
@@ -29,7 +29,7 @@ interface State {
 }
 
 
-type Props = SDCardCheckProps & TranslateProps;
+type Props = SDCardCheckProps & WithTranslation;
 
 class SDCardCheck extends Component<Props, State> {
     public componentDidMount() {
@@ -84,5 +84,5 @@ class SDCardCheck extends Component<Props, State> {
 
 }
 
-const HOC = translate<SDCardCheckProps>()(SDCardCheck);
+const HOC = withTranslation()(SDCardCheck);
 export { HOC as SDCardCheck };

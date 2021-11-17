@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { alertUser } from '../../../../../components/alert/Alert';
 import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
@@ -25,8 +25,7 @@ import { PasswordInput, PasswordRepeatInput } from '../../../../../components/pa
 import { apiPost } from '../../../../../utils/request';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
 
-@translate()
-export default class ChangePIN extends Component {
+class ChangePIN extends Component {
     state = {
         oldPIN: null,
         newPIN: null,
@@ -131,3 +130,5 @@ export default class ChangePIN extends Component {
         );
     }
 }
+
+export default withTranslation()(ChangePIN)

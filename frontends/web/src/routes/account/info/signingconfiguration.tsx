@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { route } from 'preact-router';
 import { getCanVerifyXPub, IAccount, TBitcoinSimple, TEthereumSimple, TSigningConfiguration, verifyXPub } from '../../../api/account';
 import { getScriptName, isBitcoinBased } from '../utils';
 import { CopyableInput } from '../../../components/copy/Copy';
 import { Button } from '../../../components/forms';
 import { QRCode } from '../../../components/qrcode/qrcode';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { translate, WithTranslation } from '../../../decorators/translate';
 import * as style from './info.css';
 
 interface ProvidedProps {
@@ -36,7 +36,7 @@ interface State {
     canVerifyExtendedPublicKey: boolean;
 }
 
-type Props = ProvidedProps & TranslateProps;
+type Props = ProvidedProps & WithTranslation;
 
 class SigningConfiguration extends Component<Props, State> {
 
@@ -145,5 +145,5 @@ class SigningConfiguration extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ProvidedProps>()(SigningConfiguration);
+const HOC = withTranslation()(SigningConfiguration);
 export { HOC as SigningConfiguration };

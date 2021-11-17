@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate, TranslateProps } from '../../../decorators/translate';
+import { Component } from 'react';
 import { apiGet } from '../../../utils/request';
 import { SwissMadeOpenSource } from '../../../components/icon/logo';
 import { Footer } from '../../../components/layout';
@@ -28,6 +27,7 @@ import { Reset } from './reset';
 import { SetDeviceName } from './setdevicename';
 import { ShowMnemonic } from './showmnemonic';
 import { UpgradeButton, VersionInfo } from './upgradebutton';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface SettingsProps {
     deviceID: string;
@@ -44,7 +44,7 @@ interface State {
     };
 }
 
-type Props = SettingsProps & TranslateProps;
+type Props = SettingsProps & WithTranslation;
 
 class Settings extends Component<Props, State> {
     private apiPrefix = () => {
@@ -64,16 +64,16 @@ class Settings extends Component<Props, State> {
         });
     }
 
-    public render(
-        {
+    public render() {
+        const {
             deviceID,
             t,
-        }: RenderableProps<Props>,
-        {
+        } = this.props;
+        
+        const {
             versionInfo,
             deviceInfo,
-        }: State,
-    ) {
+        } = this.state;
         if (deviceInfo === undefined) {
             return null;
         }
@@ -81,13 +81,13 @@ class Settings extends Component<Props, State> {
             <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('sidebar.device')}</h2>} />
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content padded">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content padded">
                             <div className="columnsContainer">
                                 <div className="columns">
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer first">
-                                            <div class="subHeader">
+                                        <div className="subHeaderContainer first">
+                                            <div className="subHeader">
                                                 <h3>{t('deviceSettings.secrets.title')}</h3>
                                             </div>
                                         </div>
@@ -100,8 +100,8 @@ class Settings extends Component<Props, State> {
                                         </div>
                                     </div>
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer">
-                                            <div class="subHeader">
+                                        <div className="subHeaderContainer">
+                                            <div className="subHeader">
                                                 <h3>{t('deviceSettings.hardware.title')}</h3>
                                             </div>
                                         </div>
@@ -120,12 +120,12 @@ class Settings extends Component<Props, State> {
                                 </div>
                                 <div className="columns">
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer">
-                                            <div class="subHeader">
+                                        <div className="subHeaderContainer">
+                                            <div className="subHeader">
                                                 <h3>{t('deviceSettings.firmware.title')}</h3>
                                             </div>
                                         </div>
-                                        <div class="box slim divide">
+                                        <div className="box slim divide">
                                             {
                                                 versionInfo && versionInfo.canUpgrade ? (
                                                     <UpgradeButton
@@ -140,8 +140,8 @@ class Settings extends Component<Props, State> {
                                         </div>
                                     </div>
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer">
-                                            <div class="subHeader">
+                                        <div className="subHeaderContainer">
+                                            <div className="subHeader">
                                                 <h3>{t('settings.expert.title')}</h3>
                                             </div>
                                         </div>
@@ -169,5 +169,5 @@ class Settings extends Component<Props, State> {
     }
 }
 
-const HOC = translate<SettingsProps>()(Settings);
+const HOC = withTranslation()(Settings);
 export { HOC as Settings };

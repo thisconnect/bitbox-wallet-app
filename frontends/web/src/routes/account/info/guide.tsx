@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
+import { h } from 'react';
 import { Entry } from '../../../components/guide/entry';
 import { Guide } from '../../../components/guide/guide';
 import { Translate } from '../../../decorators/translate';

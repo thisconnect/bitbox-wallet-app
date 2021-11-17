@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button, Input } from '../../../components/forms';
 import { PasswordInput } from '../../../components/password';
 import { alertUser } from '../../../components/alert/Alert';
@@ -24,8 +24,7 @@ import { Dialog } from '../../../components/dialog/dialog';
 // TODO: use DialogButtons
 import style from '../../../components/dialog/dialog.module.css';
 
-@translate()
-export default class Create extends Component {
+class Create extends Component {
     state = {
         waiting: false,
         backupName: '',
@@ -119,3 +118,5 @@ export default class Create extends Component {
         );
     }
 }
+
+export default withTranslation()(Create)

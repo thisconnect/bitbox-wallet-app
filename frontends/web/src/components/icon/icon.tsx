@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { h, JSX } from 'preact';
+import { h, JSX } from 'react';
 import alert from './assets/icons/alert-triangle.svg';
 import BB02Stylized from '../../assets/device/bitbox02-stylized-reflection.png';
 import info from './assets/icons/info.svg';

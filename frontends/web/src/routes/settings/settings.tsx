@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component, h, RenderableProps } from 'react';
 import { Link, route } from 'preact-router';
 import { alertUser } from '../../components/alert/Alert';
 import { Badge } from '../../components/badge/badge';
@@ -28,7 +28,7 @@ import InlineMessage from '../../components/inlineMessage/InlineMessage';
 import { Footer, Header } from '../../components/layout';
 import { SettingsButton } from '../../components/settingsButton/settingsButton';
 import { Toggle } from '../../components/toggle/toggle';
-import { translate, TranslateProps } from '../../decorators/translate';
+import { translate, WithTranslation } from '../../decorators/translate';
 import { setConfig } from '../../utils/config';
 import { apiGet, apiPost } from '../../utils/request';
 import { FiatSelection } from './components/fiat/fiat';
@@ -39,7 +39,7 @@ interface SettingsProps {
     deviceIDs: string[];
 }
 
-type Props = SettingsProps & TranslateProps;
+type Props = SettingsProps & WithTranslation;
 
 interface State {
     restart: boolean;
@@ -314,5 +314,5 @@ class Settings extends Component<Props, State> {
     }
 }
 
-const HOC = translate<SettingsProps>()(Settings);
+const HOC = withTranslation()(Settings);
 export { HOC as Settings };

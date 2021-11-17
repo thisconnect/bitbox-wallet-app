@@ -15,7 +15,7 @@
  */
 
 import 'jest';
-import { h } from 'preact';
+import { h } from 'react';
 import { deep, shallow } from 'preact-render-spy';
 
 import { Message, Props } from '../../../src/components/message/message';
