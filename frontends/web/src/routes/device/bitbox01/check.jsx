@@ -95,7 +95,7 @@ class Check extends Component {
                             onClose={this.abort}>
                             { message ? (
                                 <div>
-                                    <p style="min-height: 3rem;">{message}</p>
+                                    <p style={{minHeight: '3rem'}}>{message}</p>
                                     <div className={style.actions}>
                                         <Button transparent onClick={this.abort}>
                                             {t('button.back')}

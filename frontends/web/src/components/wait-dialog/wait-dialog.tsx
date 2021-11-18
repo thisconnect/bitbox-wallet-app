@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component} from 'react';
+import React, { Children, Component} from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import approve from '../../assets/icons/hold.png';
 import reject from '../../assets/icons/tap.png';
@@ -36,8 +36,14 @@ interface State {
 }
 
 class WaitDialog extends Component<Props, State> {
-    private overlay?: HTMLDivElement;
-    private modal?: HTMLDivElement;
+    private overlay: React.RefObject<HTMLDivElement>;
+    private modal: React.RefObject<HTMLDivElement>;
+
+    constructor(props: Props) {
+        super(props);
+        this.overlay = React.createRef();
+        this.modal = React.createRef();
+      }
 
     public readonly state: State = {
         active: false,
@@ -64,21 +70,14 @@ class WaitDialog extends Component<Props, State> {
         e.stopPropagation();
     }
 
-    private setOverlay = ref => {
-        this.overlay = ref;
-    }
-
-    private setModal = ref => {
-        this.modal = ref;
-    }
 
     private activate = () => {
         this.setState({ active: true }, () => {
-            if (!this.overlay || !this.modal) {
+            if (this.overlay.current === null || this.modal.current === null) {
                 return;
             }
-            this.overlay.classList.add(style.activeOverlay);
-            this.modal.classList.add(style.activeModal);
+            this.overlay.current.classList.add(style.activeOverlay);
+            this.modal.current.classList.add(style.activeModal);
         });
     }
 
@@ -102,36 +101,36 @@ class WaitDialog extends Component<Props, State> {
                 {
                     paired ? (
                         <div>
-                            <p class={[style.confirmationLabel, touchConfirm && paired ? style.disabledLabel : '', 'm-top-none'].join(' ')}>
-                                <span class={style.confirmationLabelNumber}>1.</span>
+                            <p className={[style.confirmationLabel, touchConfirm && paired ? style.disabledLabel : '', 'm-top-none'].join(' ')}>
+                                <span className={style.confirmationLabelNumber}>1.</span>
                                 {t('confirm.infoWhenPaired')}
                             </p>
-                            <p class={[style.confirmationLabel, !touchConfirm && paired ? style.disabledLabel : ''].join(' ')}>
-                                <span class={style.confirmationLabelNumber}>2.</span>
+                            <p className={[style.confirmationLabel, !touchConfirm && paired ? style.disabledLabel : ''].join(' ')}>
+                                <span className={style.confirmationLabelNumber}>2.</span>
                                 {t('confirm.info')}
                             </p>
                         </div>
                     ) : (
-                        <p class={[style.confirmationLabel, style.noStep, 'm-top-none'].join(' ')}>
+                        <p className={[style.confirmationLabel, style.noStep, 'm-top-none'].join(' ')}>
                             {t('confirm.info')}
                         </p>
                     )
                 }
                 {
                     touchConfirm && (
-                        <div class={['flex flex-row flex-between flex-items-stretch', style.confirmationInstructions].join(' ')}>
-                            <div class="flex flex-column flex-center flex-items-center">
-                                <img class={style.image} src={reject} alt="Reject" />
+                        <div className={['flex flex-row flex-between flex-items-stretch', style.confirmationInstructions].join(' ')}>
+                            <div className="flex flex-column flex-center flex-items-center">
+                                <img className={style.image} src={reject} alt="Reject" />
                                 <p>
                                     {t('confirm.abortInfo')}
-                                    <span class="text-red">{t('confirm.abortInfoRedText')}</span>
+                                    <span className="text-red">{t('confirm.abortInfoRedText')}</span>
                                 </p>
                             </div>
-                            <div class="flex flex-column flex-center flex-items-center">
-                                <img class={style.image} src={approve} alt="Approve" />
+                            <div className="flex flex-column flex-center flex-items-center">
+                                <img className={style.image} src={approve} alt="Approve" />
                                 <p>
                                     {t('confirm.approveInfo')}
-                                    <span class="text-green">{t('confirm.approveInfoGreenText')}</span>
+                                    <span className="text-green">{t('confirm.approveInfoGreenText')}</span>
                                 </p>
                             </div>
                         </div>
@@ -140,13 +139,13 @@ class WaitDialog extends Component<Props, State> {
             </div>
         );
 
-        const hasChildren = children && (children as ComponentChild[]).length > 0;
+        const hasChildren = Children.toArray(children).length > 0;
         return (
             <div
                 className={style.overlay}
-                ref={this.setOverlay}
-                style="z-index: 10001;">
-                <div className={style.modal} ref={this.setModal}>
+                ref={this.overlay}
+                style={{zIndex: 10001}}>
+                <div className={style.modal} ref={this.modal}>
                     {
                         title && (
                             <div className={style.header}>
@@ -158,7 +157,7 @@ class WaitDialog extends Component<Props, State> {
                         <div className={style.content}>
                             { (hasChildren && includeDefault) ? defaultContent : null }
                             { hasChildren ? (
-                                <div class="flex flex-column flex-start">
+                                <div className="flex flex-column flex-start">
                                     {children}
                                 </div>
                             ) : defaultContent }

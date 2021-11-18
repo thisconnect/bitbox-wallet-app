@@ -15,10 +15,9 @@
  */
 
 import { Component } from 'react';
-import { withTranslation } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import MenuIcon from '../../assets/icons/menu.svg';
 import { share } from '../../decorators/share';
-import { translate, WithTranslation } from '../../decorators/translate';
 import { SharedProps, store, toggle as toggleGuide } from '../guide/guide';
 import { toggleSidebar } from '../sidebar/sidebar';
 import * as style from './Spinner.css';
@@ -56,7 +55,7 @@ class Spinner extends Component<Props> {
                 <div className={style.togglersContainer}>
                     <div className={style.togglerContainer}>
                         <div className={style.toggler} onClick={toggleSidebar}>
-                            <img src={MenuIcon} />
+                            <img src={MenuIcon} alt="" />
                         </div>
                     </div>
                     {
@@ -100,6 +99,6 @@ class Spinner extends Component<Props> {
     }
 }
 
-const SharedSpinner = share<SharedProps, SpinnerProps & WithTranslation>(store)(Spinner);
+const SharedSpinner = share<SharedProps, SpinnerProps & WithTranslation>(store)(Spinner as any);
 const TranslatedSpinner = withTranslation()(SharedSpinner as any);
 export { TranslatedSpinner as Spinner };

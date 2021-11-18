@@ -37,12 +37,12 @@ class LegacyHiddenWallet extends Component {
         });
     }
 
-    render({
-        t,
-        disabled,
-        newHiddenWallet,
-    }, {
-    }) {
+    render() {
+        const {
+            t,
+            disabled,
+            newHiddenWallet,
+        } = this.props;
         return (
             <Button
                 danger
@@ -53,6 +53,5 @@ class LegacyHiddenWallet extends Component {
         );
     }
 }
-
 
 export default withTranslation()(LegacyHiddenWallet)

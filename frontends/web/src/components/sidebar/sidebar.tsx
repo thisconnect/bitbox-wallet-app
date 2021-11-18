@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, FunctionComponent } from 'react';
+import { Component, FunctionComponent, SyntheticEvent } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Link, useLocation } from 'react-router-dom';
 import { IAccount } from '../../api/account';
@@ -282,7 +282,7 @@ class Sidebar extends Component<Props> {
     }
 }
 
-function eject(e: Event): void {
+function eject(e: SyntheticEvent): void {
     apiPost('test/deregister');
     e.preventDefault();
 }
@@ -293,6 +293,6 @@ const subscribeHOC = subscribe<SubscribedProps, SharedPanelProps & SidebarProps 
     false,
 )(Sidebar);
 
-const guideShareHOC = share<SharedPanelProps, SidebarProps & WithTranslation>(panelStore)(subscribeHOC);
-const translateHOC = withTranslation()(guideShareHOC as any);
+const guideShareHOC = share<SharedPanelProps, SidebarProps & WithTranslation>(panelStore)(subscribeHOC as any);
+const translateHOC = withTranslation(undefined, {withRef: true})(guideShareHOC as any);
 export { translateHOC as Sidebar };

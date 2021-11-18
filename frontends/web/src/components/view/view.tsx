@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'react';
 import { AppLogo } from '../icon';
 import { Footer } from '../layout';
 import { SwissMadeOpenSource } from '../icon/logo';
 import { Close } from '../icon/icon';
 import * as style from './view.css';
+import { FunctionComponent } from 'react';
 
 type Props = {
     center?: boolean;
@@ -29,20 +29,20 @@ type Props = {
     withBottomBar?: boolean;
 }
 
-export function View({
+export const View:FunctionComponent<Props> = ({
     center = false,
     children,
     onClose,
     position = 'fill',
     width,
     withBottomBar,
-}: RenderableProps<Props>) {
-    const styles = width ? { style: `width: ${width}` } : undefined;
+}) => {
+    const styles = width ? { width: width} : {};
     return (
         <div className={position === 'fullscreen' ? style.fullscreen : style.fill}>
             <div
                 className={center ? `${style.inner} ${style.center}` : style.inner}
-                {...styles}>
+                style={styles}>
                 {children}
             </div>
             {onClose && (
@@ -51,7 +51,7 @@ export function View({
                 </button>
             )}
             {withBottomBar && (
-                <div style="margin-top: auto;">
+                <div style={{marginTop: 'auto'}}>
                     <Footer>
                         <SwissMadeOpenSource />
                     </Footer>
@@ -65,10 +65,10 @@ type ViewContentProps = {
     fullWidth?: boolean;
 }
 
-export function ViewContent({
+export const ViewContent:FunctionComponent<ViewContentProps> = ({
     children,
     fullWidth,
-}: RenderableProps<ViewContentProps>) {
+}) => {
     const classes = `${style.content} ${fullWidth ? style.fullWidth : ''}`;
     return (
         <div className={classes}>{children}</div>
@@ -81,12 +81,12 @@ type HeaderProps = {
     withAppLogo?: boolean;
 }
 
-export function ViewHeader({
+export const ViewHeader:FunctionComponent<HeaderProps> = ({
     children,
     small,
     title,
-    withAppLogo,
-}: RenderableProps<HeaderProps>) {
+    withAppLogo
+}) => {
     const headerStyles = small ? `${style.header} ${style.smallHeader}` : style.header;
     return (
         <header className={headerStyles}>
@@ -97,7 +97,7 @@ export function ViewHeader({
     );
 }
 
-export function ViewButtons({ children }) {
+export const ViewButtons:FunctionComponent = ({ children }) => {
     return (
         <div className={style.buttons}>
             {children}

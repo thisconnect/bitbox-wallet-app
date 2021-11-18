@@ -99,19 +99,21 @@ class PasswordSingleInputClass extends Component {
         }
     }
 
-    render({
-        t,
-        disabled,
-        label,
-        placeholder,
-        pattern,
-        title,
-        showLabel,
-    }, {
-        password,
-        seePlaintext,
-        capsLock,
-    }) {
+    render() {
+        const {
+            t,
+            disabled,
+            label,
+            placeholder,
+            pattern,
+            title,
+            showLabel,
+        } = this.props;
+        const {
+            password,
+            seePlaintext,
+            capsLock,
+        } = this.state;
         const warning = (capsLock && !seePlaintext) && (
             <span className={style.capsWarning}
                 title={t('password.warning.caps')}>⇪</span>
@@ -302,7 +304,7 @@ function MatchesPattern({ regex, value = '', text }) {
     }
 
     return (
-        <p style="color: var(--color-error);">{text}</p>
+        <p style={{color: 'var(--color-error)'}}>{text}</p>
     );
 }
 

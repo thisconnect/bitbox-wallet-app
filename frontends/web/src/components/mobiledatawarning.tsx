@@ -24,7 +24,7 @@ interface LoadedProps {
     usingMobileData: boolean;
 }
 
-type Props = LoadedProps & WithTranslation;
+type Props = LoadedProps;
 
 const MobileDataWarning : FunctionComponent<Props> = ({ usingMobileData}) =>{
     const {t} = useTranslation();
@@ -35,8 +35,9 @@ const MobileDataWarning : FunctionComponent<Props> = ({ usingMobileData}) =>{
     );
 }
 
-const HOC = withTranslation()(
-    subscribe<LoadedProps, WithTranslation>({ usingMobileData: 'using-mobile-data' })(MobileDataWarning) as any
-);
+
+//const HOC = subscribe<LoadedProps>({ usingMobileData: 'using-mobile-data' })(MobileDataWarning) 
+
+const HOC = () => null
 
 export { HOC as MobileDataWarning };

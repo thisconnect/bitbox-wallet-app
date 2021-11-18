@@ -37,7 +37,7 @@ const Success = ({ handleHideSuccess, goal }) => {
                     <div className="content padded narrow isVerticallyCentered">
                         <h1 className={[style.title, 'text-center'].join(' ')}>{t(`success.${goal}.title`)}</h1>
                         <div className="box large">
-                            <p style="text-align: center;">
+                            <p style={{textAlign: 'center'}}>
                                 {t(`success.${goal}.summary`)}
                             </p>
                             {goal === 'create' ? (

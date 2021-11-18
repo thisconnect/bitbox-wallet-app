@@ -190,7 +190,7 @@ class SeedCreateNew extends Component {
                 </div>
                 <div class={style.agreements}>
                     <div class="flex flex-row flex-start flex-items-center">
-                        <img src={warning} style="width: 18px; margin-right: 10px; position: relative; bottom: 1px;" />
+                        <img src={warning} style={{width: 18, marginRight: 10, position: 'relative', bottom: 1}} alt="" />
                         <p class={style.agreementsLabel}>{t('seed.description')}</p>
                     </div>
                     <Checkbox

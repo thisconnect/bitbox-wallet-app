@@ -188,8 +188,7 @@ class App extends Component<WithTranslation, State> {
                         <Banner msgKey="bitbox01" />
                         <MobileDataWarning />
                         <Aopp />
-                        <Container toggleSidebar={this.toggleSidebar} onChange={this.handleRoute}>
-                            <Routes>
+                        <Routes>
                             <Route
                              path="/device/:deviceID" element={<DeviceSwitch
                                     key={this.devicesKey('device-switch')}
@@ -198,9 +197,7 @@ class App extends Component<WithTranslation, State> {
                                     key={this.devicesKey('device-switch-default')}
                                     devices={devices} />
                             } />
-                               
-                            </Routes>
-                        </Container>
+                        </Routes>
                     </div>
                     <Alert />
                     <Confirm />

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory, h, JSX, RenderableProps } from 'react';
+import { Component, ComponentFactory } from 'react';
 import { getDisplayName } from '../utils/component';
 import { apiSubscribe, Event } from '../utils/event';
 import { apiGet } from '../utils/request';
@@ -115,9 +115,9 @@ export function subscribe<LoadedProps extends ObjectButNotFunction, ProvidedProp
 
             private readonly component = subscribeWithoutLoading ? WrappedComponent : load(endpointsObjectOrFunction, renderOnlyOnceLoaded)(WrappedComponent);
 
-            public render(props: RenderableProps<ProvidedProps & Partial<LoadedProps>>, state: LoadedProps): JSX.Element {
+            public render() {
                 /* eslint no-undef: "off" */
-                return <this.component {...state} {...props} />;
+                return <this.component {...this.state} {...this.props} />;
             }
         };
     };

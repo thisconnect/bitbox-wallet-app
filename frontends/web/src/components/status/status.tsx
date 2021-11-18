@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'react';
+import { Component } from 'react';
 import { apiGet, apiPost } from '../../utils/request';
 import * as style from './status.css';
 
@@ -44,7 +44,7 @@ export default class Status extends Component<Props, State> {
         this.checkConfig();
     }
 
-    public componentDidUpdate(prevProps) {
+    public componentDidUpdate(prevProps: Props) {
         if (this.props.dismissable !== prevProps.dismissable) {
             this.checkConfig();
         }
@@ -82,16 +82,15 @@ export default class Status extends Component<Props, State> {
         });
     }
 
-    public render({
-        children,
-        className,
-        dismissable,
-        hidden,
-        type = 'warning',
-    }: RenderableProps<Props>,
-    {
-        show,
-    }: State) {
+    public render() {
+        const {
+            children,
+            className,
+            dismissable,
+            hidden,
+            type = 'warning',
+        } = this.props;
+        const { show } = this.state;
         if (hidden || !show) {
             return null;
         }

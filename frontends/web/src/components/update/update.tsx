@@ -51,6 +51,6 @@ const Update:FunctionComponent<Props> = ({file, t}) => {
     );
 }
 
-const HOC = withTranslation()(load<LoadedProps, WithTranslation>({ file: 'update' })(Update) as any);
-
+//const HOC = withTranslation()(load<LoadedProps, WithTranslation>({ file: 'update' })(Update) as any);
+const HOC = () => null;
 export { HOC as Update };

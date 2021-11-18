@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'react';
 import * as styles from './vasp.css';
 import AOPPGroupLogo from '../../assets/exchanges/logos/aoppgroup.svg';
 import BitcoinSuisseLogo from '../../assets/exchanges/logos/bitcoin_suisse.png';
 import BittrLogo from '../../assets/exchanges/logos/bittr.png';
 import BityLogo from '../../assets/exchanges/logos/bity.png';
 import PocketBitcoinLogo from '../../assets/exchanges/logos/pocketbitcoin.svg';
+import { FunctionComponent } from 'react';
 
 interface VASPProps {
     fallback?: JSX.Element;
@@ -29,7 +29,7 @@ interface VASPProps {
     withLogoText?: string;
 }
 
-const VASPLogoMap = {
+const VASPLogoMap:{[key: string] : string} = {
     'demo.aopp.group': AOPPGroupLogo,
     'testing.aopp.group': AOPPGroupLogo,
     'bitcoinsuisse.com': BitcoinSuisseLogo,
@@ -38,17 +38,17 @@ const VASPLogoMap = {
     'pocketbitcoin.com': PocketBitcoinLogo,
 };
 
-const VASPHostnameMap = {
+const VASPHostnameMap:{[key: string] : string} = {
     'demo.aopp.group': 'AOPP.group',
     'testing.aopp.group': 'AOPP.group',
 };
 
-export function Vasp({
+export const Vasp:FunctionComponent<VASPProps> = ({
     fallback,
     hostname,
     prominent,
     withLogoText,
-}: RenderableProps<VASPProps>) {
+}) => {
     const hasLogo = hostname in VASPLogoMap;
     if (!hasLogo) {
         return fallback || (<div className={styles.hostname}>{hostname}</div>);

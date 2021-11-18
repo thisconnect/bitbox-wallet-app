@@ -126,7 +126,11 @@ class Unlock extends Component {
                     })}
                 </Message>
             );
+            break;
+        default:
+            break;
         }
+
 
         return (
             <div class="contentWithGuide">

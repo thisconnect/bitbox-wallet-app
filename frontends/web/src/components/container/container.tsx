@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { cloneElement, FunctionComponent } from 'react';
-import { BrowserRouter as Router, Routes } from 'react-router-dom';
+import { FunctionComponent } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 interface Props {
     toggleSidebar: () => void;
@@ -29,7 +29,7 @@ const Container: FunctionComponent<Props> = ({
 }) => {
     return (
         <Router>
-                { children }
+            { children }
         </Router>
     );
 };

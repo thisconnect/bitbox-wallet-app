@@ -23,7 +23,7 @@ import { Footer, Header } from '../../components/layout';
 import { setSidebarStatus } from '../../components/sidebar/sidebar';
 import { load } from '../../decorators/load';
 import { debug } from '../../utils/env';
-import * as style from './bitbox01/bitbox01.css';
+import style from './bitbox01/bitbox01.css';
 import { SkipForTesting } from './components/skipfortesting';
 
 interface TestingProps {
@@ -41,6 +41,7 @@ class Waiting extends Component<WaitingProps> {
     }
 
     public render() {
+        console.log(style)
         const{ t, testing } = this.props;
         return (
             <div className="contentWithGuide">

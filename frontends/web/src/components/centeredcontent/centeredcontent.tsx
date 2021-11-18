@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'react';
+import { FunctionComponent } from 'react';
 import * as style from './style.css';
 
-export function CenteredContent({ children }: RenderableProps<{}>): JSX.Element {
+export const CenteredContent: FunctionComponent = ({ children }) => {
     return (
-        <div class="contentWithGuide">
+        <div className="contentWithGuide">
             <div className={style.container}>
                 {children}
             </div>

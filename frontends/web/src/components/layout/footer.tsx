@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'react';
+import { FunctionComponent } from 'react';
 import { LanguageSwitch } from '../language/language';
 import * as style from './footer.css';
 import { Version } from './version';
 
-export function Footer({ children }: RenderableProps<{}>) {
+export const Footer:FunctionComponent =({ children }) => {
     return (
-        <footer class={[style.footer, 'flex flex-row flex-items-center flex-end'].join(' ')}>
+        <footer className={[style.footer, 'flex flex-row flex-items-center flex-end'].join(' ')}>
             {children}
             <div className="m-right-half hide-on-small">
-                <Version />
+                <Version version="" />
             </div>
             <LanguageSwitch />
         </footer>

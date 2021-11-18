@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'react';
+import { Component, SyntheticEvent } from 'react';
 import { Button } from '../../../components/forms';
 import { PasswordSingleInput } from '../../../components/password';
 import { apiPost } from '../../../utils/request';
@@ -32,7 +32,7 @@ export class SkipForTesting extends Component<SkipForTestingProps, SkipForTestin
         testPIN: '',
     };
 
-    private registerTestingDevice = (e: Event) => {
+    private registerTestingDevice = (e: SyntheticEvent) => {
         apiPost('test/register', { pin: this.state.testPIN });
         e.preventDefault();
     }
@@ -41,12 +41,14 @@ export class SkipForTesting extends Component<SkipForTestingProps, SkipForTestin
         this.setState({ testPIN: value });
     }
 
-    public render({ show }: RenderableProps<SkipForTestingProps>, { testPIN }: SkipForTestingState) {
+    public render() {
+        const { show } = this.props; 
+        const { testPIN } = this.state;
         if (!show) {
             return null;
         }
         return (
-            <form onSubmit={this.registerTestingDevice} style="flex-grow: 0; max-width: 400px; width: 100%; align-self: center;">
+            <form onSubmit={this.registerTestingDevice} style={{flexGrow: 0, maxWidth: 400, width: '100%', alignSelf: 'center'}}>
                 <PasswordSingleInput
                     type="password"
                     autoFocus

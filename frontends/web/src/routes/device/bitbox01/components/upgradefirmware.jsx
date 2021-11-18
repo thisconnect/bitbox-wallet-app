@@ -113,7 +113,7 @@ class UpgradeFirmware extends Component {
                                 unlocked ? (
                                     <div>
                                         <p className="m-top-none">{t('upgradeFirmware.unlocked')}</p>
-                                        <ol style="line-height: 1.5;">
+                                        <ol style={{lineHeight: '1.5'}}>
                                             <li>{t('upgradeFirmware.unlocked1')}</li>
                                             <li>{t('upgradeFirmware.unlocked2')}</li>
                                             <li>{t('upgradeFirmware.unlocked3')}</li>

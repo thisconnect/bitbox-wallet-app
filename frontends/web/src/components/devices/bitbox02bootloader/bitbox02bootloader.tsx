@@ -168,11 +168,11 @@ class BitBox02Bootloader extends Component<Props, State> {
                     </div>
                     <div className="flex flex-center" style={{marginTop: 32}}>
                         {t('bb02Bootloader.orientation')}&nbsp;
-                        <a
+                        <span
                             onClick={this.screenRotate}
                             style={{textDecoration: "underline", cursor: "pointer"}} >
                             {t('bb02Bootloader.flipscreen')}
-                        </a>
+                        </span>
                     </div>
                     <hr/>
                     <details>

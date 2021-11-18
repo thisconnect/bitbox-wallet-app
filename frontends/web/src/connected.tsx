@@ -41,7 +41,7 @@ class ConnectedApp extends Component<Props, State> {
     public render() {
         if (!this.state.connected) {
             return (
-                <div className="app" style="padding: 40px">
+                <div className="app" style={{padding: 40}}>
                     The WebSocket closed. Please restart the backend and reload this page.
                 </div>
             );

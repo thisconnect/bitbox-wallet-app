@@ -52,7 +52,10 @@ class Bootloader extends Component {
         case 'bootloaderStatusChanged':
             this.onStatusChanged();
             break;
+        default:
+            break;
         }
+        
     }
 
     onStatusChanged = () => {

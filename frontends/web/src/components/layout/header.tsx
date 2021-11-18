@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component } from 'react';
+import { Component, SyntheticEvent } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import MenuIcon from '../../assets/icons/menu.svg';
 import { share } from '../../decorators/share';
@@ -30,7 +30,7 @@ interface HeaderProps {
 type Props = HeaderProps & SharedPanelProps & WithTranslation;
 
 class Header extends Component<Props> {
-    private toggle = (e: Event) => {
+    private toggle = (e: SyntheticEvent) => {
         e.preventDefault();
         if (!this.props.shown) {
             toggleGuide();
@@ -45,7 +45,7 @@ class Header extends Component<Props> {
             <div className={[style.container, sidebarStatus ? style[sidebarStatus] : ''].join(' ')}>
                 <div className={[style.header, narrow ? style.narrow : ''].join(' ')}>
                     <div className={style.sidebarToggler} onClick={toggleSidebar}>
-                        <img src={MenuIcon} />
+                        <img src={MenuIcon} alt="" />
                     </div>
                     <div className={style.title}>{title}</div>
                     <div className={style.children}>

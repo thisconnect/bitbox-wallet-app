@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps } from 'react';
+import { CSSProperties, FunctionComponent } from 'react';
 import * as styles from './message.css';
 
 export interface Props {
     hidden?: boolean;
     type?: 'message' | 'success' | 'info' | 'warning' | 'error';
-    style?: string;
+    style: CSSProperties;
 }
 
-export function Message({
+export const Message:FunctionComponent<Props> = ({
     hidden,
     type = 'message',
-    style = '',
+    style = {},
     children,
-}: RenderableProps<Props>) {
+}) => {
     if (hidden) {
         return null;
     }

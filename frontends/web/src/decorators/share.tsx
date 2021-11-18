@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory, h, JSX, RenderableProps } from 'react';
+import React, { Component, ComponentFactory } from 'react';
 import { getDisplayName } from '../utils/component';
 import { ObjectButNotFunction } from '../utils/types';
 import { Store } from './store';
@@ -52,7 +52,7 @@ export function share<SharedProps extends ObjectButNotFunction, ProvidedProps ex
     store: Store<SharedProps>,
 ) {
     return function decorator(
-        WrappedComponent: ComponentFactory<SharedProps & ProvidedProps>,
+        WrappedComponent: ComponentFactory<SharedProps & ProvidedProps, React.Component<SharedProps & ProvidedProps>>,
     ) {
         return class Share extends Component<ProvidedProps & Partial<SharedProps>> {
             public static displayName = `Share(${getDisplayName(WrappedComponent)})`;
@@ -65,8 +65,8 @@ export function share<SharedProps extends ObjectButNotFunction, ProvidedProps ex
                 store.unsubscribe(this);
             }
 
-            public render(props: RenderableProps<ProvidedProps & Partial<SharedProps>>): JSX.Element {
-                return <WrappedComponent {...store.state} {...props as any} />; // This order allows the parent component to override the shared store with properties.
+            public render() {
+                return <WrappedComponent {...store.state} {...this.props as any} />; // This order allows the parent component to override the shared store with properties.
             }
         };
     };

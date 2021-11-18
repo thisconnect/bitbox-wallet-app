@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'react';
+import { Component } from 'react';
 import * as style from './Toast.css';
 
 export default class Toast extends Component {

@@ -1,36 +1,39 @@
-import { cloneElement, Component, h, JSX, RenderableProps } from 'react';
+import React, { Children, cloneElement, Component, isValidElement, PropsWithChildren, ReactElement } from 'react';
 import * as style from './steps.css';
 
 interface State {
     activeStep: number;
 }
 
+type ReactChilds = ReturnType<typeof Children.toArray> 
+
 class Steps extends Component<{}, State> {
-    constructor(props) {
+    constructor(props: PropsWithChildren<{}>) {
         super(props);
         this.state = {
-            activeStep: this.getActiveStep(props.children),
+            activeStep: this.getActiveStep(Children.toArray(props.children)),
         };
     }
 
-    public componentWillReceiveProps(nextProps) {
-        const step = this.getActiveStep(nextProps.children);
+    public componentWillReceiveProps(nextProps: PropsWithChildren<{}>) {
+        const step = this.getActiveStep(Children.toArray(nextProps.children));
         if (this.state.activeStep !== step) {
             this.setState({ activeStep: step });
         }
     }
 
-    private getActiveStep = (children: JSX.Element[]) => {
-        return children.filter(child => child).findIndex(child => child.attributes.active) + 1;
+    private childrenElements = (children: ReactChilds) => (children.filter(child => isValidElement(child)) as ReactElement[])
+
+    private getActiveStep = (children: ReactChilds) => {
+        return this.childrenElements(children).findIndex(child => child.props.active) + 1;
     }
 
-    public render(
-        { children }: RenderableProps<{}>,
-        { activeStep }: State,
-    ) {
+    public render() {
+        const { children } = this.props;
+        const { activeStep } = this.state;
         return (
             <div className={style.steps}>
-                {(children as JSX.Element[]).filter(child => child).map((child, i) => cloneElement(child, { order: i + 1, activeStep }))}
+                {this.childrenElements(Children.toArray(children)).map((child, i) => cloneElement(child, { order: i + 1, activeStep }))}
             </div>
         );
     }

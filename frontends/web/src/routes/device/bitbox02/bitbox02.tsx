@@ -496,7 +496,7 @@ class BitBox02 extends Component<Props, State> {
                                         large>
                                         <Toast theme="info">
                                             <div className="flex flex-items-center">
-                                                <img src={warning} style={{width: 18, marginRight: 10}} />
+                                                <img src={warning} style={{width: 18, marginRight: 10}}  alt="" />
                                                 {t('bitbox02Wizard.initialize.tip')}
                                             </div>
                                         </Toast>

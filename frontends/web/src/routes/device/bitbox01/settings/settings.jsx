@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'react';
-import { translate, withTranslation } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet } from '../../../../utils/request';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { Guide } from '../../../../components/guide/guide';
@@ -91,6 +91,8 @@ class Settings extends Component {
                     break;
                 case 'pairingFalse':
                     this.setState({ mobileChannel: false });
+                    break;
+                default: 
                     break;
                 }
             }

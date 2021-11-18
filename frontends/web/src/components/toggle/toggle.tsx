@@ -1,10 +1,10 @@
-import { Component, h, RenderableProps } from 'react';
+import { Component, SyntheticEvent } from 'react';
 import * as style from './toggle.css';
 
 interface ToggleProps {
     checked: boolean;
     disabled?: boolean;
-    onChange: (event: Event) => void;
+    onChange: (event: SyntheticEvent) => void;
     id?: string;
     value?: string;
     name?: string;
@@ -12,12 +12,12 @@ interface ToggleProps {
 }
 
 class Toggle extends Component<ToggleProps> {
-    public render(props: RenderableProps<ToggleProps>) {
+    public render() {
         return (
             <label className={style.container}>
                 <input
                     type="checkbox"
-                    {...props} />
+                    {...this.props} />
                 <span className={style.slider}></span>
             </label>
         );

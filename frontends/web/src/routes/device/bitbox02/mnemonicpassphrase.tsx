@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component } from 'react';
+import { ChangeEvent, Component } from 'react';
 import { getDeviceInfo, setMnemonicPassphraseEnabled } from '../../../api/bitbox02';
 import { SimpleMarkup } from '../../../utils/simplemarkup';
 import { Button, Checkbox } from '../../../components/forms';
@@ -169,7 +169,7 @@ class MnemonicPassphraseButton extends Component<Props, State> {
             case 0:
                 return (
                     <Dialog key="step-summary" medium title={t('passphrase.summary.title')} onClose={this.stopInfo}>
-                        <ul style="padding-left: var(--space-default);">
+                        <ul style={{paddingLeft: 'var(--space-default)'}}>
                             <SimpleMarkup key="info-1" tagName="li" markup={t('passphrase.summary.understandList.0')} />
                             <SimpleMarkup key="info-2" tagName="li" markup={t('passphrase.summary.understandList.1')} />
                             <SimpleMarkup key="info-3" tagName="li" markup={t('passphrase.summary.understandList.2')} />
@@ -177,7 +177,7 @@ class MnemonicPassphraseButton extends Component<Props, State> {
                         </ul>
                         <Message type="message">
                             <Checkbox
-                                onChange={e => this.setState({ understood: (e.target as HTMLInputElement)?.checked })}
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => this.setState({ understood:e.target.checked })}
                                 id="understood"
                                 checked={understood}
                                 label={t('passphrase.summary.understand')} />
@@ -198,7 +198,7 @@ class MnemonicPassphraseButton extends Component<Props, State> {
         }
     }
 
-    private renderMultiLine = text => text.split('\n').map((line: string, i: number) => (
+    private renderMultiLine = (text: string) => text.split('\n').map((line: string, i: number) => (
         <SimpleMarkup key={`${line}-${i}`} tagName="p" markup={line} />
     ))
 
@@ -221,7 +221,7 @@ class MnemonicPassphraseButton extends Component<Props, State> {
 
     public render() {
         const  { t } = this.props;
-          const { passphraseEnabled } = this.state;
+          const { passphraseEnabled, status } = this.state;
         return (
             <div>
                 <SettingsButton onClick={this.startInfo}>
@@ -255,7 +255,7 @@ class MnemonicPassphraseButton extends Component<Props, State> {
                                 : 'passphrase.successEnabled.message')
                         )}
                         {passphraseEnabled && (
-                            <ul style="padding-left: var(--space-default);">
+                            <ul style={{paddingLeft: 'var(--space-default)'}}>
                                 <SimpleMarkup key="tip-1" tagName="li" markup={t('passphrase.successEnabled.tipsList.0')} />
                                 <SimpleMarkup key="tip-2" tagName="li" markup={t('passphrase.successEnabled.tipsList.1')} />
                             </ul>

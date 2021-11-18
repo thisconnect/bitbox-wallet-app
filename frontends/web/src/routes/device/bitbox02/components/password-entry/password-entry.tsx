@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { h, RenderableProps} from 'react';
+import { PropsWithChildren } from 'react';
 import PasswordGestureVideo from './assets/password-gestures.webm';
 import * as styles from './password-entry.css';
 
@@ -33,7 +33,7 @@ function replayVideo(ref: HTMLVideoElement): void {
     }
 }
 
-export function PasswordEntry({ children }: RenderableProps<IPasswordEntryProps>) {
+export function PasswordEntry({ children }: PropsWithChildren<IPasswordEntryProps>) {
     return (
         <div className={styles.passwordGesturesWrapper}>
             <video
@@ -42,7 +42,7 @@ export function PasswordEntry({ children }: RenderableProps<IPasswordEntryProps>
                 // i.e. when re-plugin the BitBox the video doesn't play anymore
                 // https://github.com/preactjs/preact/issues/747#issuecomment-370905360
                 // looks like this can be removed with Preact10/React
-                ref={ref => replayVideo(ref)}
+                ref={ref => replayVideo(ref!)}
                 className={styles.passwordGestures}
                 loop
                 muted
