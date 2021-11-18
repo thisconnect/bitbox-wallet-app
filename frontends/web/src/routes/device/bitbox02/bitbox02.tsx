@@ -21,7 +21,7 @@ import { AppUpgradeRequired } from '../../../components/appupgraderequired';
 import { CenteredContent } from '../../../components/centeredcontent/centeredcontent';
 import { Button, Checkbox, Input  } from '../../../components/forms';
 import { Step, Steps } from './components/steps';
-import { Fullscreen, FullscreenContent, FullscreenHeader } from '../../../components/fullscreen/fullscreen';
+import { View, ViewContent, ViewHeader } from '../../../components/view/view';
 import * as style from './components/steps/steps.css';
 import Toast from '../../../components/toast/Toast';
 import { apiGet, apiPost } from '../../../utils/request';
@@ -356,7 +356,7 @@ class BitBox02 extends Component<Props, State> {
         });
     }
 
-    private handleDisclaimerCheck = (event: InputEvent) => {
+    private handleDisclaimerCheck = (event: Event) => {
         const target = event.target as HTMLInputElement;
         const key = target.id as 'agreement1' | 'agreement2' | 'agreement3' | 'agreement4' | 'agreement5';
         const obj = {[key]: target.checked};
@@ -435,12 +435,16 @@ class BitBox02 extends Component<Props, State> {
                     <div className="flex flex-1 scrollableContainer">
                         <Steps>
                             { (status === 'connected') ? (
-                                <Fullscreen withBottomBar width="600px">
-                                    <FullscreenHeader title={t('button.unlock')}>
+                                <View
+                                    center
+                                    position="fullscreen"
+                                    withBottomBar
+                                    width="600px">
+                                    <ViewHeader title={t('button.unlock')}>
                                         <p className="text-center">{t('bitbox02Wizard.stepConnected.unlock')}</p>
-                                    </FullscreenHeader>
-                                    <FullscreenContent fullWidth>
-                                    {/* the fullscreen component covers all other banners
+                                    </ViewHeader>
+                                    <ViewContent fullWidth>
+                                    {/* the view component covers all other banners
                                         i.e. the attestation warning at the top,
                                         that is why added it there as well instead of
                                         the password guesture. */}
@@ -451,8 +455,8 @@ class BitBox02 extends Component<Props, State> {
                                         ) : (
                                             <PasswordEntry />
                                         )}
-                                    </FullscreenContent>
-                                </Fullscreen>
+                                    </ViewContent>
+                                </View>
                             ) : null }
 
                             <Step

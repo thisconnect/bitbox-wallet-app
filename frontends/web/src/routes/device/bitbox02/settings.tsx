@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +16,7 @@
  */
 
 import { Component } from 'react';
+import { getDeviceInfo, DeviceInfo } from '../../../api/bitbox02';
 import { apiGet } from '../../../utils/request';
 import { SwissMadeOpenSource } from '../../../components/icon/logo';
 import { Footer } from '../../../components/layout';
@@ -28,6 +30,7 @@ import { SetDeviceName } from './setdevicename';
 import { ShowMnemonic } from './showmnemonic';
 import { UpgradeButton, VersionInfo } from './upgradebutton';
 import { withTranslation, WithTranslation } from 'react-i18next';
+import { alertUser } from '../../../components/alert/Alert';
 
 interface SettingsProps {
     deviceID: string;
@@ -35,13 +38,7 @@ interface SettingsProps {
 
 interface State {
     versionInfo?: VersionInfo;
-    deviceInfo?: {
-        name: string;
-        initialized: boolean;
-        version: string;
-        mnemonicPassphraseEnabled: boolean;
-        securechipModel: string;
-    };
+    deviceInfo?: DeviceInfo;
 }
 
 type Props = SettingsProps & WithTranslation;
@@ -52,9 +49,12 @@ class Settings extends Component<Props, State> {
     }
 
     private getInfo = () => {
-        apiGet(this.apiPrefix() + '/info').then(deviceInfo => {
-            this.setState({ deviceInfo });
-        });
+        getDeviceInfo(this.props.deviceID)
+            .then(deviceInfo => this.setState({ deviceInfo }))
+            .catch(error => {
+                console.error(error);
+                alertUser(this.props.t('genericError'));
+            });
     }
 
     public componentDidMount() {
@@ -86,11 +86,7 @@ class Settings extends Component<Props, State> {
                             <div className="columnsContainer">
                                 <div className="columns">
                                     <div className="column column-1-2">
-                                        <div className="subHeaderContainer first">
-                                            <div className="subHeader">
-                                                <h3>{t('deviceSettings.secrets.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('deviceSettings.secrets.title')}</h3>
                                         <div className="box slim divide">
                                             <SettingsButton link href={`/manage-backups/${deviceID}`}>
                                                 {t('deviceSettings.secrets.manageBackups')}
@@ -100,11 +96,7 @@ class Settings extends Component<Props, State> {
                                         </div>
                                     </div>
                                     <div className="column column-1-2">
-                                        <div className="subHeaderContainer">
-                                            <div className="subHeader">
-                                                <h3>{t('deviceSettings.hardware.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('deviceSettings.hardware.title')}</h3>
                                         <div className="box slim divide">
                                             <SetDeviceName
                                                 apiPrefix={this.apiPrefix()}
@@ -120,12 +112,8 @@ class Settings extends Component<Props, State> {
                                 </div>
                                 <div className="columns">
                                     <div className="column column-1-2">
-                                        <div className="subHeaderContainer">
-                                            <div className="subHeader">
-                                                <h3>{t('deviceSettings.firmware.title')}</h3>
-                                            </div>
-                                        </div>
-                                        <div className="box slim divide">
+                                        <h3 className="subTitle">{t('deviceSettings.firmware.title')}</h3>
+                                        <div class="box slim divide">
                                             {
                                                 versionInfo && versionInfo.canUpgrade ? (
                                                     <UpgradeButton
@@ -140,16 +128,11 @@ class Settings extends Component<Props, State> {
                                         </div>
                                     </div>
                                     <div className="column column-1-2">
-                                        <div className="subHeaderContainer">
-                                            <div className="subHeader">
-                                                <h3>{t('settings.expert.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('settings.expert.title')}</h3>
                                         <div className="box slim divide">
                                             <MnemonicPassphraseButton
-                                                apiPrefix={this.apiPrefix()}
-                                                mnemonicPassphraseEnabled={deviceInfo.mnemonicPassphraseEnabled}
-                                                getInfo={this.getInfo} />
+                                                deviceID={this.props.deviceID}
+                                                passphraseEnabled={deviceInfo.mnemonicPassphraseEnabled} />
                                             { versionInfo && versionInfo.canGotoStartupSettings ? (
                                                   <GotoStartupSettings apiPrefix={this.apiPrefix()} />
                                             ) : null

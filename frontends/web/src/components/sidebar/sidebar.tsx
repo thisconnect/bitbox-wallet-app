@@ -167,7 +167,7 @@ class Sidebar extends Component<Props> {
                 <nav className={['sidebar', activeSidebar ? 'forceShow' : '', shown ? 'withGuide' : ''].join(' ')}>
                     <Link
                         // activeClassName=""
-                        to="/"
+                        to={accounts.length ? '/account-summary' : '/'}
                         onClick={this.handleSidebarItemClick}>
                         <div className="sidebarLogoContainer">
                             <AppLogoInverted className="sidebarLogo" />

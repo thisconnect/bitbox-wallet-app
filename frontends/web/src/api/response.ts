@@ -1,5 +1,4 @@
 /**
- * Copyright 2018 Shift Devices AG
  * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +14,13 @@
  * limitations under the License.
  */
 
-export { default as Button } from './button';
-export { ButtonLink } from './button';
-export { default as Checkbox } from './checkbox';
-export { Radio } from './radio';
-export { Field } from './field';
-export { default as Input } from './input';
-export { Label } from './label';
-export { Select } from './select';
+export type SuccessResponse = {
+    success: true;
+}
+
+// if the backend uses maybeBB02Err
+export type FailResponse = {
+    code?: number;
+    message?: string;
+    success: false;
+}

@@ -174,13 +174,6 @@
     "gotoStartupSettings": {
       "description": "This will reboot your BitBox02 and enter the startup settings.",
       "title": "Go to startup settings"
-    },
-    "mnemonicPassphrase": {
-      "description": "This allows you to enter an optional passphrase after unlocking your BitBox02.\n\n<strong>NOTE:</strong> any passphrase derives a new separate wallet.\nKeep your passphrase <strong>secure</strong>.\n<strong>A loss of the passphrase is NOT RECOVERABLE.</strong>",
-      "disable": "Disable optional passphrase",
-      "enable": "Enable optional passphrase",
-      "successDisable": "Optional passphrase successfully disabled",
-      "successEnable": "Optional passphrase successfully enabled.\n\nFrom now on you can insert a passphrase after having unlocked your BitBox02. \n\nIf you don't know what a passphrase is, please deactivate this option. It is an advanced user's option. \n\n\n<strong>Warning:</strong> every passphrase generates a valid wallet. \nYou need to make sure your passphrase is <strong>secure and that you don't lose it.</strong>\n\n<strong>If you lose your passphrase, you will not be able to access your coins. That means your coins will be lost.</strong>"
     }
   },
   "bitbox02Wizard": {
@@ -485,7 +478,8 @@
     "enable_false": "Disable",
     "enable_true": "Enable",
     "enabled_false": "Disabled",
-    "enabled_true": "Enabled"
+    "enabled_true": "Enabled",
+    "success": "Success"
   },
   "genericError": "An error occurred. If you notice any issues, please restart the application.",
   "goal": {
@@ -850,7 +844,7 @@
     },
     "waiting": {
       "deviceNotRecognized": {
-        "text": "The device should blink once when inserted. Make sure that it is inserted the right way around. If you are having trouble, please contact us through the link below.",
+        "text": "The device should blink once when inserted. Make sure that it is inserted the right way around. If you are having trouble, please contact us through the link below.\n\nThe BitBox01 is not supported on mobile. Please use the BitBoxApp on desktop to connect your BitBox01.",
         "title": "My BitBox01 is not recognized"
       },
       "getDevice": {
@@ -998,6 +992,74 @@
       "title": "Timeout"
     },
     "title": "Mobile pairing"
+  },
+  "passphrase": {
+    "considerations": {
+      "button": "Backup considerations",
+      "message": "The passphrase adds a layer of protection to your wallet backup (microSD card or 24 words). If someone has access to your backup they will also need the passphrase to access your wallet.\n\nHowever, this means you will need <strong>both the passphrase + wallet backup</strong> to restore your passphrase-enabled wallet, in case your BitBox02 is lost or broken. If you forget or lose your passphrase, you will lose access to all the coins on that wallet.\n\nWhen storing your passphrase, consider putting it in a separate location than your backup. That way if someone finds your backup they don’t find your passphrase as well.",
+      "title": "Backup considerations"
+    },
+    "disable": "Disable passphrase",
+    "disableInfo": {
+      "button": "Disable",
+      "message": "After disabling the passphrase, you will no longer be asked to enter a passphrase after unlocking your BitBox02. Therefore, you will enter your default wallet.\n\nAny coins on your passphrase-wallet will still be on that wallet, however you won’t be able to access them because after unlocking your BitBox02, you will open your default wallet.\n\nTo access your passphrase-wallets again, simply re-enable the passphrase feature and enter the relevant passphrase after unlocking the BitBox02.\n\n<strong>Tip:</strong> You can still enter your original wallet by leaving the passphrase empty."
+    },
+    "enable": "Enable passphrase",
+    "error": {
+      "e104": "Changing the passphrase setting was aborted."
+    },
+    "how": {
+      "button": "What it looks like",
+      "message": "A passphrase doesn’t work like a password that you’re used to. If you mistype your passphrase, you will not be notified. This is because <strong>every passphrase creates a different, yet valid, wallet</strong>. This means you can use multiple passphrases for as many wallets as you want. But each wallet can only be accessed when typing in the corresponding passphrase.\n\nWhen plugging in your BitBox02, you’ll be prompted for the device password as usual. After that, you’ll be asked to enter a passphrase on the device.\n\nAfter entering the passphrase, you’ll be shown the passphrase you entered. This is so you can confirm you entered it correctly.",
+      "title": "How does it work"
+    },
+    "intro": {
+      "message": "A passphrase provides an additional layer of security on top of your wallet. Let’s learn how it works.",
+      "title": "Setup passphrase"
+    },
+    "progressDisable": {
+      "message": "Confirm on your BitBox that you want to disable the optional passphrase",
+      "title": "Confirm on device"
+    },
+    "progressEnable": {
+      "message": "Confirm on your BitBox that you want to enable the optional passphrase",
+      "title": "Confirm on device"
+    },
+    "successDisabled": {
+      "message": "Optional passphrase <strong>successfully enabled</strong>!\nYou’ll be asked to provide a passphrase from now on.",
+      "title": "Passphrase enabled"
+    },
+    "successEnabled": {
+      "message": "Optional passphrase <strong>successfully disabled</strong>!\n\nYou will not be asked to provide a passphrase anymore.",
+      "messageEnd": "Please replug your BitBox02 now.",
+      "tips": "Tips",
+      "tipsList": [
+        "We suggest sending a small amount to the passphrase wallet first. Then unplug and replug the BitBox02 and enter your password and passphrase. If you entered the passphrase correctly, you should see the coins in your wallet.",
+        "If you want to enter your original wallet without a passphrase, you can still do this by entering nothing when prompted to enter the passphrase. Or you can disable the passphrase feature."
+      ],
+      "title": "Passphrase disabled"
+    },
+    "summary": {
+      "button": "Enable passphrase",
+      "title": "Summary",
+      "understand": "I understand how the passphrase works and the risks associated with it.",
+      "understandList": [
+        "The passphrase is an additional layer of security on top of your backup.",
+        "Entering a different passphrase will always generate a different wallet.",
+        "To restore your wallet you need <strong>both the passphrase and backup</strong>.",
+        "If you forget your passphrase, you can no longer access your coins."
+      ]
+    },
+    "what": {
+      "button": "Learn how this works",
+      "message": "A wallet is created (derived) from a very big random number, also known as a seed. This seed is created when you first set up your BitBox02 and is backed up with the microSD card or 24 words. Anyone who has access to the seed has full control over the funds on that wallet.\n\nA passphrase is an <strong>optional secret</strong>, added to the seed. When using a passphrase, each passphrase creates a new wallet based on the seed + passphrase (optional secret). A passphrase can be anything: letters, words, special characters or it can even be empty. The default wallet is in fact derived from the seed + empty passphrase.",
+      "title": "What is a passphrase?"
+    },
+    "why": {
+      "button": "Why use a passphrase",
+      "message": "The BitBox02 protects the seed against extraction from the device itself, but the backup (microSD card or 24 words) gives full access to the wallet. That is why it should be stored in a secure location!\n\nSince a passphrase creates a new wallet using your existing seed, the passphrase-wallet requires both your <strong>backup AND passphrase to restore</strong>. The benefit of this is if someone finds your backup, they still need the passphrase to access the passphrase-wallet.\n\nAdditionally, the passphrase feature allows you to create multiple wallets on the same device, or “hidden wallets” in addition to the default one.",
+      "title": "Why use a passphrase?"
+    }
   },
   "password": {
     "show": "Show {{label}}",
@@ -1164,6 +1226,7 @@
       "placeholder": "Calculating fee…"
     },
     "maximum": "Send all",
+    "maximumSelectedCoins": "Send selected coins",
     "priority": "Priority",
     "scanQR": "Scan QR code",
     "signprogress": {

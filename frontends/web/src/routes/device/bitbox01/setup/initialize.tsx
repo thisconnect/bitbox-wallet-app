@@ -125,11 +125,7 @@ class Initialize extends Component<Props, State> {
 
         const content = showInfo ? (
             <div className="box large">
-                <div className="subHeaderContainer first">
-                    <div className="subHeader">
-                        <h3>{t('initialize.info.subtitle')}</h3>
-                    </div>
-                </div>
+                <h3 className="subTitle">{t('initialize.info.subtitle')}</h3>
                 <ul>
                     <li>{t('initialize.info.description1')}</li>
                     <li>{t('initialize.info.description2')}</li>
