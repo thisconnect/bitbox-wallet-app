@@ -81,5 +81,5 @@ class Waiting extends Component<WaitingProps> {
 }
 
 const loadHOC = load<TestingProps, WithTranslation>(() => debug ? { testing: 'testing' } : {})(Waiting);
-const translateHOC = withTranslation()(loadHOC as any);
+const translateHOC = withTranslation()(loadHOC);
 export { translateHOC as Waiting };

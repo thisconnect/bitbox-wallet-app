@@ -15,7 +15,7 @@
  */
 
 import { FunctionComponent } from 'react';
-import { withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { load } from '../../decorators/load';
 import A from '../anchor/anchor';
 import Status from '../status/status';
@@ -33,9 +33,10 @@ interface LoadedProps {
     file: File | null;
 }
 
-type Props = LoadedProps & WithTranslation;
+type Props = LoadedProps;
 
-const Update:FunctionComponent<Props> = ({file, t}) => {
+const Update:FunctionComponent<Props> = ({file}) => {
+    const {t} = useTranslation();
     return file && (
         <Status dismissable={`update-${file.version}`} type="info">
             {t('app.upgrade', {
@@ -51,6 +52,5 @@ const Update:FunctionComponent<Props> = ({file, t}) => {
     );
 }
 
-//const HOC = withTranslation()(load<LoadedProps, WithTranslation>({ file: 'update' })(Update) as any);
-const HOC = () => null;
+const HOC = load<LoadedProps>({ file: 'update' })(Update)
 export { HOC as Update };

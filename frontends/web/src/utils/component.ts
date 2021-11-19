@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import { ComponentFactory } from 'react';
-
-export function getDisplayName(component: ComponentFactory<any>): string {
-    return component.displayName || (component as any).name || 'Component';
+export function getDisplayName(component: any): string {
+    return component.displayName || component.name || 'Component';
 }

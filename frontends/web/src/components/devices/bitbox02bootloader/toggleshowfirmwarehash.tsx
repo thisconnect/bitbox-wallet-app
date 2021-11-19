@@ -58,5 +58,5 @@ class ToggleFWHash extends Component<Props, {}> {
 }
 
 const loadHOC = load<LoadedProps, ToggleProps & WithTranslation>(({ deviceID }) => ({ enabled: 'devices/bitbox02-bootloader/' + deviceID + '/show-firmware-hash-enabled' }))(ToggleFWHash);
-const HOC = withTranslation()(loadHOC as any);
+const HOC = withTranslation()(loadHOC);
 export { HOC as ToggleShowFirmwareHash };

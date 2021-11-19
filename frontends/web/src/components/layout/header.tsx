@@ -83,5 +83,5 @@ class Header extends Component<Props> {
 }
 
 const SharedHeader = share<SharedPanelProps, HeaderProps & WithTranslation>(panelStore)(Header);
-const TranslatedHeader = withTranslation()(SharedHeader as any);
+const TranslatedHeader = withTranslation()(SharedHeader);
 export { TranslatedHeader as Header };

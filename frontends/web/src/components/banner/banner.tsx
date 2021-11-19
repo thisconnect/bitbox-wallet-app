@@ -60,7 +60,7 @@ const HOC = withTranslation()(
         ({ msgKey }) => ({ banner: 'banners/' + msgKey }),
         true,
         false,
-    )(Banner) as any,
+    )(Banner),
 );
 
 export { HOC as Banner };

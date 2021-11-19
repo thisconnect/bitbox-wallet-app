@@ -16,7 +16,7 @@
  */
 
 import { FunctionComponent } from 'react';
-import { useTranslation, withTranslation, WithTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { subscribe } from '../decorators/subscribe';
 import Status from './status/status';
 
@@ -36,8 +36,6 @@ const MobileDataWarning : FunctionComponent<Props> = ({ usingMobileData}) =>{
 }
 
 
-//const HOC = subscribe<LoadedProps>({ usingMobileData: 'using-mobile-data' })(MobileDataWarning) 
-
-const HOC = () => null
+const HOC = subscribe<LoadedProps>({ usingMobileData: 'using-mobile-data' })(MobileDataWarning) 
 
 export { HOC as MobileDataWarning };

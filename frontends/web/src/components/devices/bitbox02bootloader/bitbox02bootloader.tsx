@@ -198,5 +198,5 @@ class BitBox02Bootloader extends Component<Props, State> {
 }
 
 const loadHOC = load<LoadedProps, BitBox02BootloaderProps & WithTranslation>(({ deviceID }) => ({ versionInfo: 'devices/bitbox02-bootloader/' + deviceID + '/version-info' }))(BitBox02Bootloader);
-const HOC = withTranslation()(loadHOC as any);
+const HOC = withTranslation()(loadHOC);
 export { HOC as BitBox02Bootloader };

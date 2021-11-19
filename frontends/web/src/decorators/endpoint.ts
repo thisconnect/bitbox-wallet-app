@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { RenderableProps } from 'react';
 import { ObjectButNotFunction } from '../utils/types';
 
 /**

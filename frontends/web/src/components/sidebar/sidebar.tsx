@@ -146,7 +146,9 @@ class Sidebar extends Component<Props> {
 
     private getAccountLink = (account: IAccount): JSX.Element => {
         return (
-            <BackLink {...account}/>
+            <div key={account.code} className="sidebarItem">
+                <BackLink {...account}/>
+            </div>
         );
     }
 
@@ -293,6 +295,6 @@ const subscribeHOC = subscribe<SubscribedProps, SharedPanelProps & SidebarProps 
     false,
 )(Sidebar);
 
-const guideShareHOC = share<SharedPanelProps, SidebarProps & WithTranslation>(panelStore)(subscribeHOC as any);
-const translateHOC = withTranslation(undefined, {withRef: true})(guideShareHOC as any);
+const guideShareHOC = share<SharedPanelProps, SidebarProps & WithTranslation>(panelStore)(subscribeHOC);
+const translateHOC = withTranslation()(guideShareHOC);
 export { translateHOC as Sidebar };

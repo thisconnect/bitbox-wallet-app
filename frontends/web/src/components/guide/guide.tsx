@@ -108,5 +108,5 @@ class Guide extends Component<Props> {
     }
 }
 
-const HOC = withTranslation()(share<SharedProps, WithTranslation>(store)(Guide) as any);
+const HOC = withTranslation()(share<SharedProps, WithTranslation>(store)(Guide));
 export { HOC as Guide };

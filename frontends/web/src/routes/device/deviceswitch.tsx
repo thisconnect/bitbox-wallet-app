@@ -37,11 +37,11 @@ export const DeviceSwitch: FunctionComponent<Props> = ({ devices }) => {
         }
         switch (devices[params.deviceID]) {
         case 'bitbox':
-            return <BitBox01 deviceID={deviceID} />;
+            return <BitBox01 deviceID={params.deviceID} />;
         case 'bitbox02':
-             return <BitBox02 deviceID={deviceID} />;
+             return <BitBox02 deviceID={params.deviceID} />;
         case 'bitbox02-bootloader':
-             return <BitBox02Bootloader deviceID={deviceID} />;
+             return <BitBox02Bootloader deviceID={params.deviceID} />;
         default:
             return <Waiting />;
         }

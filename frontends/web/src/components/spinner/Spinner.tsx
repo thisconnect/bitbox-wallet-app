@@ -99,6 +99,6 @@ class Spinner extends Component<Props> {
     }
 }
 
-const SharedSpinner = share<SharedProps, SpinnerProps & WithTranslation>(store)(Spinner as any);
-const TranslatedSpinner = withTranslation()(SharedSpinner as any);
+const SharedSpinner = share<SharedProps, SpinnerProps & WithTranslation>(store)(Spinner);
+const TranslatedSpinner = withTranslation()(SharedSpinner);
 export { TranslatedSpinner as Spinner };

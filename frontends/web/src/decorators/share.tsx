@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { Component, ComponentFactory } from 'react';
+import { Component, JSXElementConstructor } from 'react';
 import { getDisplayName } from '../utils/component';
 import { ObjectButNotFunction } from '../utils/types';
 import { Store } from './store';
@@ -52,7 +52,7 @@ export function share<SharedProps extends ObjectButNotFunction, ProvidedProps ex
     store: Store<SharedProps>,
 ) {
     return function decorator(
-        WrappedComponent: ComponentFactory<SharedProps & ProvidedProps, React.Component<SharedProps & ProvidedProps>>,
+        WrappedComponent: JSXElementConstructor<SharedProps & ProvidedProps>,
     ) {
         return class Share extends Component<ProvidedProps & Partial<SharedProps>> {
             public static displayName = `Share(${getDisplayName(WrappedComponent)})`;

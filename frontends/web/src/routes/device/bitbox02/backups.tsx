@@ -19,7 +19,7 @@ import Toast from '../../../components/toast/Toast';
 import { subscribe } from '../../../decorators/subscribe';
 import { apiPost } from '../../../utils/request';
 import { Backup, BackupsListItem } from '../components/backup';
-import * as backupStyle from '../components/backups.module.css';
+import backupStyle from '../components/backups.module.css';
 import { Button } from '../../../components/forms';
 import { Check } from './checkbackup';
 import { Create } from './createbackup';
@@ -166,5 +166,5 @@ class Backups extends Component<Props, State> {
 }
 
 const subscribeHOC = subscribe<SubscribedBackupsProps, BackupsProps & WithTranslation>(({ deviceID }) => ({ backups: 'devices/bitbox02/' + deviceID + '/backups/list' }))(Backups);
-const HOC = withTranslation()(subscribeHOC as any);
+const HOC = withTranslation()(subscribeHOC);
 export { HOC as BackupsV2 };

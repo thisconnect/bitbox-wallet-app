@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory } from 'react';
+import { Component, JSXElementConstructor } from 'react';
 import { getDisplayName } from '../utils/component';
 import { apiSubscribe, Event } from '../utils/event';
 import { apiGet } from '../utils/request';
@@ -36,7 +36,7 @@ export function subscribe<LoadedProps extends ObjectButNotFunction, ProvidedProp
     subscribeWithoutLoading: boolean = false,
 ) {
     return function decorator(
-        WrappedComponent: ComponentFactory<LoadedProps & ProvidedProps>,
+        WrappedComponent: JSXElementConstructor<LoadedProps & ProvidedProps>
     ) {
         return class Subscribe extends Component<ProvidedProps & Partial<LoadedProps>, LoadedProps> {
             public static displayName = `Subscribe(${getDisplayName(WrappedComponent)})`;

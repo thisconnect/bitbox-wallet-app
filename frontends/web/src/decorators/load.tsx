@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory } from 'react';
+import { Component, JSXElementConstructor } from 'react';
 import { getDisplayName } from '../utils/component';
 import { apiGet } from '../utils/request';
 import { KeysOf, ObjectButNotFunction } from '../utils/types';
@@ -38,9 +38,9 @@ export function load<LoadedProps extends ObjectButNotFunction, ProvidedProps ext
     renderOnlyOnceLoaded: boolean = true, // Use false only if all loaded props are optional!
 ) {
     return function decorator(
-        WrappedComponent: ComponentFactory<LoadedProps & ProvidedProps>,
+        WrappedComponent: JSXElementConstructor<LoadedProps & ProvidedProps>,
     ) {
-        return class Load extends Component<ProvidedProps & Partial<LoadedProps>, LoadedProps> {
+        return class Load extends Component<ProvidedProps & Partial<LoadedProps>, Partial<LoadedProps>> {
             public static displayName = `Load(${getDisplayName(WrappedComponent)})`;
 
             private determineEndpoints(): EndpointsObject<LoadedProps> {
@@ -99,6 +99,10 @@ export function load<LoadedProps extends ObjectButNotFunction, ProvidedProps ext
 
             private allEndpointsLoaded(): boolean {
                 if (this.endpoints === undefined) { return false; }
+                if(this.state === null){
+                    // TODO: see why state is null sometimes.
+                    return false;
+                }
                 for (const key of Object.keys(this.endpoints) as KeysOf<LoadedProps>) {
                     if (this.state[key] === undefined) {
                         return false;

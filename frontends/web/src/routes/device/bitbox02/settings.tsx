@@ -60,11 +60,13 @@ class Settings extends Component<Props, State> {
     public componentDidMount() {
         this.getInfo();
         apiGet(this.apiPrefix() + '/version').then(versionInfo => {
+            console.log("states set")
             this.setState({ versionInfo });
         });
     }
 
     public render() {
+        if(this.state === null) {return null;}
         const {
             deviceID,
             t,
@@ -77,6 +79,7 @@ class Settings extends Component<Props, State> {
         if (deviceInfo === undefined) {
             return null;
         }
+        console.log("rendered")
         return (
             <div className="contentWithGuide">
                 <div className="container">
@@ -113,7 +116,7 @@ class Settings extends Component<Props, State> {
                                 <div className="columns">
                                     <div className="column column-1-2">
                                         <h3 className="subTitle">{t('deviceSettings.firmware.title')}</h3>
-                                        <div class="box slim divide">
+                                        <div className="box slim divide">
                                             {
                                                 versionInfo && versionInfo.canUpgrade ? (
                                                     <UpgradeButton
