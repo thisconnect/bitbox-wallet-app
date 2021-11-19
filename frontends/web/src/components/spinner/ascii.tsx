@@ -15,7 +15,7 @@
  */
 
 import { h } from 'react';
-import * as style from './ascii.css';
+import style from './ascii.module.css';
 
 export default function AsciiSpinner() {
     return (

@@ -27,7 +27,7 @@ import { CopyableInput } from '../copy/Copy';
 import { BitBox02Stylized, Cancel, CaretDown, Checked } from '../icon';
 import { VerifyAddress } from './verifyaddress';
 import { Vasp } from './vasp';
-import * as styles from './aopp.css';
+import styles from './aopp.module.css';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
 const Banner:FunctionComponent = ({ children }) => (

@@ -1,5 +1,5 @@
 import { h, JSX } from 'react';
-import * as style from './icons.css';
+import style from './icons.module.css';
 
 export const ArrowIn = (): JSX.Element => (
     <svg

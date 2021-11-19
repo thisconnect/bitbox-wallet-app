@@ -1,5 +1,5 @@
 import { Component, h, RenderableProps } from 'react';
-import * as style from './badge.css';
+import style from './badge.module.css';
 
 interface BadgeProps {
     type: string;

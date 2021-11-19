@@ -21,7 +21,7 @@ import { Store } from '../../decorators/store';
 import { setConfig } from '../../utils/config';
 import { apiGet } from '../../utils/request';
 import A from '../anchor/anchor';
-import * as style from './guide.css';
+import style from './guide.module.css';
 
 export interface SharedProps {
     shown: boolean;

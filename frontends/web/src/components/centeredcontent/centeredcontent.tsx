@@ -15,7 +15,7 @@
  */
 
 import { FunctionComponent } from 'react';
-import * as style from './style.css';
+import style from './style.module.css';
 
 export const CenteredContent: FunctionComponent = ({ children }) => {
     return (

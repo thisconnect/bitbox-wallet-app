@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import * as styles from './vasp.css';
+import styles from './vasp.module.css';
 import AOPPGroupLogo from '../../assets/exchanges/logos/aoppgroup.svg';
 import BitcoinSuisseLogo from '../../assets/exchanges/logos/bitcoin_suisse.png';
 import BittrLogo from '../../assets/exchanges/logos/bittr.png';

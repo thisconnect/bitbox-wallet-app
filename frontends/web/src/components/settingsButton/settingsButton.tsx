@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { SyntheticEvent } from 'react';
-import * as style from './settingsButton.css';
+import style from './settingsButton.module.css';
 
 interface SettingsButtonProps {
     onClick?: () => void;

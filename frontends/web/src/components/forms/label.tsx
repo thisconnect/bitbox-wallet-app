@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import * as style from './label.css';
+import style from './label.module.css';
 
 export function Label({
     className,

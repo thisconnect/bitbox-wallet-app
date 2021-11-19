@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import * as style from './checkbox.css';
+import style from './checkbox.module.css';
 
 type CheckboxProps = JSX.IntrinsicElements['input'] & {
     className?: string;

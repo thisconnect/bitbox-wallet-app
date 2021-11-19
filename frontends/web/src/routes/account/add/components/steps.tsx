@@ -15,7 +15,7 @@
  */
 
 import { h, cloneElement, JSX, RenderableProps } from 'react';
-import * as style from './steps.css';
+import style from './steps.module.css';
 
 interface Props {
     current: number;

@@ -19,7 +19,7 @@ import { Component, createRef, h, RenderableProps } from 'react';
 import { Fiat } from '../../../api/account';
 import { translate, WithTranslation } from '../../../decorators/translate';
 import { formatCurrency, formatNumber } from '../../../components/rates/rates';
-import * as styles from './chart.css';
+import styles from './chart.module.css';
 
 export type ChartData = LineData[];
 

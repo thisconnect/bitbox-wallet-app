@@ -21,7 +21,7 @@ import A from '../../components/anchor/anchor';
 import { translate, WithTranslation } from '../../decorators/translate';
 import { runningInAndroid } from '../../utils/env';
 import { Transaction } from './transaction';
-import * as style from './transactions.css';
+import style from './transactions.module.css';
 
 interface TransactionsProps {
     accountCode: string;

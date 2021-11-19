@@ -26,7 +26,7 @@ import { QRCode } from '../../../../../components/qrcode/qrcode';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
 import { apiPost } from '../../../../../utils/request';
 import { apiWebsocket } from '../../../../../utils/websocket';
-import * as style from '../../bitbox01.css';
+import style from '../../bitbox01.module.css';
 
 interface PairingProps {
     deviceID: string;
@@ -177,7 +177,7 @@ class MobilePairing extends Component<Props, State> {
                                                 <div className="flex flex-column flex-center flex-items-center">
                                                     <QRCode data="https://itunes.apple.com/us/app/digital-bitbox-2fa/id1079896740" size={148} />
                                                     <a target="_blank" href="https://itunes.apple.com/us/app/digital-bitbox-2fa/id1079896740" rel="noreferrer">
-                                                        <img src={appStoreBadge} class={style.badge} alt="" />
+                                                        <img src={appStoreBadge} className={style.badge} alt="" />
                                                     </a>
                                                 </div>
                                             </div>
@@ -186,7 +186,7 @@ class MobilePairing extends Component<Props, State> {
                                                 <div className="flex flex-column flex-center flex-items-center">
                                                     <QRCode data="https://play.google.com/store/apps/details?id=com.digitalbitbox.tfa" size={148} />
                                                     <a target="_blank" href="https://play.google.com/store/apps/details?id=com.digitalbitbox.tfa" rel="noreferrer">
-                                                        <img src={playStoreBadge} class={style.badge} alt="" />
+                                                        <img src={playStoreBadge} className={style.badge} alt="" />
                                                     </a>
                                                 </div>
                                             </div>

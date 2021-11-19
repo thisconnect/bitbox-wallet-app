@@ -19,7 +19,7 @@ import {route} from '../../utils/compat-router';
 import { hide } from '../guide/guide';
 import { debug } from '../../utils/env';
 import { apiPost } from '../../utils/request';
-import * as style from './anchor.css';
+import style from './anchor.module.css';
 import { SyntheticEvent } from 'react';
 
 interface Props {

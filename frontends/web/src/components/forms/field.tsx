@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import * as style from './field.css';
+import style from './field.module.css';
 
 export function Field({
     children, ...props

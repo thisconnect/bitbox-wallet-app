@@ -18,7 +18,7 @@ import { Component} from 'react';
 import { withTranslation } from 'react-i18next';
 import { Input, Checkbox, Field } from './forms';
 import { alertUser } from './alert/Alert';
-import * as style from './password.css';
+import style from './password.module.css';
 
 export function PasswordInput (props) {
     const { seePlaintext, ...rest } = props;

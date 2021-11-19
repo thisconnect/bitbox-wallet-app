@@ -16,7 +16,7 @@
  */
 
 import React from 'react';
-import * as style from './radio.css';
+import style from './radio.module.css';
 
 interface IRadioProps {
     label?: string;

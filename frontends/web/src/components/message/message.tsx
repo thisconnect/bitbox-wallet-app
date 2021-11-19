@@ -15,7 +15,7 @@
  */
 
 import { CSSProperties, FunctionComponent } from 'react';
-import * as styles from './message.css';
+import styles from './message.module.css';
 
 export interface Props {
     hidden?: boolean;

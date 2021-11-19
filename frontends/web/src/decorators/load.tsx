@@ -100,9 +100,6 @@ export function load<LoadedProps extends ObjectButNotFunction, ProvidedProps ext
             private allEndpointsLoaded(): boolean {
                 if (this.endpoints === undefined) { return false; }
                 for (const key of Object.keys(this.endpoints) as KeysOf<LoadedProps>) {
-                    if(this.state === null){
-                        debugger;
-                    }
                     if (this.state[key] === undefined) {
                         return false;
                     }

@@ -15,7 +15,7 @@
  */
 
 import { h, RenderableProps } from 'react';
-import * as style from './progressRing.css';
+import style from './progressRing.module.css';
 
 interface ProgressRingProps {
     width: number;

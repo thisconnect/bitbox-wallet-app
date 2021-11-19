@@ -16,7 +16,7 @@
 
 import { FunctionComponent } from 'react';
 import { LanguageSwitch } from '../language/language';
-import * as style from './footer.css';
+import style from './footer.module.css';
 import { Version } from './version';
 
 export const Footer:FunctionComponent =({ children }) => {

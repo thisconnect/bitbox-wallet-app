@@ -32,7 +32,7 @@ import { translate, WithTranslation } from '../../decorators/translate';
 import { setConfig } from '../../utils/config';
 import { apiGet, apiPost } from '../../utils/request';
 import { FiatSelection } from './components/fiat/fiat';
-import * as style from './settings.css';
+import style from './settings.module.css';
 
 interface SettingsProps {
     manageAccountsLen: number;

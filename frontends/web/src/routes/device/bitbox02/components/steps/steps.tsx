@@ -1,5 +1,5 @@
 import React, { Children, cloneElement, Component, isValidElement, PropsWithChildren, ReactElement } from 'react';
-import * as style from './steps.css';
+import style from './steps.module.css';
 
 interface State {
     activeStep: number;

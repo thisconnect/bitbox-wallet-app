@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { select } from './select.css';
+import { select } from './select.module.css';
 
 type TOptionTextContent = {
     text: string;

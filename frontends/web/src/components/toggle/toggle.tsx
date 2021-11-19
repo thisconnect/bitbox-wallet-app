@@ -1,5 +1,5 @@
 import { Component, SyntheticEvent } from 'react';
-import * as style from './toggle.css';
+import style from './toggle.module.css';
 
 interface ToggleProps {
     checked: boolean;

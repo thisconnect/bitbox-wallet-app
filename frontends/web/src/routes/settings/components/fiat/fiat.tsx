@@ -27,8 +27,8 @@ import {
 import { Toggle } from '../../../../components/toggle/toggle';
 import { share } from '../../../../decorators/share';
 import { translate, WithTranslation } from '../../../../decorators/translate';
-import * as parentStyle from '../../settings.css';
-import * as style from './fiat.css';
+import * as parentStyle from '../../settings.module.css';
+import style from './fiat.module.css';
 
 function changeSelected(event: Event): void {
     const target = event.target as HTMLInputElement;

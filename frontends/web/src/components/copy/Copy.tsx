@@ -18,7 +18,7 @@
 import { Component } from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { Check, Copy } from '../icon/icon';
-import * as style from './Copy.css';
+import style from './Copy.module.css';
 
 interface CopyableInputProps {
     alignLeft?: boolean;

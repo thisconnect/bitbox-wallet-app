@@ -15,7 +15,7 @@
  */
 
 import { Component, h } from 'react';
-import * as style from './InlineMessage.css';
+import style from './InlineMessage.module.css';
 
 export default class InlineMessage extends Component {
     deactivate = () => {

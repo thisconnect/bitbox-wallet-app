@@ -19,7 +19,7 @@ import Toast from '../../../components/toast/Toast';
 import { subscribe } from '../../../decorators/subscribe';
 import { apiPost } from '../../../utils/request';
 import { Backup, BackupsListItem } from '../components/backup';
-import * as backupStyle from '../components/backups.css';
+import * as backupStyle from '../components/backups.module.css';
 import { Button } from '../../../components/forms';
 import { Check } from './checkbackup';
 import { Create } from './createbackup';

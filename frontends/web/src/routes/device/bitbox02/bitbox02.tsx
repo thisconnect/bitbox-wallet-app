@@ -22,7 +22,7 @@ import { CenteredContent } from '../../../components/centeredcontent/centeredcon
 import { Button, Checkbox, Input  } from '../../../components/forms';
 import { Step, Steps } from './components/steps';
 import { View, ViewContent, ViewHeader } from '../../../components/view/view';
-import * as style from './components/steps/steps.css';
+import style from './components/steps/steps.module.css';
 import Toast from '../../../components/toast/Toast';
 import { apiGet, apiPost } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';

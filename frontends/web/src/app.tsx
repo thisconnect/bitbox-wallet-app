@@ -189,8 +189,7 @@ class App extends Component<WithTranslation, State> {
                         <MobileDataWarning />
                         <Aopp />
                         <Routes>
-                            <Route
-                             path="/device/:deviceID" element={<DeviceSwitch
+                            <Route path="/device/:deviceID" element={<DeviceSwitch
                                     key={this.devicesKey('device-switch')}
                                     devices={devices} />} />
                             <Route path="/" element={ <DeviceSwitch

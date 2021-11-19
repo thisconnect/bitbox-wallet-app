@@ -18,7 +18,7 @@
 import { Component } from 'react';
 import { withTranslation, WithTranslation } from 'react-i18next';
 import { Radio } from '../../../components/forms';
-import * as style from './backups.css';
+import style from './backups.module.css';
 
 interface BackupsListItemProps {
     disabled?: boolean;

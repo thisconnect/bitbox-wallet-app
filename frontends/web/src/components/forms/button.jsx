@@ -17,7 +17,7 @@
 
 import React from 'react';
 // import { Link } from 'preact-router/match';
-import * as style from './button.css';
+import style from './button.module.css';
 
 export function ButtonLink({
     primary = false,

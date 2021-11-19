@@ -19,7 +19,7 @@ import { h, RenderableProps } from 'react';
 import { IBalance } from '../../api/account';
 import { FiatConversion } from '../../components/rates/rates';
 import { translate, WithTranslation } from '../../decorators/translate';
-import * as style from './balance.css';
+import style from './balance.module.css';
 
 interface BalanceProps {
     balance?: IBalance;

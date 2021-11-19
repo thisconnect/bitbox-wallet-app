@@ -20,7 +20,7 @@ import MenuIcon from '../../assets/icons/menu.svg';
 import { share } from '../../decorators/share';
 import { SharedProps, store, toggle as toggleGuide } from '../guide/guide';
 import { toggleSidebar } from '../sidebar/sidebar';
-import * as style from './Spinner.css';
+import style from './Spinner.module.css';
 
 interface SpinnerProps {
     text?: string;
