@@ -37,6 +37,7 @@ import { DeviceSwitch } from './routes/device/deviceswitch';
 import { apiPost } from './utils/request';
 import { apiWebsocket } from './utils/websocket';
 import { Routes } from 'react-router-dom';
+import { AccountsSummary } from './routes/account/summary/accountssummary';
 
 
 interface State {
@@ -189,13 +190,21 @@ class App extends Component<WithTranslation, State> {
                         <MobileDataWarning />
                         <Aopp />
                         <Routes>
-                            <Route path="/device/:deviceID" element={<DeviceSwitch
+                            <Route path="/account-summary" element={
+                                <AccountsSummary accounts={activeAccounts} />
+                            } />
+                            <Route path="/device/:deviceID" element={
+                                <DeviceSwitch
                                     key={this.devicesKey('device-switch')}
-                                    devices={devices} />} />
-                            <Route path="/" element={ <DeviceSwitch
+                                    devices={devices} />
+                                }
+                            />
+                            <Route path="/" element={
+                                <DeviceSwitch
                                     key={this.devicesKey('device-switch-default')}
                                     devices={devices} />
-                            } />
+                                }
+                            />
                         </Routes>
                     </div>
                     <Alert />

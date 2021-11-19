@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component} from 'react';
+import { Component, createRef} from 'react';
 import { withTranslation } from 'react-i18next';
 import { Input, Checkbox, Field } from './forms';
 import { alertUser } from './alert/Alert';
@@ -31,6 +31,7 @@ export function PasswordInput (props) {
 }
 
 class PasswordSingleInputClass extends Component {
+    password = createRef();
     state = {
         password: '',
         seePlaintext: false,
@@ -73,7 +74,7 @@ class PasswordSingleInputClass extends Component {
     }
 
     validate = () => {
-        if (this.regex && this.password && !this.password.validity.valid) {
+        if (this.regex && this.password.current && !this.password.current.validity.valid) {
             return this.props.onValidPassword(null);
         }
         if (this.state.password) {
@@ -130,7 +131,7 @@ class PasswordSingleInputClass extends Component {
                 placeholder={placeholder}
                 onInput={this.handleFormChange}
                 onPaste={this.tryPaste}
-                getRef={ref => this.password = ref}
+                ref={this.password}
                 value={password}
                 labelSection={
                     <Checkbox

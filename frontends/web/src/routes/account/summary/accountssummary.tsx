@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'react';
-import { translate } from 'react-i18next';
+import { Component, FunctionComponent } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import * as accountApi from '../../../api/account';
 import A from '../../../components/anchor/anchor';
 import { Header } from '../../../components/layout';
 import { Entry } from '../../../components/guide/entry';
 import { Guide } from '../../../components/guide/guide';
 import { FiatConversion, formatCurrency } from '../../../components/rates/rates';
-import { WithTranslation } from '../../../decorators/translate';
 import { Check } from '../../../components/icon/icon';
 import Logo from '../../../components/icon/logo';
 import Spinner from '../../../components/spinner/ascii';
@@ -145,12 +144,12 @@ class AccountsSummary extends Component<Props, State> {
         .catch(console.error);
     }
 
-    private balanceRow = ({ code, name, coinCode, coinUnit }: RenderableProps<BalanceRowProps>) => {
+    private balanceRow : FunctionComponent<BalanceRowProps> = ({ code, name, coinCode, coinUnit }) => {
         const { t } = this.props;
         const balance = this.state.balances ? this.state.balances[code] : undefined;
         const nameCol = (
             <td data-label={t('accountSummary.name')}>
-                <div class={style.coinName}>
+                <div className={style.coinName}>
                     <Logo className={style.coincode} coinCode={coinCode} active={true} alt={coinCode} />
                     {name}
                 </div>
@@ -187,10 +186,9 @@ class AccountsSummary extends Component<Props, State> {
         );
     }
 
-    public render(
-        { t, accounts }: RenderableProps<Props>,
-        { exported, data }: State,
-    ) {
+    public render() {
+        const { t, accounts } = this.props;
+        const { exported, data } = this.state;
         return (
             <div className="contentWithGuide">
                 <div className="container">
@@ -199,7 +197,7 @@ class AccountsSummary extends Component<Props, State> {
                             exported ? (
                                 <A href={exported} title={exported} className="flex flex-row flex-start flex-items-center">
                                     <span>
-                                        <Check style="margin-right: 5px !important;" />
+                                        <Check style={{marginRight: '5px !important'}} />
                                         <span>{t('account.openFile')}</span>
                                     </span>
                                 </A>
@@ -279,5 +277,5 @@ class AccountsSummary extends Component<Props, State> {
     }
 }
 
-const HOC = translate()(AccountsSummary);
+const HOC = withTranslation()(AccountsSummary);
 export { HOC as AccountsSummary };

@@ -137,7 +137,7 @@ class Sidebar extends Component<Props> {
         }
     }
 
-    private handleSidebarItemClick = (e: any) => {
+    private handleSidebarItemClick = (e: SyntheticEvent) => {
         const el = (e.target as Element).closest('a');
         if (el!.classList.contains('sidebar-active') && window.innerWidth <= 901) {
             toggleSidebar();

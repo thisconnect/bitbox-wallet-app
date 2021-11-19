@@ -15,9 +15,9 @@
  */
 
 import { createChart, IChartApi, BarsInfo, LineData, LineStyle, LogicalRange, ISeriesApi, UTCTimestamp, MouseEventHandler } from 'lightweight-charts';
-import { Component, createRef, h, RenderableProps } from 'react';
+import { Component, createRef } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { Fiat } from '../../../api/account';
-import { translate, WithTranslation } from '../../../decorators/translate';
 import { formatCurrency, formatNumber } from '../../../components/rates/rates';
 import styles from './chart.module.css';
 
@@ -47,8 +47,8 @@ interface State {
 type Props = ChartProps & WithTranslation;
 
 class Chart extends Component<Props, State> {
-    private ref = createRef();
-    private refToolTip = createRef();
+    private ref = createRef<HTMLDivElement>();
+    private refToolTip = createRef<HTMLElement>();
     private chart?: IChartApi;
     private lineSeries?: ISeriesApi<'Area'>;
     private resizeTimerID?: any;
@@ -76,7 +76,7 @@ class Chart extends Component<Props, State> {
         }
     }
 
-    public componentDidUpdate(prev) {
+    public componentDidUpdate(prev: Props) {
         const { dataDaily, dataHourly } = this.props;
         if (!this.chart) {
             this.createChart();
@@ -308,15 +308,15 @@ class Chart extends Component<Props, State> {
         });
     }
 
-    private handleCrosshair = ({ point, time, seriesPrices }) => {
-        if (!this.refToolTip) {
+    private handleCrosshair = ({ point, time, seriesPrices }: any) => {
+        if (!this.refToolTip.current) {
             return;
         }
         const tooltip = this.refToolTip.current;
-        const parent = tooltip.parentNode;
+        const parent = tooltip.parentNode as HTMLElement;
         if (
             !this.lineSeries || !point || !time
-            || point.x < 0 || point.x > parent.clientWidth
+            || point.x < 0 || point.x > parent.clientWidth 
             || point.y < 0 || point.y > parent.clientHeight
         ) {
             this.setState({
@@ -340,7 +340,7 @@ class Chart extends Component<Props, State> {
         });
     }
 
-    private renderDate = (date) => {
+    private renderDate = (date: any) => {
         return new Date(date).toLocaleString(
             this.props.i18n.language,
             {
@@ -355,9 +355,9 @@ class Chart extends Component<Props, State> {
         );
     }
 
-    public render(
-        { t, dataDaily, fiatUnit, isUpToDate, total }: RenderableProps<Props>,
-        {
+    public render() {
+        const  { t, dataDaily, fiatUnit, isUpToDate, total } = this.props;
+        const  {
             difference,
             diffSince,
             display,
@@ -366,8 +366,7 @@ class Chart extends Component<Props, State> {
             toolTipTop,
             toolTipLeft,
             toolTipTime,
-        }: State,
-    ) {
+        } =this.state;
         if (dataDaily === undefined) {
             return (
                 <p className={styles.chartUpdatingMessage}>
@@ -424,7 +423,7 @@ class Chart extends Component<Props, State> {
                     <span
                         ref={this.refToolTip}
                         className={styles.tooltip}
-                        style={`left: ${toolTipLeft}px; top: ${toolTipTop}px;`}
+                        style={{left: toolTipLeft, top: toolTipTop}}
                         hidden={!toolTipVisible}>
                         {toolTipValue !== undefined ? (
                             <span>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import { FunctionComponent } from 'react';
 import style from './checkbox.module.css';
 
 type CheckboxProps = JSX.IntrinsicElements['input'] & {
@@ -23,15 +23,14 @@ type CheckboxProps = JSX.IntrinsicElements['input'] & {
     label?: string;
     id: string;
 }
-
-export default function Checkbox({
+const Checkbox : FunctionComponent<CheckboxProps> = ({
     disabled = false,
     label,
     id,
     className = '',
     children,
     ...props
-}: RenderableProps<CheckboxProps>) {
+}) => {
     return (
         <span className={`${style.checkbox} ${className}`}>
             <input
@@ -40,7 +39,9 @@ export default function Checkbox({
                 disabled={disabled}
                 {...props}
             />
-            <label for={id}>{label} {children}</label>
+            <label htmlFor={id}>{label} {children}</label>
         </span>
     );
 }
+
+export default Checkbox;

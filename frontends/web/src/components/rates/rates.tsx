@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { h, JSX, RenderableProps } from 'react';
+import { FunctionComponent } from 'react';
 import { Coin, Fiat, MainnetCoin } from '../../api/account';
 import { share } from '../../decorators/share';
 import { Store } from '../../decorators/store';
@@ -131,7 +131,7 @@ interface ProvidedProps {
 
 type Props = ProvidedProps & SharedProps;
 
-function Conversion({
+const Conversion: FunctionComponent<Props> =({
     amount,
     tableRow,
     unstyled,
@@ -140,7 +140,7 @@ function Conversion({
     active,
     noAction,
     children,
-}: RenderableProps<Props>): JSX.Element | null {
+}) => {
     if (!rates) {
         return null;
     }
