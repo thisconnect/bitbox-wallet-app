@@ -196,7 +196,7 @@ class MobilePairing extends Component<Props, State> {
                             }
                         </div>
                     </div>
-                    <div class="flex flex-row flex-start m-top-default">
+                    <div className="flex flex-row flex-start m-top-default">
                         <div>
                             <p className="m-top-none"><strong className="m-right-quarter">2.</strong>{t('pairing.start.step2')}</p>
                             <div className="text-center">
@@ -228,7 +228,7 @@ class MobilePairing extends Component<Props, State> {
                             title={t('pairing.title')}
                             onClose={this.abort}
                             medium>
-                            <div class="flex flex-column flex-center flex-items-center">
+                            <div className="flex flex-column flex-center flex-items-center">
                                 {
                                     channel ? (
                                         content

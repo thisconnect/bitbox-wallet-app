@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component } from 'react';
+import { ChangeEvent, Component } from 'react';
 import { WithTranslation, withTranslation } from 'react-i18next';
 import { load } from '../../../decorators/load';
 import { apiPost } from '../../../utils/request';
@@ -31,7 +31,7 @@ interface LoadedProps {
 type Props = ToggleProps & LoadedProps & WithTranslation;
 
 class ToggleFWHash extends Component<Props, {}> {
-    private handleToggle = event => {
+    private handleToggle = (event: ChangeEvent<HTMLInputElement>) => {
         apiPost(
             'devices/bitbox02-bootloader/' + this.props.deviceID + '/set-firmware-hash-enabled',
             event.target.checked,

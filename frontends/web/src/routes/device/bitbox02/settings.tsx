@@ -60,7 +60,6 @@ class Settings extends Component<Props, State> {
     public componentDidMount() {
         this.getInfo();
         apiGet(this.apiPrefix() + '/version').then(versionInfo => {
-            console.log("states set")
             this.setState({ versionInfo });
         });
     }
@@ -79,7 +78,6 @@ class Settings extends Component<Props, State> {
         if (deviceInfo === undefined) {
             return null;
         }
-        console.log("rendered")
         return (
             <div className="contentWithGuide">
                 <div className="container">

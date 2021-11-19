@@ -41,7 +41,6 @@ class Waiting extends Component<WaitingProps> {
     }
 
     public render() {
-        console.log(style)
         const{ t, testing } = this.props;
         return (
             <div className="contentWithGuide">

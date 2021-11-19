@@ -20,7 +20,7 @@ import styles from './message.module.css';
 export interface Props {
     hidden?: boolean;
     type?: 'message' | 'success' | 'info' | 'warning' | 'error';
-    style: CSSProperties;
+    style?: CSSProperties;
 }
 
 export const Message:FunctionComponent<Props> = ({

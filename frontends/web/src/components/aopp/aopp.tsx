@@ -243,5 +243,5 @@ const subscribeHOC = subscribe<SubscribedProps, AoppProps & WithTranslation>(
     false,
 )(Aopp);
 
-const translateHOC = withTranslation()(subscribeHOC as any);
+const translateHOC = withTranslation()(subscribeHOC);
 export { translateHOC as Aopp };
