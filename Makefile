@@ -87,10 +87,10 @@ dockerinit:
 dockerdev:
 	./scripts/dockerdev.sh
 locize-push:
-	cd ${WEBROOT}/src/locales && locize sync
+	cd ${WEBROOT}/src/locales && npx locize-cli sync
 locize-pull:
-	cd ${WEBROOT}/src/locales && locize download
+	cd ${WEBROOT}/src/locales && npx locize-cli download
 locize-fix:
-	locize format ${WEBROOT}/src/locales --format json
+	npx locize-cli format ${WEBROOT}/src/locales --format json
 go-vendor:
 	go mod vendor
