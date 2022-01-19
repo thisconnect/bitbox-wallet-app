@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button, Input } from '../../../components/forms';
 import { PasswordInput } from '../../../components/password';
 import { alertUser } from '../../../components/alert/Alert';
 import { apiPost } from '../../../utils/request';
 import { Dialog } from '../../../components/dialog/dialog';
-import * as style from '../../../components/dialog/dialog.css';
+// TODO: use DialogButtons
+import style from '../../../components/dialog/dialog.module.css';
 
-@translate()
-export default class Create extends Component {
+class Create extends Component {
     state = {
         waiting: false,
         backupName: '',
@@ -69,12 +69,14 @@ export default class Create extends Component {
         });
     }
 
-    render({ t }, {
-        waiting,
-        recoveryPassword,
-        backupName,
-        activeDialog,
-    }) {
+    render() {
+        const { t } = this.props;
+        const {
+            waiting,
+            recoveryPassword,
+            backupName,
+            activeDialog,
+        } = this.state;
         return (
             <div>
                 <Button
@@ -90,7 +92,6 @@ export default class Create extends Component {
                             <form onSubmit={this.create}>
                                 <Input
                                     autoFocus
-                                    autoComplete="off"
                                     id="backupName"
                                     label={t('backup.create.name.label')}
                                     placeholder={t('backup.create.name.placeholder')}
@@ -103,7 +104,7 @@ export default class Create extends Component {
                                     placeholder={t('backup.create.password.placeholder')}
                                     onInput={this.handleFormChange}
                                     value={recoveryPassword} />
-                                <div class={style.actions}>
+                                <div className={style.actions}>
                                     <Button type="submit" primary disabled={waiting || !this.validate()}>
                                         {t('button.create')}
                                     </Button>
@@ -119,3 +120,5 @@ export default class Create extends Component {
         );
     }
 }
+
+export default withTranslation()(Create);

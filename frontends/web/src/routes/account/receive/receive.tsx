@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import React, { Component} from 'react';
+import { route } from '../../../utils/route';
 import * as accountApi from '../../../api/account';
 import { TDevices } from '../../../api/devices';
 import { alertUser } from '../../../components/alert/Alert';
@@ -30,9 +30,9 @@ import { QRCode } from '../../../components/qrcode/qrcode';
 import Status from '../../../components/status/status';
 import { load } from '../../../decorators/load';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import { apiGet, apiPost } from '../../../utils/request';
+import { apiGet } from '../../../utils/request';
 import { isEthereumBased } from '../utils';
-import * as style from './receive.css';
+import style from './receive.module.css';
 
 interface ReceiveProps {
     code?: string;
@@ -75,7 +75,7 @@ class Receive extends Component<Props, State> {
         }
     }
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
         this.registerEvents();
     }
 
@@ -100,7 +100,10 @@ class Receive extends Component<Props, State> {
     }
 
     private verifyAddress = (addressesIndex: number) => {
-        const { receiveAddresses, secureOutput } = this.props;
+        const { receiveAddresses, secureOutput, code } = this.props;
+        if (code === undefined) {
+            return;
+        }
         const { activeIndex } = this.state;
         if (!secureOutput.hasSecureOutput) {
             this.unregisterEvents();
@@ -108,12 +111,14 @@ class Receive extends Component<Props, State> {
             return;
         }
         this.setState({ verifying: true });
-        apiPost('account/' + this.props.code + '/verify-address', receiveAddresses[addressesIndex][activeIndex].addressID).then(() => {
-            this.setState({ verifying: false });
-        });
+        accountApi.verifyAddress(
+            code,
+            receiveAddresses[addressesIndex][activeIndex].addressID).then(() => {
+                this.setState({ verifying: false });
+            });
     }
 
-    private previous = (e: Event) => {
+    private previous = (e: React.SyntheticEvent) => {
         e.preventDefault();
         const activeIndex = this.state.activeIndex;
         if (!this.state.verifying && activeIndex > 0) {
@@ -123,7 +128,7 @@ class Receive extends Component<Props, State> {
         }
     }
 
-    private next = (e: Event, numAddresses: number) => {
+    private next = (e: React.SyntheticEvent, numAddresses: number) => {
         e.preventDefault();
         const { verifying, activeIndex } = this.state;
         if (!verifying && activeIndex < numAddresses - 1) {
@@ -150,16 +155,19 @@ class Receive extends Component<Props, State> {
         }));
     }
 
-    public render(
-        { t,
-          code,
-          receiveAddresses,
-          secureOutput }: RenderableProps<Props>,
-        { verifying,
-          activeIndex,
-          paired,
-          addressType }: State,
-    ) {
+    public render() {
+        const {
+             t,
+            code,
+            receiveAddresses,
+            secureOutput
+        } = this.props;
+        const {
+            verifying,
+            activeIndex,
+            paired,
+            addressType
+        } = this.state;
         const account = this.getAccount();
         if (account === undefined) {
             return null;
@@ -189,11 +197,11 @@ class Receive extends Component<Props, State> {
             verifyLabel = t('receive.verifyBitBox02');
         }
         const content = (
-            <div style="position: relative;">
-                <div class={style.qrCodeContainer}>
+            <div style={{position: 'relative'}}>
+                <div className={style.qrCodeContainer}>
                     <QRCode data={enableCopy ? uriPrefix + address : undefined} />
                 </div>
-                <div class={['flex flex-row flex-between flex-items-center', style.labels].join(' ')}>
+                <div className={['flex flex-row flex-between flex-items-center', style.labels].join(' ')}>
                     {
                         currentAddresses.length > 1 && (
                             <a
@@ -219,7 +227,7 @@ class Receive extends Component<Props, State> {
                             </a>
                         )
                     }
-                    <p class={style.label}>{t('receive.label')} {currentAddresses.length > 1 ? `(${activeIndex + 1}/${currentAddresses.length})` : ''}</p>
+                    <p className={style.label}>{t('receive.label')} {currentAddresses.length > 1 ? `(${activeIndex + 1}/${currentAddresses.length})` : ''}</p>
                     {
                         currentAddresses.length > 1 && (
                             <a
@@ -275,7 +283,7 @@ class Receive extends Component<Props, State> {
                     }
                     <ButtonLink
                         transparent
-                        href={`/account/${code}`}>
+                        to={`/account/${code}`}>
                         {t('button.back')}
                     </ButtonLink>
                 </div>
@@ -315,15 +323,15 @@ class Receive extends Component<Props, State> {
         );
 
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Status type="warning" hidden={paired !== false}>
                         {t('warning.receivePairing')}
                     </Status>
                     <Header title={<h2>{t('receive.title', { accountName: account.coinName })}</h2>} />
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content narrow isVerticallyCentered">
-                            <div class="box large text-center">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content narrow isVerticallyCentered">
+                            <div className="box large text-center">
                                 {content}
                             </div>
                         </div>
@@ -333,6 +341,7 @@ class Receive extends Component<Props, State> {
                     <Entry key="guide.receive.address" entry={t('guide.receive.address')} />
                     <Entry key="guide.receive.whyVerify" entry={t('guide.receive.whyVerify')} />
                     <Entry key="guide.receive.howVerify" entry={t('guide.receive.howVerify')} />
+                    <Entry key="guide.receive.plugout" entry={t('guide.receive.plugout')} />
                     {currentAddresses.length > 1 && <Entry key="guide.receive.whyMany" entry={t('guide.receive.whyMany')} />}
                     {currentAddresses.length > 1 && <Entry key="guide.receive.why20" entry={t('guide.receive.why20')} />}
                     {currentAddresses.length > 1 && <Entry key="guide.receive.addressChange" entry={t('guide.receive.addressChange')} />}
@@ -347,5 +356,5 @@ const loadHOC = load<LoadedReceiveProps, ReceiveProps & TranslateProps>(({ code 
     secureOutput: `account/${code}/has-secure-output`,
     receiveAddresses: `account/${code}/receive-addresses`,
 }))(Receive);
-const HOC = translate<ReceiveProps>()(loadHOC);
+const HOC = translate()(loadHOC);
 export { HOC as Receive };

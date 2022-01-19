@@ -19,7 +19,6 @@ import (
 	"io"
 
 	"github.com/btcsuite/btcd/wire"
-	"github.com/btcsuite/btcutil"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/coin"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/signing"
 	"github.com/digitalbitbox/bitbox-wallet-app/util/observable"
@@ -32,13 +31,9 @@ type AddressList []Address
 type TxProposalArgs struct {
 	RecipientAddress string
 	Amount           coin.SendAmount
-	// Only applies to BTC/LTC.
-	FeeTargetCode FeeTargetCode
-	// Only applies to BTC/LTC and if FeeTargetCode == Custom. Technically it is vKb (virtual Kb)
-	// since fees are computed from a transaction's weight (measured in weight units or virtual
-	// bytes), but we keep the `Kb` unit to be consistent with the rest of the codebase and Bitcoin
-	// Core.
-	FeePerKb      btcutil.Amount
+	FeeTargetCode    FeeTargetCode
+	// Only applies if FeeTargetCode == Custom. It is provided in sat/vB for BTC/LTC and Gwei for ETH.
+	CustomFee     string
 	SelectedUTXOs map[wire.OutPoint]struct{}
 	Data          []byte
 	Note          string

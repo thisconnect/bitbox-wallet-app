@@ -17,8 +17,10 @@ package eth
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"math/big"
+	"net/http"
 	"os"
 	"path"
 	"strings"
@@ -44,6 +46,14 @@ import (
 
 var pollInterval = 60 * time.Second
 
+// ethGasStationAPIKey is used to access the API of https://ethgasstation.info.
+// See https://docs.ethgasstation.info/.
+const ethGasStationAPIKey = "3a61bee56f554cc14db4f49e2ace053b3086d3c323aefec83e5ff25ca485"
+
+func isMixedCase(s string) bool {
+	return strings.ToLower(s) != s && strings.ToUpper(s) != s
+}
+
 // Account is an Ethereum account, with one address.
 type Account struct {
 	*accounts.BaseAccount
@@ -55,6 +65,7 @@ type Account struct {
 	db                   db.Interface
 	signingConfiguration *signing.Configuration
 	notifier             accounts.Notifier
+	httpClient           *http.Client
 
 	// true when initialized (Initialize() was called).
 	initialized bool
@@ -83,6 +94,7 @@ type Account struct {
 func NewAccount(
 	config *accounts.AccountConfig,
 	accountCoin *Coin,
+	httpClient *http.Client,
 	log *logrus.Entry,
 ) *Account {
 	log = log.WithField("group", "eth").
@@ -94,6 +106,7 @@ func NewAccount(
 		coin:                 accountCoin,
 		dbSubfolder:          "", // set in Initialize()
 		signingConfiguration: nil,
+		httpClient:           httpClient,
 		balance:              coin.NewAmountFromInt64(0),
 
 		enqueueUpdateCh: make(chan struct{}),
@@ -154,7 +167,8 @@ func (account *Account) Initialize() error {
 	account.log.Debugf("Opened the database '%s' to persist the transactions.", dbName)
 
 	account.address = Address{
-		Address: crypto.PubkeyToAddress(*account.signingConfiguration.PublicKey().ToECDSA()),
+		Address:         crypto.PubkeyToAddress(*account.signingConfiguration.PublicKey().ToECDSA()),
+		absoluteKeypath: account.signingConfiguration.AbsoluteKeypath(),
 	}
 
 	account.signingConfiguration = signing.NewEthereumConfiguration(
@@ -426,34 +440,41 @@ type TxProposal struct {
 	Keypath signing.AbsoluteKeypath
 }
 
-func (account *Account) newTx(
-	recipientAddress string,
-	amount coin.SendAmount,
-	data []byte,
-) (*TxProposal, error) {
-	if !ethcommon.IsHexAddress(recipientAddress) {
+func (account *Account) newTx(args *accounts.TxProposalArgs) (*TxProposal, error) {
+	if !ethcommon.IsHexAddress(args.RecipientAddress) {
+		return nil, errp.WithStack(errors.ErrInvalidAddress)
+	}
+	address := ethcommon.HexToAddress(args.RecipientAddress)
+	// Validate checksum if the address is mixed case, see https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md
+	if isMixedCase(args.RecipientAddress) && args.RecipientAddress != address.Hex() {
 		return nil, errp.WithStack(errors.ErrInvalidAddress)
 	}
 
-	suggestedGasPrice, err := account.coin.client.SuggestGasPrice(context.TODO())
+	suggestedGasPrice, err := account.gasPrice(args)
 	if err != nil {
-		return nil, err
+		if _, ok := errp.Cause(err).(errors.TxValidationError); ok {
+			return nil, err
+		}
+		account.log.WithError(err).Error("error getting the gas price")
+		return nil, errp.WithStack(errors.ErrFeesNotAvailable)
 	}
 
+	// Make sure account.balance is up to date for calculations below.
+	account.Synchronizer.WaitSynchronized()
+
 	var value *big.Int
-	if amount.SendAll() {
+	if args.Amount.SendAll() {
 		value = account.balance.BigInt() // set here only temporarily to estimate the gas
 	} else {
 		allowZero := true
 
-		parsedAmount, err := amount.Amount(account.coin.unitFactor(false), allowZero)
+		parsedAmount, err := args.Amount.Amount(account.coin.unitFactor(false), allowZero)
 		if err != nil {
 			return nil, err
 		}
 		value = parsedAmount.BigInt()
 	}
 
-	address := ethcommon.HexToAddress(recipientAddress)
 	var message ethereum.CallMsg
 
 	if account.coin.erc20Token != nil {
@@ -483,14 +504,14 @@ func (account *Account) newTx(
 			Gas:      0,
 			GasPrice: big.NewInt(0),
 			Value:    value,
-			Data:     data,
+			Data:     args.Data,
 		}
 	}
 
 	// For ERC20 transfers, the EstimateGas call fails if we try to spend more than we have and we
 	// do not have enough ether to pay the fee.
 	// We make some checks upfront to catch this before calling out to the node and failing.
-	if !amount.SendAll() {
+	if !args.Amount.SendAll() {
 		if account.coin.erc20Token != nil {
 			if value.Cmp(account.balance.BigInt()) == 1 {
 				return nil, errp.WithStack(errors.ErrInsufficientFunds)
@@ -510,11 +531,11 @@ func (account *Account) newTx(
 		// in erc 20 tokens, the amount is in the token unit, while the fee is in ETH, so there is
 		// no issue withSendAll.
 
-		if !amount.SendAll() && value.Cmp(account.balance.BigInt()) == 1 {
+		if !args.Amount.SendAll() && value.Cmp(account.balance.BigInt()) == 1 {
 			return nil, errp.WithStack(errors.ErrInsufficientFunds)
 		}
 	} else {
-		if amount.SendAll() {
+		if args.Amount.SendAll() {
 			// Set the value correctly and check that the fee is smaller than or equal to the balance.
 			value = new(big.Int).Sub(account.balance.BigInt(), fee)
 			message.Value = value
@@ -595,9 +616,106 @@ func (account *Account) SendTx() error {
 	return nil
 }
 
+// ethGasStationFeeTargets returns four priorities with fee targets estimated by
+// https://ethgasstation.info/.
+func (account *Account) ethGasStationFeeTargets() ([]*feeTarget, error) {
+	// TODO: Use timeout.
+	// Docs: https://docs.ethgasstation.info/gas-price#gas-price
+	response, err := account.httpClient.Get("https://ethgasstation.info/api/ethgasAPI.json?api-key=" + ethGasStationAPIKey)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close() //nolint:errcheck
+	if response.StatusCode != http.StatusOK {
+		return nil, errp.Newf("ethgasstation returned status code %d", response.StatusCode)
+	}
+	var responseDecoded struct {
+		// Values are in Gwei*10
+		Average int64 `json:"average"`
+		Fast    int64 `json:"fast"`
+		Fastest int64 `json:"fastest"`
+		SafeLow int64 `json:"safeLow"`
+	}
+	if err := json.NewDecoder(response.Body).Decode(&responseDecoded); err != nil {
+		return nil, err
+	}
+	// Conversion from 10x Gwei to Wei.
+	factor := big.NewInt(1e8)
+	return []*feeTarget{
+		{
+			code:     accounts.FeeTargetCodeHigh,
+			gasPrice: new(big.Int).Mul(big.NewInt(responseDecoded.Fastest), factor),
+		},
+		{
+			code:     accounts.FeeTargetCodeNormal,
+			gasPrice: new(big.Int).Mul(big.NewInt(responseDecoded.Fast), factor),
+		},
+		{
+			code:     accounts.FeeTargetCodeLow,
+			gasPrice: new(big.Int).Mul(big.NewInt(responseDecoded.Average), factor),
+		},
+		{
+			code:     accounts.FeeTargetCodeEconomy,
+			gasPrice: new(big.Int).Mul(big.NewInt(responseDecoded.SafeLow), factor),
+		},
+	}, nil
+}
+
+// feeTargets returns four priorities with fee targets estimated by https://ethgasstation.info/.  If
+// the ethgasstation service should not reachable, we fallback to only one priority, estimated by
+// the ETH RPC eth_gasPrice endpoint.
+func (account *Account) feeTargets() []*feeTarget {
+	ethGasStationTargets, err := account.ethGasStationFeeTargets()
+	if err == nil {
+		return ethGasStationTargets
+	}
+	account.log.WithError(err).Error("Could not get fee targets from eth gas station, falling back to RPC eth_gasPrice")
+	suggestedGasPrice, err := account.coin.client.SuggestGasPrice(context.TODO())
+	if err != nil {
+		account.log.WithError(err).Error("Fallback to RPC eth_gasPrice failed")
+		return nil
+	}
+	return []*feeTarget{
+		{
+			code:     accounts.FeeTargetCodeNormal,
+			gasPrice: suggestedGasPrice,
+		},
+	}
+}
+
 // FeeTargets implements accounts.Interface.
 func (account *Account) FeeTargets() ([]accounts.FeeTarget, accounts.FeeTargetCode) {
-	return nil, ""
+	feeTargets := []accounts.FeeTarget{}
+	for _, t := range account.feeTargets() {
+		feeTargets = append(feeTargets, t)
+	}
+	return feeTargets, accounts.DefaultFeeTarget
+}
+
+// gasPrice returns the currently suggested gas price for the given fee target, or a custom gas
+// price if the fee target is `FeeTargetCodeCustom`.
+func (account *Account) gasPrice(args *accounts.TxProposalArgs) (*big.Int, error) {
+	if args.FeeTargetCode == accounts.FeeTargetCodeCustom {
+		// Convert from Gwei to Wei.
+		amount, err := coin.NewAmountFromString(args.CustomFee, big.NewInt(1e9))
+		if err != nil {
+			return nil, err
+		}
+		gasPrice := amount.BigInt()
+		if gasPrice.Cmp(big.NewInt(0)) <= 0 {
+			return nil, errors.ErrFeeTooLow
+		}
+		return gasPrice, nil
+	}
+	for _, t := range account.feeTargets() {
+		if t.code == args.FeeTargetCode {
+			if t.gasPrice.Cmp(big.NewInt(0)) <= 0 {
+				return nil, errors.ErrFeeTooLow
+			}
+			return t.gasPrice, nil
+		}
+	}
+	return nil, errp.Newf("Could not find fee target %s", args.FeeTargetCode)
 }
 
 // TxProposal implements accounts.Interface.
@@ -605,7 +723,7 @@ func (account *Account) TxProposal(
 	args *accounts.TxProposalArgs,
 ) (coin.Amount, coin.Amount, coin.Amount, error) {
 	defer account.activeTxProposalLock.Lock()()
-	txProposal, err := account.newTx(args.RecipientAddress, args.Amount, args.Data)
+	txProposal, err := account.newTx(args)
 	if err != nil {
 		return coin.Amount{}, coin.Amount{}, coin.Amount{}, err
 	}

@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import { Component} from 'react';
+import { route } from '../../../utils/route';
 import { getCanVerifyXPub, IAccount, TBitcoinSimple, TEthereumSimple, TSigningConfiguration, verifyXPub } from '../../../api/account';
 import { getScriptName, isBitcoinBased } from '../utils';
 import { CopyableInput } from '../../../components/copy/Copy';
 import { Button } from '../../../components/forms';
 import { QRCode } from '../../../components/qrcode/qrcode';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import * as style from './info.css';
+import style from './info.module.css';
 
 interface ProvidedProps {
     account: IAccount;
@@ -66,15 +66,15 @@ class SigningConfiguration extends Component<Props, State> {
         return info.ethereumSimple;
     }
 
-    public render(
-        { children,
-          account,
-          code,
-          t,
-          signingConfigIndex,
-        }: RenderableProps<Props>,
-        { canVerifyExtendedPublicKey }: State
-    ) {
+    public render() {
+        const {
+            children,
+            account,
+            code,
+            t,
+            signingConfigIndex,
+        } = this.props;
+        const { canVerifyExtendedPublicKey } = this.state;
         const config = this.getSimpleInfo();
         const bitcoinBased = isBitcoinBased(account.coinCode);
         return (
@@ -145,5 +145,5 @@ class SigningConfiguration extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ProvidedProps>()(SigningConfiguration);
+const HOC = translate()(SigningConfiguration);
 export { HOC as SigningConfiguration };

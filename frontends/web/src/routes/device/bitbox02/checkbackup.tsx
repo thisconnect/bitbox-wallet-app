@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiPost } from '../../../utils/request';
 import { Backup, BackupsListItem } from '../components/backup';
-import { Dialog } from '../../../components/dialog/dialog';
-import * as dialogStyle from '../../../components/dialog/dialog.css';
+import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { Button } from '../../../components/forms';
 
 interface CheckProps {
@@ -75,7 +74,9 @@ class Check extends Component<Props, State> {
         this.setState({ activeDialog: false, userVerified: false });
     }
 
-    public render({ t, backups }: RenderableProps<Props>, { activeDialog, message, foundBackup, userVerified }: State) {
+    public render() {
+        const { t, backups } = this.props;
+        const { activeDialog, message, foundBackup, userVerified } = this.state;
         return (
             <div>
                 <Button
@@ -107,7 +108,7 @@ class Check extends Component<Props, State> {
                                             }
                                         </div>
                                     </div>
-                                    <div className={dialogStyle.actions}>
+                                    <DialogButtons>
                                         <Button
                                             primary
                                             onClick={this.abort}
@@ -115,7 +116,7 @@ class Check extends Component<Props, State> {
                                         >
                                             { userVerified ? t('button.ok') : t('accountInfo.verify') }
                                         </Button>
-                                    </div>
+                                    </DialogButtons>
                                 </div>
                             }
                         </Dialog>
@@ -126,5 +127,5 @@ class Check extends Component<Props, State> {
     }
 }
 
-const HOC = translate<CheckProps>()(Check);
+const HOC = translate()(Check);
 export { HOC as Check };

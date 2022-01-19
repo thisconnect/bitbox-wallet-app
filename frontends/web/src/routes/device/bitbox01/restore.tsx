@@ -15,18 +15,17 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import React, { Component} from 'react';
+import { route } from '../../../utils/route';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiPost } from '../../../utils/request';
 import { alertUser } from '../../../components/alert/Alert';
-import { Dialog } from '../../../components/dialog/dialog';
-import * as dialogStyle from '../../../components/dialog/dialog.css';
+import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { Button, Checkbox } from '../../../components/forms';
 import { PasswordRepeatInput } from '../../../components/password';
 import { Spinner } from '../../../components/spinner/Spinner';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
-import * as style from '../components/backups.css';
+import style from '../components/backups.module.css';
 
 interface RestoreProps {
     selectedBackup?: string;
@@ -68,7 +67,7 @@ class Restore extends Component<Props, State> {
         return this.props.selectedBackup && this.state.password;
     }
 
-    private restore = (event: Event) => {
+    private restore = (event: React.SyntheticEvent) => {
         event.preventDefault();
         if (!this.validate()) { return; }
         if (this.props.requireConfirmation) {
@@ -104,7 +103,7 @@ class Restore extends Component<Props, State> {
         });
     }
 
-    private handleUnderstandChange = (e: Event) => {
+    private handleUnderstandChange = (e: React.SyntheticEvent) => {
         this.setState({ understand: (e.target as HTMLInputElement).checked });
     }
 
@@ -112,18 +111,18 @@ class Restore extends Component<Props, State> {
         this.setState({ password });
     }
 
-    public render(
-        {
+    public render() {
+        const {
             t,
             selectedBackup,
             requireConfirmation,
-        }: RenderableProps<Props>,
-        {
+        } = this.props;
+        const {
             isConfirming,
             activeDialog,
             isLoading,
             understand,
-        }: State) {
+        } = this.state;
         return (
             <span>
                 <Button
@@ -153,7 +152,7 @@ class Restore extends Component<Props, State> {
                                         checked={understand}
                                         onChange={this.handleUnderstandChange} />
                                 </div>
-                                <div class={dialogStyle.actions}>
+                                <DialogButtons>
                                     <Button
                                         type="submit"
                                         danger={requireConfirmation}
@@ -167,7 +166,7 @@ class Restore extends Component<Props, State> {
                                         disabled={isConfirming}>
                                         {t('button.back')}
                                     </Button>
-                                </div>
+                                </DialogButtons>
                             </form>
                         </Dialog>
                     )
@@ -187,5 +186,5 @@ class Restore extends Component<Props, State> {
     }
 }
 
-const TranslatedRestore = translate<RestoreProps>()(Restore);
+const TranslatedRestore = translate()(Restore);
 export { TranslatedRestore as Restore };

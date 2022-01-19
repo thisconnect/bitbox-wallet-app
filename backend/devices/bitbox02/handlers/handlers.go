@@ -112,6 +112,8 @@ func maybeBB02Err(err error, log *logrus.Entry) map[string]interface{} {
 		result["code"] = bb02Error.Code
 		result["message"] = bb02Error.Message
 		log.WithField("bitbox02-error", bb02Error.Code).Warning("Received an error from Bitbox02")
+	} else {
+		log.WithField("error", err).Error("Received an error from when querying the BitBox02")
 	}
 
 	return result
@@ -132,7 +134,10 @@ func (handlers *Handlers) getDeviceInfo(_ *http.Request) (interface{}, error) {
 	if err != nil {
 		return maybeBB02Err(err, handlers.log), nil
 	}
-	return deviceInfo, nil
+	return map[string]interface{}{
+		"success":    true,
+		"deviceInfo": deviceInfo,
+	}, nil
 }
 
 func (handlers *Handlers) postSetDeviceName(r *http.Request) (interface{}, error) {

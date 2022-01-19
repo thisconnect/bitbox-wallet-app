@@ -1,0 +1,87 @@
+.stepContext {
+    background-color: white;
+    padding: var(--space-default);
+    margin: var(--space-default) 0;
+}
+
+.backupsList {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    flex: 1;
+}
+
+.listContainer {
+    border: solid 1px var(--color-lightgray);
+    display: flex;
+    flex-direction: column;
+    max-height: 45vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    position: relative;
+    width: 100%;
+}
+
+.item {
+    width: 100%;
+    padding: var(--space-quarter) var(--space-half);
+}
+
+.item:not(:first-child) {
+    border-top: solid 1px var(--color-lightgray);
+}
+
+.item label {
+    margin-bottom: 0 !important;
+}
+
+.agreements {
+    margin-bottom: 1rem;
+}
+
+.fillSpace {
+    margin-top: calc(var(--spacing-default) * -1) !important;
+}
+
+.emptyText {
+    text-align: center;
+    color: var(--color-secondary);
+    padding: var(--spacing-large) 0;
+}
+
+.backupItem + label {
+    color: var(--color-dark);
+    word-break: break-all;
+}
+
+.backupID {
+    word-break: break-all;
+    margin-bottom: var(--space-quarter);
+    font-size: var(--size-small);
+    color: var(--color-secondary);
+}
+
+.backupButtons {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+    margin-top: var(--space-default);
+}
+
+@media (min-width: 769px) {
+    .backupButtons > *:not(:first-child) {
+        margin-right: var(--space-half);
+    }
+}
+
+@media (max-width: 768px) {
+    .backupButtons {
+        align-items: center;
+        flex-direction: column;
+        margin-top: var(--space-default);
+    }
+
+    .backupButtons > *:not(:first-child) {
+        margin-top: var(--space-half);
+    }
+}

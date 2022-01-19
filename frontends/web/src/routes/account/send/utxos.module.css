@@ -1,0 +1,80 @@
+.utxosList {
+    list-style: none;
+    padding: 0 0 var(--space-half) 0;
+}
+
+.utxosList label {
+    user-select: text;
+    width: 100%;
+}
+
+.utxo {
+    margin-top: var(--space-half);
+    padding: 0 0 var(--space-eight) 0;
+    border-bottom: solid 1px var(--color-lightgray);
+}
+
+.utxoContent {
+    color: var(--color-default);
+    display: flex;
+    flex-wrap: nowrap;
+    font-size: var(--size-subheader);
+}
+
+.utxoData {
+    flex-basis: auto;
+    flex-grow: 1;
+    flex-shrink: 1;
+    overflow: hidden;
+}
+
+.utxoExplorer {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-top: calc(var(--space-quarter) * -1);
+    padding: var(--space-quarter);
+}
+
+.utxoExplorer svg {
+    stroke: var(--color-blue);
+    flex-basis: auto;
+    flex-grow: 0;
+    flex-shrink: 0;
+}
+
+.amounts {
+    line-height: 1;
+    padding-bottom: var(--space-quarter);
+}
+
+.amount {
+    margin-right: var(--space-quarter);
+}
+
+.label,
+.unit {
+    color: var(--color-secondary);
+}
+
+.label {
+    display: inline-block;
+    padding-right: 4px;
+}
+
+.unit {
+    font-size: var(--size-default);
+}
+
+.address,
+.transaction {
+    display: flex;
+    font-size: var(--size-default);
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+.shrink {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

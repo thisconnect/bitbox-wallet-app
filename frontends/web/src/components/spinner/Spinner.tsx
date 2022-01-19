@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import MenuIcon from '../../assets/icons/menu.svg';
 import { share } from '../../decorators/share';
 import { translate, TranslateProps } from '../../decorators/translate';
 import { SharedProps, store, toggle as toggleGuide } from '../guide/guide';
 import { toggleSidebar } from '../sidebar/sidebar';
-import * as style from './Spinner.css';
+import style from './Spinner.module.css';
 
 interface SpinnerProps {
     text?: string;
@@ -30,7 +30,7 @@ type Props = SpinnerProps & TranslateProps & SharedProps;
 
 class Spinner extends Component<Props> {
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
         document.addEventListener('keydown', this.handleKeyDown);
     }
 
@@ -44,11 +44,12 @@ class Spinner extends Component<Props> {
         document.activeElement.blur();
     }
 
-    public render({
-        t,
-        text,
-        guideExists,
-    }: RenderableProps<Props>) {
+    public render() {
+        const {
+            t,
+            text,
+            guideExists,
+        } = this.props;
         return (
             <div className={style.spinnerContainer}>
                 <div className={style.togglersContainer}>
@@ -99,5 +100,5 @@ class Spinner extends Component<Props> {
 }
 
 const SharedSpinner = share<SharedProps, SpinnerProps & TranslateProps>(store)(Spinner);
-const TranslatedSpinner = translate<SpinnerProps>()(SharedSpinner);
+const TranslatedSpinner = translate()(SharedSpinner);
 export { TranslatedSpinner as Spinner };

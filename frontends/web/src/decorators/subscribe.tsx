@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory, h, JSX, RenderableProps } from 'preact';
+import { Component, ComponentType } from 'react';
 import { getDisplayName } from '../utils/component';
 import { apiSubscribe, Event } from '../utils/event';
 import { apiGet } from '../utils/request';
@@ -36,10 +36,10 @@ export function subscribe<LoadedProps extends ObjectButNotFunction, ProvidedProp
     subscribeWithoutLoading: boolean = false,
 ) {
     return function decorator(
-        WrappedComponent: ComponentFactory<LoadedProps & ProvidedProps>,
+        WrappedComponent: ComponentType<LoadedProps & ProvidedProps>,
     ) {
         return class Subscribe extends Component<ProvidedProps & Partial<LoadedProps>, LoadedProps> {
-            public static displayName = `Subscribe(${getDisplayName(WrappedComponent)})`;
+            public static displayName = `Subscribe(${getDisplayName(WrappedComponent as any)})`;
 
             private determineEndpoints(): EndpointsObject<LoadedProps> {
                 if (typeof endpointsObjectOrFunction === 'function') {
@@ -115,9 +115,11 @@ export function subscribe<LoadedProps extends ObjectButNotFunction, ProvidedProp
 
             private readonly component = subscribeWithoutLoading ? WrappedComponent : load(endpointsObjectOrFunction, renderOnlyOnceLoaded)(WrappedComponent);
 
-            public render(props: RenderableProps<ProvidedProps & Partial<LoadedProps>>, state: LoadedProps): JSX.Element {
-                /* eslint no-undef: "off" */
-                return <this.component {...state} {...props} />;
+            public render(): JSX.Element {
+                const props = this.props;
+                const state = this.state;
+                const Component = this.component;
+                return <Component {...state} {...props} />;
             }
         };
     };

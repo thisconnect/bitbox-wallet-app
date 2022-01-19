@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { route } from 'preact-router';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { route } from '../../../utils/route';
+import { withTranslation } from 'react-i18next';
 import { ButtonLink } from '../../../components/forms';
 import { Guide } from '../../../components/guide/guide';
 import { Entry } from '../../../components/guide/entry';
@@ -25,13 +25,12 @@ import { Backups } from '../bitbox01/backups';
 import { BackupsV2 } from '../bitbox02/backups';
 import { SDCardCheck } from '../bitbox02/sdcardcheck';
 
-@translate()
-export default class ManageBackups extends Component {
+class ManageBackups extends Component {
     hasDevice = () => {
         return !!this.props.devices[this.props.deviceID];
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.hasDevice()) {
             route('/', true);
         }
@@ -41,7 +40,7 @@ export default class ManageBackups extends Component {
         return (
             <ButtonLink
                 transparent
-                href={`/device/${this.props.deviceID}`}>
+                to={`/device/${this.props.deviceID}`}>
                 {this.props.t('button.back')}
             </ButtonLink>
         );
@@ -100,21 +99,18 @@ export default class ManageBackups extends Component {
         }
     }
 
-    render({ t }, { }) {
+    render() {
+        const { t } = this.props;
         if (!this.hasDevice()) {
             return null;
         }
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{t('backup.title')}</h2>} />
                     <div className="innerContainer scrollableContainer">
                         <div className="content padded">
-                            <div className="subHeaderContainer" style="justify-content: center; margin: 0;">
-                                <div className="subHeader">
-                                    <h3 className="text-center">{t('backup.list')}</h3>
-                                </div>
-                            </div>
+                            <h3 className="subTitle">{t('backup.list')}</h3>
                             {this.listBackups()}
                         </div>
                     </div>
@@ -124,3 +120,5 @@ export default class ManageBackups extends Component {
         );
     }
 }
+
+export default withTranslation()(ManageBackups);

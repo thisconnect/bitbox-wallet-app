@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import React, { Component} from 'react';
 import { Coin } from '../../../api/account';
 import A from '../../../components/anchor/anchor';
 import { Dialog } from '../../../components/dialog/dialog';
@@ -23,7 +23,7 @@ import { ExpandOpen } from '../../../components/icon/icon';
 import { FiatConversion } from '../../../components/rates/rates';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiGet } from '../../../utils/request';
-import * as style from './utxos.css';
+import style from './utxos.module.css';
 
 interface UTXOsProps {
     accountCode: string;
@@ -31,6 +31,7 @@ interface UTXOsProps {
     explorerURL: string;
     onChange: (SelectedUTXO) => void;
     onClose: () => void;
+    ref?: React.RefObject<any> // WithTranslation doesn't add ref prop correctly
 }
 
 interface UTXO {
@@ -60,7 +61,7 @@ interface State {
     selectedUTXOs: SelectedUTXO;
 }
 
-class UTXOs extends Component<Props, State> {
+export class UTXOsClass extends Component<Props, State> {
     public readonly state: State = {
         utxos: [],
         selectedUTXOs: {},
@@ -88,7 +89,7 @@ class UTXOs extends Component<Props, State> {
         });
     }
 
-    private handleUTXOChange = (event: Event) => {
+    private handleUTXOChange = (event: React.SyntheticEvent) => {
         const target = event.target as HTMLInputElement;
         const outPoint = target.dataset.outpoint as string;
         const selectedUTXOs = Object.assign({}, this.state.selectedUTXOs);
@@ -102,10 +103,9 @@ class UTXOs extends Component<Props, State> {
         });
     }
 
-    public render(
-        { t, active, explorerURL, onClose }: RenderableProps<Props>,
-        { utxos, selectedUTXOs }: State,
-    ) {
+    public render() {
+        const { t, active, explorerURL, onClose } = this.props;
+        const { utxos, selectedUTXOs } = this.state;
         if (!active) {
             return null;
         }
@@ -172,5 +172,5 @@ class UTXOs extends Component<Props, State> {
     }
 }
 
-const TranslatedUTXOs = translate<UTXOsProps>(undefined, { withRef: true })(UTXOs);
+const TranslatedUTXOs = translate(undefined, { withRef: true })(UTXOsClass);
 export { TranslatedUTXOs as UTXOs };

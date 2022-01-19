@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component, createRef } from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet, apiPost } from '../../../../utils/request';
 import { PasswordRepeatInput } from '../../../../components/password';
 import { Button, Input, Checkbox } from '../../../../components/forms';
@@ -25,7 +25,7 @@ import { Header } from '../../../../components/layout';
 import { Spinner } from '../../../../components/spinner/Spinner';
 import warning from '../../../../assets/icons/warning.png';
 import { LanguageSwitch } from '../../../../components/language/language';
-import * as style from '../bitbox01.css';
+import style from '../bitbox01.module.css';
 
 const STATUS = Object.freeze({
     DEFAULT: 'default',
@@ -34,8 +34,7 @@ const STATUS = Object.freeze({
     ERROR: 'error',
 });
 
-@translate()
-export default class SeedCreateNew extends Component {
+class SeedCreateNew extends Component {
     state = {
         showInfo: true,
         status: STATUS.CHECKING,
@@ -49,13 +48,14 @@ export default class SeedCreateNew extends Component {
         },
     }
 
+    walletNameInput = createRef();
+
     componentDidMount () {
         this.checkSDcard();
     }
 
     validate = () => {
-        // @ts-ignore
-        if (!this.walletNameInput || !this.walletNameInput.validity.valid || !this.validAgreements()) {
+        if (!this.walletNameInput.current || !this.walletNameInput.current.validity.valid || !this.validAgreements()) {
             return false;
         }
         return this.state.backupPassword && this.state.walletName !== '';
@@ -84,9 +84,6 @@ export default class SeedCreateNew extends Component {
                 });
             } else {
                 this.props.onSuccess();
-            }
-            if (this.backupPasswordInput) {
-                this.backupPasswordInput.getWrappedInstance().clear();
             }
             this.setState({ backupPassword: '' });
         });
@@ -138,19 +135,21 @@ export default class SeedCreateNew extends Component {
         }
     }
 
-    render({
-        t,
-        goBack,
-    }, {
-        showInfo,
-        status,
-        walletName,
-        error,
-        agreements,
-    }) {
+    render() {
+        const {
+            t,
+            goBack,
+        } = this.props;
+        const {
+            showInfo,
+            status,
+            walletName,
+            error,
+            agreements,
+        } = this.state;
         const content = showInfo ? (
-            <div class="box large">
-                <ol class="first">
+            <div className="box large">
+                <ol className="first">
                     <li>{t('seed.info.description1')}</li>
                     <li>{t('seed.info.description2')}</li>
                 </ol>
@@ -180,19 +179,18 @@ export default class SeedCreateNew extends Component {
                         label={t('seed.walletName.label')}
                         disabled={status === STATUS.CREATING}
                         onInput={this.handleFormChange}
-                        getRef={ref => this.walletNameInput = ref}
+                        ref={this.walletNameInput}
                         value={walletName} />
                     <PasswordRepeatInput
                         label={t('seed.password.label')}
                         repeatPlaceholder={t('seed.password.repeatPlaceholder')}
-                        ref={ref => this.backupPasswordInput = ref}
                         disabled={status === STATUS.CREATING}
                         onValidPassword={this.setValidBackupPassword} />
                 </div>
-                <div class={style.agreements}>
-                    <div class="flex flex-row flex-start flex-items-center">
-                        <img src={warning} style="width: 18px; margin-right: 10px; position: relative; bottom: 1px;" />
-                        <p class={style.agreementsLabel}>{t('seed.description')}</p>
+                <div className={style.agreements}>
+                    <div className="flex flex-row flex-start flex-items-center">
+                        <img src={warning} style={{width: 18, marginRight: 10, position: 'relative', bottom: 1}} />
+                        <p className={style.agreementsLabel}>{t('seed.description')}</p>
                     </div>
                     <Checkbox
                         id="password_change"
@@ -227,7 +225,7 @@ export default class SeedCreateNew extends Component {
         );
 
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('welcome.title')}</h2>}>
                         <LanguageSwitch />
@@ -255,3 +253,5 @@ export default class SeedCreateNew extends Component {
         );
     }
 }
+
+export default withTranslation()(SeedCreateNew);

@@ -1,0 +1,89 @@
+.button {
+    align-items: center;
+    background-color: var(--color-white);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    height: 18px;
+    justify-content: center;
+    margin-top: var(--spacing-half);
+    min-width: 18px !important;
+    padding: 0;
+    position: absolute;
+    right: var(--spacing-default);
+    top: 10px;
+    transition: background-color ease 0.2s;
+    width: 18px;
+    will-change: background-color;
+}
+
+.button img {
+    width: 18px;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.button:disabled {
+    cursor: not-allowed;
+}
+
+.success {
+    background-color: var(--color-success) !important;
+}
+
+.container {
+    position: relative;
+}
+
+.inputField {
+    border: 1px solid var(--color-mediumgray);
+    border-radius: 2px;
+    flex: 1;
+    font-size: var(--size-default);
+    font-weight: 400;
+    height: 52px;
+    margin-bottom: 0;
+    min-width: 200px !important;
+    padding: var(--space-half) calc(var(--space-default) * 1.2) var(--space-half) calc(var(--space-half) * .5);
+    resize: none;
+    width: 100%;
+}
+
+@media screen and (min-width: 640px) {
+    .inputField {
+        text-align: center;
+    }
+}
+
+.inputField:focus {
+    outline: solid 1px var(--color-blue);
+}
+
+@media screen and (max-width: 640px) {
+    .button {
+        margin-left: var(--space-quarter);
+    }
+}
+
+.flexibleHeight {
+    height: auto;
+}
+
+.alignLeft {
+    text-align: left;
+}
+
+.alignRight {
+    text-align: right;
+}
+
+.borderLess,
+.borderLess:focus {
+    border: none;
+    border-radius: 0;
+    outline: none;
+}

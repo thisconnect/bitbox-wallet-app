@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { apiPost } from '../../../../../utils/request';
-import { Dialog } from '../../../../../components/dialog/dialog';
+import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
 import { CopyableInput } from '../../../../../components/copy/Copy';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
-import * as dialogStyle from '../../../../../components/dialog/dialog.css';
 
-@translate()
-export default class RandomNumber extends Component {
+class RandomNumber extends Component {
     constructor(props) {
         super(props);
         this.state = {
             active: false,
-            number: undefined,
+            number: '',
         };
     }
 
@@ -49,26 +47,32 @@ export default class RandomNumber extends Component {
         });
     }
 
-    render({ t }, { number, active }) {
+    render() {
+        const { t } = this.props;
+        const { number, active } = this.state;
         return (
             <div>
                 <SettingsButton onClick={this.getRandomNumber}>
                     {t('random.button')}
                 </SettingsButton>
                 {
+                    // @ts-ignore Object is possibly 'undefined'.
                     active && number ? (
                         <Dialog title="Generate Random Number" onClose={this.abort}>
                             <div className="columnsContainer half">
                                 <div className="columns">
                                     <div className="column">
-                                        <p>{t('random.description', { bits: number.length * 4 })}</p>
+                                        <p>{t('random.description', {
+                                            // @ts-ignore
+                                            bits: number.length * 4
+                                        })}</p>
                                         <CopyableInput value={number} flexibleHeight />
                                     </div>
                                 </div>
                             </div>
-                            <div class={dialogStyle.actions}>
+                            <DialogButtons>
                                 <Button primary onClick={this.abort}>{t('button.ok')}</Button>
-                            </div>
+                            </DialogButtons>
                         </Dialog>
                     ) : null
                 }
@@ -76,3 +80,5 @@ export default class RandomNumber extends Component {
         );
     }
 }
+
+export default withTranslation()(RandomNumber);

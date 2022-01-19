@@ -15,11 +15,12 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiPost } from '../../../utils/request';
 import { Dialog } from '../../../components/dialog/dialog';
-import * as dialogStyle from '../../../components/dialog/dialog.css';
+// TODO: use DialogButtons
+import dialogStyle from '../../../components/dialog/dialog.module.css';
 import { Button } from '../../../components/forms';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 
@@ -44,6 +45,11 @@ interface State {
 }
 
 class UpgradeButton extends Component<Props, State> {
+    public readonly state: State = {
+        activeDialog: false,
+        confirming: false,
+    };
+
     private upgradeFirmware = () => {
         this.setState({ confirming: true });
         apiPost(this.props.apiPrefix + '/upgrade-firmware').then(() => {
@@ -56,15 +62,16 @@ class UpgradeButton extends Component<Props, State> {
         this.setState({ activeDialog: false });
     }
 
-    public render(
-        { t,
-          versionInfo,
-          asButton,
-        }: RenderableProps<Props>,
-        { activeDialog,
-          confirming,
-        }: State,
-    ) {
+    public render() {
+        const {
+            t,
+            versionInfo,
+            asButton,
+        } = this.props;
+        const {
+            activeDialog,
+            confirming,
+        } = this.state;
         if (!versionInfo || !versionInfo.canUpgrade) {
             return null;
         }
@@ -112,5 +119,5 @@ class UpgradeButton extends Component<Props, State> {
     }
 }
 
-const HOC = translate<UpgradeButtonProps>()(UpgradeButton);
+const HOC = translate()(UpgradeButton);
 export { HOC as UpgradeButton };

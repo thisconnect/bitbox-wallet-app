@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet } from '../../../../utils/request';
 import { Button } from '../../../../components/forms';
 import { Backups } from '../backups';
@@ -24,7 +24,7 @@ import { SwissMadeOpenSource, Alert } from '../../../../components/icon';
 import { Header } from '../../../../components/layout';
 import { Spinner } from '../../../../components/spinner/Spinner';
 import { LanguageSwitch } from '../../../../components/language/language';
-import * as style from '../bitbox01.css';
+import style from '../bitbox01.module.css';
 
 const STATUS = Object.freeze({
     DEFAULT: 'default',
@@ -33,8 +33,7 @@ const STATUS = Object.freeze({
     ERROR: 'error',
 });
 
-@translate()
-export default class SeedRestore extends Component {
+class SeedRestore extends Component {
     state = {
         showInfo: true,
         status: STATUS.CHECKING,
@@ -81,18 +80,20 @@ export default class SeedRestore extends Component {
         }
     }
 
-    render({
-        t,
-        deviceID,
-        goBack,
-        onSuccess,
-    }, {
-        showInfo,
-        status,
-        error,
-    }) {
+    render() {
+        const {
+            t,
+            deviceID,
+            goBack,
+            onSuccess,
+        } = this.props;
+        const {
+            showInfo,
+            status,
+            error,
+        } = this.state;
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('welcome.title')}</h2>}>
                         <LanguageSwitch />
@@ -110,8 +111,8 @@ export default class SeedRestore extends Component {
                             }
                             {
                                 showInfo ? (
-                                    <div class="box large">
-                                        <ol class="first">
+                                    <div className="box large">
+                                        <ol className="first">
                                             <li>{t('seedRestore.info.description1')}</li>
                                             <li>{t('seedRestore.info.description2')}</li>
                                             <li>{t('seedRestore.info.description3')}</li>
@@ -158,3 +159,5 @@ export default class SeedRestore extends Component {
         );
     }
 }
+
+export default withTranslation()(SeedRestore);

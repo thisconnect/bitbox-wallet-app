@@ -2,9 +2,12 @@
 
 This repo contains the source code for the BitBoxApp and related tools.
 
+Contributions are very welcome.
+Please see the [contribution guidelines](CONTRIBUTING.md).
+
 ## Tech stack
 
-The wallet UI is a [preact](https://preactjs.com/) single page webapp. It sources its data from the
+The wallet UI is a [React](https://reactjs.org/) single page webapp. It sources its data from the
 backend written in Go.
 
 The Desktop app is a C++ Qt5 program containing only a `WebEngineView`, displaying the UI.
@@ -37,7 +40,7 @@ XCode project.
   talking Electrum using the BitBox for signing, and serve a high level HTTP API to control it.
 - `frontends/qt/`: the C++/Qt5 app which builds the wallet app for the desktop.
 - `frontends/android/`: Android target (EXPERIMENTAL / ALPHA)
-- `frontends/web/`: home of the preact UI.
+- `frontends/web/`: home of the React UI.
 
 ## Set up the development environment
 
@@ -48,7 +51,7 @@ The below instructions assume a unix environment.
 The following dependencies need to be installed:
 
 - [Go](https://golang.org/doc/install) version 1.16
-- [Yarn](https://yarnpkg.com/en/) for managing the web UI deps
+- [Node.js](https://nodejs.org/) for managing the web UI deps
 - [Qt5](https://www.qt.io) version 5.15.2
   - install Qt for your platform, including the WebEngine component
 
@@ -56,7 +59,7 @@ Make sure the following environment variables are set:
 - `$GOPATH`
 - `$PATH`: should include `$GOPATH/bin`, `$GOROOT/bin` and the location of `qmake` and `rcc`
 
-Clone this repository to `$GOPATH/src/github.com/digitalbitbox/bitbox-wallet-app` (`$GOPATH` is usually `~/go`).
+Clone this repository to `$GOPATH/src/github.com/digitalbitbox/bitbox-wallet-app` (`$GOPATH` is usually `~/go`) using `git clone --resursive`.
 
 To initialize the build environment and install the required go utilities (linters, ...), call
 * `make envinit`, or
@@ -77,9 +80,9 @@ The servers used are configurable in the app settings. Currently, when running t
 (`make servewallet`), the config is ignored and servers on Shift's devserver are used. The
 hosts/ports/certs of those are currently hardcoded.
 
-Currently, [Electrs](https://github.com/romanz/electrs) is the recommended way to connect your own
-full node. ElectrumX is currently not supported, see [this
-issue](https://github.com/digitalbitbox/bitbox-wallet-app/issues/499).
+Currently, [Electrs](https://github.com/romanz/electrs) and
+[ElectrumX](https://github.com/spesmilo/electrumx/) are the recommended ways to connect your own
+full node.
 
 ## Development workflow
 
@@ -132,10 +135,26 @@ so that
 - less reliance on remote systems
 - because `gomobile bind` does not support Go modules yet
 
-#### Update npm dependencies
+#### NPM dependencies
 
-Check outdated dependencies `cd frontends/web && yarn outdated` and `yarn upgrade
-modulename@specificversion`.
+All dependencies are locked in `package-lock.json` so that subsequent installs and different installations get the exact same dependency tree. To run any of the following npm commands run `cd frontends/web` first.
+
+**Note:** Some devDependencies in `package.json` are specified with a semver range operator i.e. `"typescript": "^4.4.2"`. The main reason is that those dependencies can be **updated** anytime within the range by running `npm update`.
+
+Check **outdated** dependencies: `npm outdated`.
+
+**Update a specific dependency** with a fixed semver `npm install modulename@specificversion --save-exact`, and with `--save-dev` for devDependencies.
+
+#### Qt WebEngine Debugging
+
+Set the following environment variable to debug the Qt WebEngine with Chrome developer tools,
+use a port_number of your choice, launch the following command and go to `http://localhost:<port_number>`.
+
+```
+QTWEBENGINE_REMOTE_DEBUGGING=<port_number> ./frontends/qt/build/osx/BitBox.app/Contents/MacOS/BitBox
+```
+
+see also https://doc.qt.io/qt-5/qtwebengine-debugging.html
 
 ### CI
 
@@ -145,10 +164,6 @@ Run `make ci` to run all static analysis tools and tests.
 
 To statically compile the UI, run `make buildweb` again, which compiles the web ui into a compact
 bundle.
-
-### Base integration
-To test the BitBox Base integration, run the base-middleware on your local
-machine. Make sure you have bitcoind and c-lightning running as well.
 
 ## Develop using Docker
 

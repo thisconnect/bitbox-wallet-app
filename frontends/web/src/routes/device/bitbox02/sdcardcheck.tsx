@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import * as dialogStyle from '../../../components/dialog/dialog.css';
-import { Dialog } from '../../../components/dialog/dialog';
+import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { apiGet } from '../../../utils/request';
 import { Button, ButtonLink } from '../../../components/forms';
 
@@ -33,6 +32,8 @@ interface State {
 type Props = SDCardCheckProps & TranslateProps;
 
 class SDCardCheck extends Component<Props, State> {
+    state = {} as State;
+
     public componentDidMount() {
         this.check();
     }
@@ -42,12 +43,15 @@ class SDCardCheck extends Component<Props, State> {
             .then(inserted => this.setState({ sdCardInserted: inserted }));
     }
 
-    public render(
-        { t,
-          children,
-          deviceID,
-        }: RenderableProps<Props>,
-        { sdCardInserted }: State) {
+    public render() {
+        const {
+            t,
+            children,
+            deviceID,
+        } = this.props;
+        const { sdCardInserted } = this.state;
+
+        // pending check-sdcard request
         if (sdCardInserted === undefined) {
             return null;
         }
@@ -61,7 +65,7 @@ class SDCardCheck extends Component<Props, State> {
                             </div>
                         </div>
                     </div>
-                    <div className={dialogStyle.actions}>
+                    <DialogButtons>
                         <Button
                             primary
                             onClick={this.check}>
@@ -69,10 +73,10 @@ class SDCardCheck extends Component<Props, State> {
                         </Button>
                         <ButtonLink
                             transparent
-                            href={`/device/${deviceID}`}>
+                            to={`/device/${deviceID}`}>
                             {t('button.back')}
                         </ButtonLink>
-                    </div>
+                    </DialogButtons>
                 </Dialog>
             );
         }
@@ -85,5 +89,5 @@ class SDCardCheck extends Component<Props, State> {
 
 }
 
-const HOC = translate<SDCardCheckProps>()(SDCardCheck);
+const HOC = translate()(SDCardCheck);
 export { HOC as SDCardCheck };

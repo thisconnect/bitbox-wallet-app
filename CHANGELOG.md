@@ -1,10 +1,38 @@
 # Changelog
 
-## [Unreleased]
+## 4.31.0 [tagged 2022-01-13]
+- Bundle BitBox02 firmware version v9.9.0
+- Support sending to Bitcoin taproot addresses
+- Fix opening 'transactions export' CSV file
+- Add Dutch translation
+- Add support for Norwegian krone (NOK)
+- Migrated the frontend from preact to React
+
+## 4.30.0 [released 2021-11-17]
+- Add Buy CTA on empty Account overview and summary views
+- Fix an Android app crash when opening the app after first rejecting the USB permissions
+- Change label to show 'Fee rate' or 'Gas price' for custom fees
+- Change label 'Send all' label to 'Send selected coins' if there is a coin selection
+- Improve information about using the passphrase feature
+- Temporary disable Chromium sandbox on linux due to #1447
+
+## 4.29.1 [tagged 2021-09-07, released 2021-09-08]
+- Verify the EIP-55 checksum in mixed-case Ethereum recipient addresses
+- Disable GPU acceleration introduced in v4.29.0 due to rendering artefacts on Windows
+- Changed default currency to USD
+- Support copying address from transaction details
+
+## 4.29.0 [released 2021-08-03]
+- Add support for the Address Ownership Proof Protocol (AOPP), i.e.: handle 'aopp:?...' URIs. See https://aopp.group/.
+- Add fee options for Ethereum based on priority, and the ability to set a custom gas price
 - Add a guide entry: How to import my transactions into CoinTracking?
 - Updated to Qt 5.15 from Qt 5.12 for Linux, macOS and Windows
 - Revamped account-info view to show account keypath, scriptType etc.
 - Allow disabling accounts in 'Manage accounts'.
+- Prevent screen from turning off while the app is in foreground on Android
+- Allow entering the BitBox02 startup settings in 'Manage device' to toggle showing the firmware hash at any time
+- More user-friendly messages for first BitBox02 firmware install
+- Use hardware accelerated rendering in Qt if available
 
 ## 4.28.2 [released 2021-06-03]
 - Fix a conversion rates updater bug

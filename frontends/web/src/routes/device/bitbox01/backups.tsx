@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import React, { Component, createRef} from 'react';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiGet } from '../../../utils/request';
-import SimpleMarkup from '../../../utils/simplemarkup';
+import { SimpleMarkup } from '../../../utils/markup';
 import { alertUser } from '../../../components/alert/Alert';
 import { Button } from '../../../components/forms';
 import { Backup, BackupsListItem } from '../components/backup';
-import * as style from '../components/backups.css';
+import style from '../components/backups.module.css';
 import Check from './check';
 import Create from './create';
 import { Restore } from './restore';
@@ -46,7 +46,7 @@ interface State {
 }
 
 class Backups extends Component<Props, State> {
-    private scrollableContainer!: HTMLElement;
+    private scrollableContainer = createRef<HTMLDivElement>();
 
     constructor(props) {
         super(props);
@@ -82,22 +82,22 @@ class Backups extends Component<Props, State> {
         this.setState({ selectedBackup: backupID });
     }
 
-    private scrollIntoView = ({ target }: { target: HTMLElement }) => {
-        const offsetTop = target.offsetTop;
-        const offsetHeight = (target.parentNode as HTMLElement).offsetHeight;
-        if (offsetTop > this.scrollableContainer.scrollTop + offsetHeight) {
+    private scrollIntoView = (event: React.SyntheticEvent) => {
+        if(!this.scrollableContainer.current){
             return;
         }
-        const top = Math.max((offsetTop + offsetHeight) - this.scrollableContainer.offsetHeight, 0);
-        this.scrollableContainer.scroll({ top, behavior: 'smooth' });
+        const target = event.target as HTMLInputElement;
+        const offsetTop = target.offsetTop;
+        const offsetHeight = (target.parentNode as HTMLElement).offsetHeight;
+        if (offsetTop > this.scrollableContainer.current.scrollTop + offsetHeight) {
+            return;
+        }
+        const top = Math.max((offsetTop + offsetHeight) - this.scrollableContainer.current.offsetHeight, 0);
+        this.scrollableContainer.current.scroll({ top, behavior: 'smooth' });
     }
 
-    private setScrollableContainerRef = (ref: HTMLElement) => {
-        this.scrollableContainer = ref;
-    }
-
-    public render(
-        {
+    public render() {
+        const {
             t,
             children,
             showCreate = false,
@@ -105,17 +105,16 @@ class Backups extends Component<Props, State> {
             deviceID,
             requireConfirmation = true,
             onRestore,
-        }: RenderableProps<Props>,
-        { backupList, selectedBackup, sdCardInserted, lock }: State,
-    ) {
+        } = this.props;
+        const { backupList, selectedBackup, sdCardInserted, lock } = this.state;
         if (lock === undefined) {
             return null;
         }
         if (sdCardInserted === false) {
             return (
                 <div className="box m-top-default">
-                    <p class="first">{t('backup.insert')}</p>
-                    <div class="buttons">
+                    <p className="first">{t('backup.insert')}</p>
+                    <div className="buttons">
                         <Button primary onClick={this.refresh}>
                             {t('backup.insertButton')}
                         </Button>
@@ -130,7 +129,7 @@ class Backups extends Component<Props, State> {
         return (
             <div className="box large m-top-default">
                 <SimpleMarkup tagName="p" markup={t('backup.description')} />
-                <div class={style.backupsList} ref={this.setScrollableContainerRef}>
+                <div className={style.backupsList} ref={this.scrollableContainer}>
                     <div className={style.listContainer}>
                         {
                             backupList.length ? backupList.map(backup => (
@@ -143,14 +142,14 @@ class Backups extends Component<Props, State> {
                                         radio={true} />
                                 </div>
                             )) : (
-                                <p class={style.emptyText}>
+                                <p className={style.emptyText}>
                                     {t('backup.noBackups')}
                                 </p>
                             )
                         }
                     </div>
                 </div>
-                <div class="buttons">
+                <div className="buttons">
                     {
                         showCreate && !lock && (
                             <Create
@@ -188,5 +187,5 @@ class Backups extends Component<Props, State> {
     }
 }
 
-const TranslatedBackups = translate<BackupsProps>()(Backups);
+const TranslatedBackups = translate()(Backups);
 export { TranslatedBackups as Backups };

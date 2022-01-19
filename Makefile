@@ -13,8 +13,7 @@
 # limitations under the License.
 
 SHELL    := /bin/bash
-REPOROOT := `dirname $(realpath $(lastword $(MAKEFILE_LIST)))`
-WEBROOT  := $(REPOROOT)/frontends/web
+WEBROOT  := frontends/web
 GOPATH   ?= $(HOME)/go
 PATH     := $(PATH):$(GOPATH)/bin
 
@@ -26,9 +25,7 @@ envinit:
 	GO111MODULE=off go get -u github.com/stretchr/testify # needed for mockery
 	GO111MODULE=on go get -u github.com/vektra/mockery/...
 	GO111MODULE=off go get -u github.com/matryer/moq
-	GO111MODULE=off go get -u github.com/goware/modvendor
 	GO111MODULE=off go get golang.org/x/tools/cmd/goimports
-	GO111MODULE=off go get -u github.com/jteeuwen/go-bindata/...
 	GO111MODULE=off go get -u golang.org/x/mobile/cmd/gomobile
 	GO111MODULE=off gomobile init
 # Initializiation on MacOS
@@ -37,7 +34,6 @@ envinit:
 #  - add to $PATH: /usr/local/opt/go@1.16/bin
 osx-init:
 	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-	brew install yarn
 	brew install go@1.16
 	$(MAKE) envinit
 servewallet:
@@ -50,19 +46,20 @@ servewallet-prodservers:
 	go run -mod=vendor ./cmd/servewallet -devservers=false
 buildweb:
 	node --version
+	npm --version
 	rm -rf ${WEBROOT}/build
-	yarn --cwd=${WEBROOT} install
-	yarn --cwd=${WEBROOT} run build
+	cd ${WEBROOT} && npm install
+	cd ${WEBROOT} && npm run build
 webdev:
-	cd frontends/web && $(MAKE) dev
+	cd ${WEBROOT} && $(MAKE) dev
 weblint:
-	cd frontends/web && $(MAKE) lint
+	cd ${WEBROOT} && $(MAKE) lint
 webfix:
-	cd frontends/web && $(MAKE) fix
+	cd ${WEBROOT} && $(MAKE) fix
 webtest:
-	cd frontends/web && $(MAKE) jstest
+	cd ${WEBROOT} && $(MAKE) jstest
 webtestwatch:
-	cd frontends/web && $(MAKE) jstest-watch
+	cd ${WEBROOT} && $(MAKE) jstest-watch
 qt-linux: # run inside dockerdev
 	$(MAKE) buildweb
 	cd frontends/qt && $(MAKE) linux
@@ -90,11 +87,10 @@ dockerinit:
 dockerdev:
 	./scripts/dockerdev.sh
 locize-push:
-	cd frontends/web/src/locales && locize sync
+	cd ${WEBROOT}/src/locales && locize sync
 locize-pull:
-	cd frontends/web/src/locales && locize download
+	cd ${WEBROOT}/src/locales && locize download
 locize-fix:
 	locize format ${WEBROOT}/src/locales --format json
 go-vendor:
 	go mod vendor
-	modvendor -copy="**/*.c **/*.h **/*.proto" -v

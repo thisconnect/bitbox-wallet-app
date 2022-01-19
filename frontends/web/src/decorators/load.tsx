@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, ComponentFactory, h, JSX, RenderableProps } from 'preact';
+import { Component, ComponentType } from 'react';
 import { getDisplayName } from '../utils/component';
 import { apiGet } from '../utils/request';
 import { KeysOf, ObjectButNotFunction } from '../utils/types';
@@ -38,10 +38,12 @@ export function load<LoadedProps extends ObjectButNotFunction, ProvidedProps ext
     renderOnlyOnceLoaded: boolean = true, // Use false only if all loaded props are optional!
 ) {
     return function decorator(
-        WrappedComponent: ComponentFactory<LoadedProps & ProvidedProps>,
+        WrappedComponent: ComponentType<LoadedProps & ProvidedProps>,
     ) {
         return class Load extends Component<ProvidedProps & Partial<LoadedProps>, LoadedProps> {
-            public static displayName = `Load(${getDisplayName(WrappedComponent)})`;
+            public readonly state = {} as LoadedProps;
+
+            public static displayName = `Load(${getDisplayName(WrappedComponent as any)})`;
 
             private determineEndpoints(): EndpointsObject<LoadedProps> {
                 if (typeof endpointsObjectOrFunction === 'function') {
@@ -107,7 +109,9 @@ export function load<LoadedProps extends ObjectButNotFunction, ProvidedProps ext
                 return true;
             }
 
-            public render(props: RenderableProps<ProvidedProps & Partial<LoadedProps>>, state: LoadedProps): JSX.Element | null {
+            public render(): JSX.Element | null {
+                const props = this.props;
+                const state = this.state;
                 if (renderOnlyOnceLoaded && !this.allEndpointsLoaded()) { return null; }
                 return <WrappedComponent {...state} {...props as any} />; // This order allows the subscribe decorator (and others) to override the loaded endpoints with properties.
             }

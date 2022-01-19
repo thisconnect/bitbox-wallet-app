@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, JSX, RenderableProps } from 'preact';
+import { Component, PropsWithChildren } from 'react';
 import A from '../../components/anchor/anchor';
 import Button from '../../components/forms/button';
 import { Entry } from '../../components/guide/entry';
@@ -25,7 +25,7 @@ import { translate, TranslateProps } from '../../decorators/translate';
 
 import externalIcon from './assets/external-link.svg';
 import { data, ExchangeData, Method, Region } from './exchanges-data';
-import * as styles from './exchanges.css';
+import styles from './exchanges.module.css';
 
 interface ExchangesProps {
 }
@@ -66,12 +66,9 @@ class Exchanges extends Component<Props, State> {
         this.setState(({ method }) => ({ method: method !== code ? code : null }));
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        {
-        method,
-        region,
-    }) {
+    public render() {
+        const { t } = this.props;
+        const { method, region } = this.state;
         const results = this.data
             .filter(({ regions }) => !region || regions.includes(region))
             .filter(({ payment }) => !method || payment.includes(method))
@@ -170,7 +167,7 @@ function FilterButton({
     active = false,
     onClick,
     children,
-}: RenderableProps<FilterButtonProps>): JSX.Element {
+}: PropsWithChildren<FilterButtonProps>): JSX.Element {
     return (
         <Button
             primary={active}
@@ -185,7 +182,7 @@ function Row({
     key,
     description,
     hostname,
-}: RenderableProps<Exchange>): JSX.Element {
+}: PropsWithChildren<Exchange>): JSX.Element {
     return (
         <A
             key={key}
@@ -208,5 +205,5 @@ function Row({
     );
 }
 
-const HOC = translate<ExchangesProps>()(Exchanges);
+const HOC = translate()(Exchanges);
 export { HOC as Exchanges };

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { alertUser } from '../../../../../components/alert/Alert';
 import { apiPost } from '../../../../../utils/request';
 
-@translate()
-export default class LegacyHiddenWallet extends Component {
+class LegacyHiddenWallet extends Component {
     toggle = () => {
         const newValue = !this.props.newHiddenWallet;
         apiPost('devices/' + this.props.deviceID + '/feature-set', {
@@ -38,12 +37,12 @@ export default class LegacyHiddenWallet extends Component {
         });
     }
 
-    render({
-        t,
-        disabled,
-        newHiddenWallet,
-    }, {
-    }) {
+    render() {
+        const {
+            t,
+            disabled,
+            newHiddenWallet,
+        } = this.props;
         return (
             <Button
                 danger
@@ -54,3 +53,5 @@ export default class LegacyHiddenWallet extends Component {
         );
     }
 }
+
+export default withTranslation()(LegacyHiddenWallet);

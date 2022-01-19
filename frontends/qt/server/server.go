@@ -74,6 +74,11 @@ func backendCall(queryID C.int, s *C.char) {
 	bridgecommon.BackendCall(int(queryID), C.GoString(s))
 }
 
+//export handleURI
+func handleURI(uri *C.char) {
+	bridgecommon.HandleURI(C.GoString(uri))
+}
+
 //export serve
 func serve(
 	pushNotificationsFn C.pushNotificationsCallback,
@@ -83,9 +88,6 @@ func serve(
 ) {
 	log := logging.Get().WithGroup("server")
 	log.WithField("args", os.Args).Info("Started Qt application")
-	// workaround: this flag is parsed by qtwebengine, but flag.Parse() quits the app on
-	// unrecognized flags
-	// _ = flag.Int("remote-debugging-port", 0, "")
 	testnet := flag.Bool("testnet", false, "activate testnets")
 
 	if runtime.GOOS == "darwin" {
@@ -122,16 +124,20 @@ func serve(
 		&nativeCommunication{
 			respond: func(queryID int, response string) {
 				cResponse := C.CString(response)
+				defer C.free(unsafe.Pointer(cResponse))
 				C.respond(responseFn, C.int(queryID), cResponse)
-				C.free(unsafe.Pointer(cResponse))
 			},
 			pushNotify: func(msg string) {
-				C.pushNotify(pushNotificationsFn, C.CString(msg))
+				cMsg := C.CString(msg)
+				defer C.free(unsafe.Pointer(cMsg))
+				C.pushNotify(pushNotificationsFn, cMsg)
 			},
 		},
 		&bridgecommon.BackendEnvironment{
 			NotifyUserFunc: func(text string) {
-				C.notifyUser(notifyUserFn, C.CString(text))
+				cText := C.CString(text)
+				defer C.free(unsafe.Pointer(cText))
+				C.notifyUser(notifyUserFn, cText)
 			},
 			DeviceInfosFunc:     usb.DeviceInfos,
 			SystemOpenFunc:      system.Open,
@@ -143,8 +149,10 @@ func serve(
 
 //export systemOpen
 func systemOpen(url *C.char) {
-	_ = system.Open(C.GoString(url))
-	// Not much we can do at this point in case of error.
+	goURL := C.GoString(url)
+	if err := system.Open(goURL); err != nil {
+		logging.Get().WithGroup("server").WithError(err).Errorf("systemOpen: error opening %v", goURL)
+	}
 }
 
 // Don't remove - needed for the C compilation.

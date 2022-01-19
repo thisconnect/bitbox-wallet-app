@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { ITransaction } from '../../api/account';
 import A from '../../components/anchor/anchor';
 import { translate, TranslateProps } from '../../decorators/translate';
 import { runningInAndroid } from '../../utils/env';
 import { Transaction } from './transaction';
-import * as style from './transactions.css';
+import { apiPost } from '../../utils/request';
+import style from './transactions.module.css';
 
 interface TransactionsProps {
     accountCode: string;
@@ -34,14 +35,15 @@ interface TransactionsProps {
 type Props = TransactionsProps & TranslateProps;
 
 class Transactions extends Component<Props> {
-    public render({
-        t,
-        accountCode,
-        explorerURL,
-        transactions,
-        exported,
-        handleExport,
-    }: RenderableProps<Props>) {
+    public render() {
+        const {
+            t,
+            accountCode,
+            explorerURL,
+            transactions,
+            exported,
+            handleExport,
+        } = this.props;
         // We don't support CSV export on Android yet, as it's a tricky to deal with the Downloads
         // folder and permissions.
         const csvExportDisabled = runningInAndroid();
@@ -51,9 +53,11 @@ class Transactions extends Component<Props> {
                     <label className="labelXLarge">{t('accountSummary.transactionHistory')}</label>
                     { !csvExportDisabled && (
                         exported ? (
-                            <A href={exported} className="labelXLarge labelLink">{t('account.openFile')}</A>
+                            <A key="open" href="#" onClick={() => apiPost('open', exported)} className="labelXLarge labelLink">
+                                {t('account.openFile')}
+                            </A>
                         ) : (
-                            <A href="#" onClick={handleExport} className="labelXLarge labelLink" title={t('account.exportTransactions')}>{t('account.export')}</A>
+                            <A key="export" href="#" onClick={handleExport} className="labelXLarge labelLink" title={t('account.exportTransactions')}>{t('account.export')}</A>
                         )
                     )
                     }
@@ -77,7 +81,7 @@ class Transactions extends Component<Props> {
                             index={index}
                             {...props} />
                     )) : (
-                        <div class={['flex flex-row flex-center', style.empty].join(' ')}>
+                        <div className={['flex flex-row flex-center', style.empty].join(' ')}>
                             <p>{t('transactions.placeholder')}</p>
                         </div>
                     )
@@ -87,6 +91,6 @@ class Transactions extends Component<Props> {
     }
 }
 
-const HOC = translate<TransactionsProps>()(Transactions);
+const HOC = translate()(Transactions);
 
 export { HOC as Transactions };

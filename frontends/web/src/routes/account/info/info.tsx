@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import { Component} from 'react';
+import { route } from '../../../utils/route';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { getInfo, IAccount, ISigningConfigurationList } from '../../../api/account';
 import { isBitcoinBased } from '../utils';
 import { ButtonLink } from '../../../components/forms';
 import { Header } from '../../../components/layout';
-import * as style from './info.css';
+import style from './info.module.css';
 import { SigningConfiguration } from './signingconfiguration';
 import { BitcoinBasedAccountInfoGuide } from './guide';
 
@@ -48,7 +48,7 @@ class Info extends Component<Props, State> {
         getInfo(this.props.code).then(info => this.setState({ info }));
     }
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
         document.addEventListener('keydown', this.handleKeyDown);
     }
 
@@ -79,10 +79,9 @@ class Info extends Component<Props, State> {
         }));
     }
 
-    public render(
-        { t, code }: RenderableProps<Props>,
-        { info, viewXPub }: State
-    ) {
+    public render() {
+        const { t, code } = this.props;
+        const { info, viewXPub } = this.state;
         const account = this.getAccount();
         if (!account || !info) return null;
         const config = info.signingConfigurations[viewXPub];
@@ -90,12 +89,12 @@ class Info extends Component<Props, State> {
         const xpubTypes = info.signingConfigurations.map(cfg => cfg.bitcoinSimple?.scriptType);
 
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{t('accountInfo.title')}</h2>} />
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content padded">
-                            <div class="box larger">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content padded">
+                            <div className="box larger">
                                 { isBitcoinBased(account.coinCode) ? (
                                     <h2 className={style.title}>
                                         {t('accountInfo.extendedPublicKey')}
@@ -108,7 +107,7 @@ class Info extends Component<Props, State> {
                                             numberOfXPubs: numberOfXPubs.toString(),
                                             scriptType: config.bitcoinSimple.scriptType.toUpperCase(),
                                         })}<br />
-                                        <button class={style.nextButton} onClick={this.showNextXPub}>
+                                        <button className={style.nextButton} onClick={this.showNextXPub}>
                                             {t(`accountInfo.xpubTypeChangeBtn.${xpubTypes[(viewXPub + 1) % numberOfXPubs]}`)}
                                         </button>
                                     </p>
@@ -121,7 +120,7 @@ class Info extends Component<Props, State> {
                                     signingConfigIndex={viewXPub}>
                                     <ButtonLink
                                         transparent
-                                        href={`/account/${code}`}>
+                                        to={`/account/${code}`}>
                                         {t('button.back')}
                                     </ButtonLink>
                                 </SigningConfiguration>
@@ -137,5 +136,5 @@ class Info extends Component<Props, State> {
     }
 }
 
-const HOC = translate<InfoProps>()(Info);
+const HOC = translate()(Info);
 export { HOC as Info };

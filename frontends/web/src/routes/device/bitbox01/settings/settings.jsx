@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
+import { route } from '../../../../utils/route';
 import { apiGet } from '../../../../utils/request';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { Guide } from '../../../../components/guide/guide';
@@ -34,8 +35,7 @@ import UpgradeFirmware from '../components/upgradefirmware';
 import { SettingsButton } from '../../../../components/settingsButton/settingsButton';
 import { SettingsItem } from '../../../../components/settingsButton/settingsItem';
 
-@translate()
-export default class Settings extends Component {
+class Settings extends Component {
     state = {
         firmwareVersion: null,
         newVersion: null,
@@ -93,7 +93,10 @@ export default class Settings extends Component {
                 case 'pairingFalse':
                     this.setState({ mobileChannel: false });
                     break;
+                default:
+                    break;
                 }
+
             }
         });
     }
@@ -104,39 +107,37 @@ export default class Settings extends Component {
         }
     }
 
-    render({
-        t,
-        deviceID,
-    }, {
-        firmwareVersion,
-        newVersion,
-        lock,
-        name,
-        spinner,
-        sdcard,
-        pairing,
-        mobileChannel,
-        connected,
-        newHiddenWallet,
-    }) {
+    render() {
+        const {
+            t,
+            deviceID,
+        } = this.props;
+        const {
+            firmwareVersion,
+            newVersion,
+            lock,
+            name,
+            spinner,
+            sdcard,
+            pairing,
+            mobileChannel,
+            connected,
+            newHiddenWallet,
+        } = this.state;
         const canUpgrade = firmwareVersion && newVersion !== firmwareVersion;
         const paired = pairing && mobileChannel;
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{name === null ? '' : name || 'BitBox'}</h2>} />
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content padded">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content padded">
                             <div className="columnsContainer">
                                 <div className="columns">
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer first">
-                                            <div class="subHeader">
-                                                <h3>{t('deviceSettings.secrets.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('deviceSettings.secrets.title')}</h3>
                                         <div className="box slim divide">
-                                            <SettingsButton href={`/manage-backups/${deviceID}`} link>
+                                            <SettingsButton onClick={() => route(`/manage-backups/${deviceID}`)}>
                                                 {t('deviceSettings.secrets.manageBackups')}
                                             </SettingsButton>
                                             <ChangePIN deviceID={deviceID} />
@@ -156,11 +157,7 @@ export default class Settings extends Component {
                                         </div>
                                     </div>
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer">
-                                            <div class="subHeader">
-                                                <h3>{t('deviceSettings.pairing.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('deviceSettings.pairing.title')}</h3>
                                         <div className="box slim divide">
                                             <SettingsItem optionalText={t(`deviceSettings.pairing.mobile.${connected}`)}>
                                                 {t('deviceSettings.pairing.mobile.label')}
@@ -182,11 +179,7 @@ export default class Settings extends Component {
                                 </div>
                                 <div className="columns">
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer">
-                                            <div class="subHeader">
-                                                <h3>{t('deviceSettings.firmware.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('deviceSettings.firmware.title')}</h3>
                                         <div className="box slim divide">
                                             {
                                                 canUpgrade ? (
@@ -200,11 +193,7 @@ export default class Settings extends Component {
                                         </div>
                                     </div>
                                     <div className="column column-1-2">
-                                        <div class="subHeaderContainer">
-                                            <div class="subHeader">
-                                                <h3>{t('deviceSettings.hardware.title')}</h3>
-                                            </div>
-                                        </div>
+                                        <h3 className="subTitle">{t('deviceSettings.hardware.title')}</h3>
                                         <div className="box slim divide">
                                             <SettingsItem optionalText={t(`deviceSettings.hardware.sdcard.${sdcard}`)}>
                                                 {t('deviceSettings.hardware.sdcard.label')}
@@ -242,3 +231,5 @@ export default class Settings extends Component {
         );
     }
 }
+
+export default withTranslation()(Settings);

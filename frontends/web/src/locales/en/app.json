@@ -21,6 +21,14 @@
   },
   "accountInfo": {
     "address": "Address",
+    "buyCTA": {
+      "buy": "Buy {{unit}}",
+      "buyCrypto": "Buy Crypto",
+      "information": {
+        "looksEmpty": "Looks like this wallet is empty.",
+        "start": "Get started by depositing some coins to the wallet or buying directly in the BitBoxApp."
+      }
+    },
     "extendedPublicKey": "Extended public key",
     "label": "Account info",
     "title": "Account information",
@@ -61,6 +69,22 @@
       "title": "Account added"
     },
     "title": "Add account"
+  },
+  "aopp": {
+    "addressRequest": "{{host}} is requesting a receiving address.",
+    "addressRequestWithLogo": "is requesting a receiving address",
+    "banner": "Address request in progress.",
+    "errorTitle": "Error during address request ",
+    "labelAddress": "Address",
+    "labelMessage": "Message",
+    "reverifyInfoText": "Verify address",
+    "signing": "To proceed, sign message on your BitBox02",
+    "success": {
+      "message": "Proceed on {{host}}",
+      "title": "Address successfully sent"
+    },
+    "syncing": "Syncing the account, please wait.",
+    "title": "Address request"
   },
   "app": {
     "upgrade": "A new version of this app is available! Please upgrade from {{current}} to {{version}}."
@@ -158,13 +182,6 @@
     "gotoStartupSettings": {
       "description": "This will reboot your BitBox02 and enter the startup settings.",
       "title": "Go to startup settings"
-    },
-    "mnemonicPassphrase": {
-      "description": "This allows you to enter an optional passphrase after unlocking your BitBox02.\n\n<strong>NOTE:</strong> any passphrase derives a new separate wallet.\nKeep your passphrase <strong>secure</strong>.\n<strong>A loss of the passphrase is NOT RECOVERABLE.</strong>",
-      "disable": "Disable optional passphrase",
-      "enable": "Enable optional passphrase",
-      "successDisable": "Optional passphrase successfully disabled",
-      "successEnable": "Optional passphrase successfully enabled.\n\nFrom now on you can insert a passphrase after having unlocked your BitBox02. \n\nIf you don't know what a passphrase is, please deactivate this option. It is an advanced user's option. \n\n\n<strong>Warning:</strong> every passphrase generates a valid wallet. \nYou need to make sure your passphrase is <strong>secure and that you don't lose it.</strong>\n\n<strong>If you lose your passphrase, you will not be able to access your coins. That means your coins will be lost.</strong>"
     }
   },
   "bitbox02Wizard": {
@@ -232,7 +249,7 @@
     },
     "stepCreateSuccess": {
       "removeMicroSD": "Please remove the microSD card from your BitBox02 and store it in a secure location.",
-      "success": "You’ve sucessfully created your backup."
+      "success": "You’ve successfully created your backup."
     },
     "stepInsertSD": {
       "insertSDCard": "Please insert a microSD card into your BitBox02 to continue.",
@@ -276,6 +293,8 @@
     "continue": "Continue",
     "copy": "Copy",
     "create": "Create",
+    "dismiss": "Dismiss",
+    "done": "Done",
     "download": "Download",
     "hiddenwallet": "Create hidden wallet",
     "next": "Next",
@@ -420,7 +439,16 @@
   },
   "error": {
     "accountAlreadyExists": "The account already exists.",
-    "accountLimitReached": "Cannot add account. The maximum number of accounts for this coin has been reached."
+    "accountLimitReached": "Cannot add account. The maximum number of accounts for this coin has been reached.",
+    "aoppCallback": "There was an error delivering the address to {{host}}.",
+    "aoppInvalidRequest": "Invalid request.",
+    "aoppNoAccounts": "There are no available accounts.",
+    "aoppSigningAborted": "Address ownership request cancelled.",
+    "aoppUnknown": "An unknown error occurred.",
+    "aoppUnsupportedAsset": "The asset is not supported.",
+    "aoppUnsupportedFormat": "There are no available accounts that support the requested address format.",
+    "aoppUnsupportedKeystore": "The connected device cannot sign messages for this asset.",
+    "aoppVersion": "Unknown version."
   },
   "exchanges": {
     "method": "Select your payment method",
@@ -458,7 +486,8 @@
     "enable_false": "Disable",
     "enable_true": "Enable",
     "enabled_false": "Disabled",
-    "enabled_true": "Enabled"
+    "enabled_true": "Enabled",
+    "success": "Success"
   },
   "genericError": "An error occurred. If you notice any issues, please restart the application.",
   "goal": {
@@ -711,6 +740,10 @@
         "text": "For the BitBox01, click on the BitBox icon in the sidebar on the left and see the Pairing section. The guide will update and you can continue following the instructions from there.\nFor the BitBox02, you can verify addresses directly on the device during the send/receive process.",
         "title": "How can I verify an address securely?"
       },
+      "plugout": {
+        "text": "No, once you sent coins to your BitBox address, you do not need to leave your BitBox plugged in. You are free to disconnect your BitBox.",
+        "title": "Do I need to leave my BitBox plugged in while receiving?"
+      },
       "why20": {
         "text": "During start-up the app generates addresses derived from your seed to see if they have received funds. As the app can generate an almost infinite number of addresses, it could spend years determining the balance. To limit this search it stops after it sees 20 addresses that have never received funds. This is the \"gap limit\" and 20 is a de-facto standard though the number is arbitrary. These are the 20 addresses you can choose from.",
         "title": "Why only 20 addresses?"
@@ -728,6 +761,10 @@
       "fee": {
         "text": "The fee is based on the transaction data size and not its amount. The fee targets are calculated by Bitcoin Core's fee estimation algorithm for each network priority you chose. They are shown if they have a different value from the target below.\nEconomy: 24 blocks (around 4 hours for Bitcoin, 1 hour for Litecoin)\nLow: 12 blocks (around 2 hours for Bitcoin, 30 minutes for Litecoin)\nNormal: 6 blocks (around 1 hour for Bitcoin, 15 minutes for Litecoin)\nHigh: 2 blocks (around 20 minutes for Bitcoin, 5 minutes for Litecoin)\n(A block takes on average ten minutes for Bitcoin (2.5 minutes in Litecoin) to mine and the network load may vary considerably in the above periods.)",
         "title": "How is the fee determined?"
+      },
+      "plugout": {
+        "text": "No, once you have made a transaction, you do not need to leave your BitBox plugged in. You are free to disconnect your BitBox.",
+        "title": "Do I need to leave my BitBox plugged in while sending?"
       },
       "priority": {
         "text": "The higher fee you are willing to pay, the faster your transaction is typically confirmed by the network.",
@@ -815,7 +852,7 @@
     },
     "waiting": {
       "deviceNotRecognized": {
-        "text": "The device should blink once when inserted. Make sure that it is inserted the right way around. If you are having trouble, please contact us through the link below.",
+        "text": "The device should blink once when inserted. Make sure that it is inserted the right way around. If you are having trouble, please contact us through the link below.\n\nThe BitBox01 is not supported on mobile. Please use the BitBoxApp on desktop to connect your BitBox01.",
         "title": "My BitBox01 is not recognized"
       },
       "getDevice": {
@@ -964,6 +1001,75 @@
     },
     "title": "Mobile pairing"
   },
+  "passphrase": {
+    "considerations": {
+      "button": "Backup considerations",
+      "message": "The passphrase adds a layer of protection to your wallet backup (microSD card or 24 words). If someone has access to your backup they will also need the passphrase to access your wallet.\n\nHowever, this means you will need <strong>both the passphrase + wallet backup</strong> to restore your passphrase-enabled wallet, in case your BitBox02 is lost or broken. If you forget or lose your passphrase, you will lose access to all the coins on that wallet.\n\nWhen storing your passphrase, consider putting it in a separate location than your backup. That way if someone finds your backup they don’t find your passphrase as well.",
+      "title": "Backup considerations"
+    },
+    "disable": "Disable passphrase",
+    "disableInfo": {
+      "button": "Disable",
+      "message": "After disabling the passphrase, you will no longer be asked to enter a passphrase after unlocking your BitBox02. Therefore, you will enter your default wallet.\n\nAny coins on your passphrase-wallet will still be on that wallet, however you won’t be able to access them because after unlocking your BitBox02, you will open your default wallet.\n\nTo access your passphrase-wallets again, simply re-enable the passphrase feature and enter the relevant passphrase after unlocking the BitBox02.\n\n<strong>Tip:</strong> You can still enter your original wallet by leaving the passphrase empty."
+    },
+    "enable": "Enable passphrase",
+    "error": {
+      "e104": "Changing the passphrase setting was aborted."
+    },
+    "how": {
+      "button": "What it looks like",
+      "message": "A passphrase doesn’t work like a password that you’re used to. If you mistype your passphrase, you will not be notified. This is because <strong>every passphrase creates a different, yet valid, wallet</strong>. This means you can use multiple passphrases for as many wallets as you want. But each wallet can only be accessed when typing in the corresponding passphrase.\n\nWhen plugging in your BitBox02, you’ll be prompted for the device password as usual. After that, you’ll be asked to enter a passphrase on the device.\n\nAfter entering the passphrase, you’ll be shown the passphrase you entered. This is so you can confirm you entered it correctly.",
+      "title": "How does it work"
+    },
+    "intro": {
+      "message": "A passphrase provides an additional layer of security on top of your wallet.\nLet’s learn how it works.",
+      "title": "Setup passphrase"
+    },
+    "progressDisable": {
+      "message": "Confirm on your BitBox that you want to <strong>disable</strong> the optional passphrase.",
+      "title": "Confirm on device"
+    },
+    "progressEnable": {
+      "message": "Confirm on your BitBox that you want to <strong>enable</strong> the optional passphrase.",
+      "title": "Confirm on device"
+    },
+    "successDisabled": {
+      "message": "Optional passphrase <strong>successfully enabled</strong>!\nYou’ll be asked to provide a passphrase from now on.",
+      "messageEnd": "Please replug the BitBox02 now.",
+      "title": "Passphrase enabled"
+    },
+    "successEnabled": {
+      "message": "Optional passphrase <strong>successfully disabled</strong>!\n\nYou will not be asked to provide a passphrase anymore.",
+      "messageEnd": "Please replug your BitBox02 now.",
+      "tips": "Tips",
+      "tipsList": [
+        "We suggest sending a small amount to the passphrase wallet first. Then unplug and replug the BitBox02 and enter your password and passphrase. If you entered the passphrase correctly, you should see the coins in your wallet.",
+        "If you want to enter your original wallet without a passphrase, you can still do this by entering nothing when prompted to enter the passphrase. Or you can disable the passphrase feature."
+      ],
+      "title": "Passphrase disabled"
+    },
+    "summary": {
+      "button": "Enable passphrase",
+      "title": "Summary",
+      "understand": "I understand how the passphrase works and the risks associated with it.",
+      "understandList": [
+        "The passphrase is an additional layer of security on top of your backup.",
+        "Entering a different passphrase will always generate a different wallet.",
+        "To restore your wallet you need <strong>both the passphrase and backup</strong>.",
+        "If you forget your passphrase, you can no longer access your coins."
+      ]
+    },
+    "what": {
+      "button": "Learn how this works",
+      "message": "A wallet is created (derived) from a very big random number, also known as a seed. This seed is created when you first set up your BitBox02 and is backed up with the microSD card or 24 words. Anyone who has access to the seed has full control over the funds on that wallet.\n\nA passphrase is an <strong>optional secret</strong>, added to the seed. When using a passphrase, each passphrase creates a new wallet based on the seed + passphrase (optional secret). A passphrase can be anything: letters, words, special characters or it can even be empty. The default wallet is in fact derived from the seed + empty passphrase.",
+      "title": "What is a passphrase?"
+    },
+    "why": {
+      "button": "Why use a passphrase",
+      "message": "The BitBox02 protects the seed against extraction from the device itself, but the backup (microSD card or 24 words) gives full access to the wallet. That is why it should be stored in a secure location!\n\nSince a passphrase creates a new wallet using your existing seed, the passphrase-wallet requires both your <strong>backup AND passphrase to restore</strong>. The benefit of this is if someone finds your backup, they still need the passphrase to access the passphrase-wallet.\n\nAdditionally, the passphrase feature allows you to create multiple wallets on the same device, or “hidden wallets” in addition to the default one.",
+      "title": "Why use a passphrase?"
+    }
+  },
   "password": {
     "show": "Show {{label}}",
     "warning": {
@@ -1084,16 +1190,13 @@
       "title": "Confirm and send transaction",
       "total": "Total"
     },
-    "customFee": {
-      "label": "Converted fee",
-      "placeholder": "Converted fee"
-    },
     "data": {
       "label": "Optional data",
       "placeholder": "Enter hexadecimal data"
     },
     "error": {
       "feeTooLow": "fee too low",
+      "feesNotAvailable": "Could not estimate fees",
       "insufficientFunds": "insufficient funds",
       "invalidAddress": "invalid address",
       "invalidAmount": "invalid amount",
@@ -1105,14 +1208,20 @@
       "placeholder": "Not available"
     },
     "feeTarget": {
+      "customLabel": "Fee rate",
+      "customLabel_eth": "Gas price",
       "description": {
         "economy": "4 hours (24 blocks)",
+        "economy_eth": "30 minutes or less",
         "economy_ltc": "1 hour (24 blocks)",
         "high": "20 minutes (2 blocks)",
+        "high_eth": "30 seconds or less",
         "high_ltc": "5 minutes (2 blocks)",
         "low": "2 hours (12 blocks)",
+        "low_eth": "5 minutes or less",
         "low_ltc": "30 minutes (12 blocks)",
         "normal": "1 hour (6 blocks)",
+        "normal_eth": "2 minutes or less",
         "normal_ltc": "15 minutes (6 blocks)"
       },
       "estimate": "Estimated confirmation time:",
@@ -1126,6 +1235,7 @@
       "placeholder": "Calculating fee…"
     },
     "maximum": "Send all",
+    "maximumSelectedCoins": "Send selected coins",
     "priority": "Priority",
     "scanQR": "Scan QR code",
     "signprogress": {

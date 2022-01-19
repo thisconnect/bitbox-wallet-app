@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { /* i18nEditorActive, */ extraLanguages } from '../../i18n/i18n';
-
-import { translate as translateDecorator, TranslateProps } from '../../decorators/translate';
+import { Component } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import i18n from '../../i18n/i18n';
 import { Dialog } from '../dialog/dialog';
-import * as style from './language.css';
+import style from './language.module.css';
 
 type TActiveLanguageCodes = 'bg' | 'de' | 'en' | 'es'
-    | 'fr' | 'hi' | 'it' | 'ja' | 'ms' | 'pt'
+    | 'fr' | 'hi' | 'it' | 'ja' | 'ms' | 'nl' | 'pt'
     | 'ru' | 'sl' | 'tr' | 'zh';
 
 type TLanguage = {
@@ -44,7 +43,7 @@ interface LanguageSwitchProps {
     i18n?: any;
 }
 
-type Props = TranslateProps & LanguageSwitchProps;
+type Props = WithTranslation & LanguageSwitchProps;
 
 const defaultLanguages = [
     { code: 'bg', display: 'България' },
@@ -58,6 +57,7 @@ const defaultLanguages = [
     { code: 'it', display: 'Italiano' },
     { code: 'ja', display: '日本語' },
     { code: 'ms', display: 'Bahasa Melayu' },
+    { code: 'nl', display: 'Nederlands' },
     { code: 'pt', display: 'Português' },
     { code: 'ru', display: 'Русский' },
     { code: 'sl', display: 'Slovenščina' },
@@ -66,17 +66,9 @@ const defaultLanguages = [
 ] as TLanguagesList;
 
 class LanguageSwitch extends Component<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         const languages = this.props.languages || defaultLanguages;
-        if (extraLanguages) {
-            extraLanguages.split(',').forEach(code => {
-                languages.push({
-                    code,
-                    display: code,
-                } as TLanguage);
-            });
-        }
         this.state = {
             selectedIndex: this.getSelectedIndex(languages),
             activeDialog: false,
@@ -88,7 +80,7 @@ class LanguageSwitch extends Component<Props, State> {
         this.setState({ activeDialog: false });
     }
 
-    getSelectedIndex = (languages) => {
+    getSelectedIndex = (languages: TLanguagesList) => {
         const lang = this.props.i18n.language;
         // Check for exact match first.
         let index = languages.findIndex(({ code }) => code === lang);
@@ -109,49 +101,23 @@ class LanguageSwitch extends Component<Props, State> {
         return index;
     }
 
-    componentWillMount() {
-
-        /* if (i18nEditorActive) {
-         *     // Get languages from backend instead when translating,
-         *     // as new languages won't be shown otherwise.
-         *     this.context.
-         *         i18n.
-         *         services.
-         *         backendConnector.
-         *         backend.
-         *         getLanguages((err, data) => {
-         *             if (err) {
-         *                 alert(err);
-         *                 return;
-         *             }
-         *             const languages = Object.entries(data).map(([key, value]) => {
-         *                 return {
-         *                     code: key,
-         *                     display: value.nativeName,
-         *                 };
-         *             });
-         *             this.setState({ languages, selectedIndex: this.getSelectedIndex(languages) });
-         *         });
-         * } */
-    }
-
-    changeLanguage = ({ target }) => {
-        const langCode = target.dataset.code;
-        const index = parseInt(target.dataset.index, 10);
+    changeLanguage = (langCode: TActiveLanguageCodes, index: number) => {
+        // const langCode = e.target.dataset.code;
+        // const index = parseInt(target.dataset.index, 10);
         this.setState({
             selectedIndex: index,
             activeDialog: false,
         });
-        this.context.i18n.changeLanguage(langCode);
+        i18n.changeLanguage(langCode);
     }
 
-    render({
-        t,
-    }: RenderableProps<Props>, {
-        selectedIndex,
-        activeDialog,
-        languages,
-    }: State) {
+    render() {
+        const { t } = this.props;
+        const {
+            selectedIndex,
+            activeDialog,
+            languages,
+        } = this.state;
         if (languages.length === 1) {
             return null;
         }
@@ -186,8 +152,8 @@ class LanguageSwitch extends Component<Props, State> {
                                     return (
                                         <button
                                             key={language.code}
-                                            class={[style.language, selected ? style.selected : ''].join(' ')}
-                                            onClick={this.changeLanguage}
+                                            className={[style.language, selected ? style.selected : ''].join(' ')}
+                                            onClick={() => this.changeLanguage(language.code, i)}
                                             data-index={i}
                                             data-code={language.code}>
                                             {language.display}
@@ -220,6 +186,6 @@ class LanguageSwitch extends Component<Props, State> {
     }
 }
 
-const TranslatedLanguageSwitcher = translateDecorator<LanguageSwitchProps>()(LanguageSwitch);
+const TranslatedLanguageSwitcher = withTranslation()(LanguageSwitch);
 
 export { TranslatedLanguageSwitcher as LanguageSwitch };

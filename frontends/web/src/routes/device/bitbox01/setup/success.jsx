@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { route } from 'preact-router';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { route } from '../../../../utils/route';
+import { withTranslation } from 'react-i18next';
 import { SwissMadeOpenSource } from '../../../../components/icon';
 import { LanguageSwitch } from '../../../../components/language/language';
 import { Header } from '../../../../components/layout';
 import { Button } from '../../../../components/forms';
-import * as style from '../bitbox01.css';
+import style from '../bitbox01.module.css';
 
-@translate()
-export default class Success extends Component {
+class Success extends Component {
 
     handleGetStarted = () => {
         route('/account-summary', true);
     }
 
-    render({
-        t,
-        handleHideSuccess,
-        goal,
-    }, {
-    }) {
+    render() {
+        const {
+            t,
+            handleHideSuccess,
+            goal,
+        } = this.props;
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('welcome.title')}</h2>}>
                         <LanguageSwitch />
@@ -46,17 +45,17 @@ export default class Success extends Component {
                         <div className="content padded narrow isVerticallyCentered">
                             <h1 className={[style.title, 'text-center'].join(' ')}>{t(`success.${goal}.title`)}</h1>
                             <div className="box large">
-                                <p style="text-align: center;">
+                                <p style={{textAlign: 'center'}}>
                                     {t(`success.${goal}.summary`)}
                                 </p>
                                 { goal === 'create' ? (
-                                    <ul class={style.summary}>
+                                    <ul className={style.summary}>
                                         <li>{t('success.create.info1')}</li>
                                         <li>{t('success.create.info2')}</li>
                                         <li>{t('success.create.info3')}</li>
                                     </ul>
                                 ) : null}
-                                <div class="buttons">
+                                <div className="buttons">
                                     <Button primary onClick={this.handleGetStarted}>
                                         {t('success.getstarted')}
                                     </Button>
@@ -75,3 +74,5 @@ export default class Success extends Component {
         );
     }
 }
+
+export default withTranslation()(Success);

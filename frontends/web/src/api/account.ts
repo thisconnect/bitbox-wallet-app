@@ -22,7 +22,7 @@ export type CoinCode = 'btc' | 'tbtc' | 'ltc' | 'tltc' | 'eth' | 'teth' | 'reth'
 
 export type AccountCode = string;
 
-export type Fiat = 'AUD' | 'BRL' | 'BTC' | 'CAD' | 'CHF' | 'CNY' | 'EUR' | 'GBP' | 'HKD' | 'ILS' | 'JPY' | 'KRW' | 'RUB' | 'SGD' | 'USD';
+export type Fiat = 'AUD' | 'BRL' | 'BTC' | 'CAD' | 'CHF' | 'CNY' | 'EUR' | 'GBP' | 'HKD' | 'ILS' | 'JPY' | 'KRW' | 'NOK' | 'RUB' | 'SGD' | 'USD';
 
 export type MainnetCoin = 'BTC' | 'LTC' | 'ETH';
 
@@ -48,7 +48,7 @@ export interface IAccount {
 }
 
 export const getAccounts = (): Promise<IAccount[]> => {
-    return apiGet(`accounts`);
+    return apiGet('accounts');
 };
 
 export interface IStatus {
@@ -238,4 +238,8 @@ export interface IFeeTargetList {
 
 export const getFeeTargetList = (code: AccountCode): Promise<IFeeTargetList> => {
     return apiGet(`account/${code}/fee-targets`);
+};
+
+export const verifyAddress = (code: AccountCode, addressID: string): Promise<boolean> => {
+    return apiPost(`account/${code}/verify-address`, addressID);
 };

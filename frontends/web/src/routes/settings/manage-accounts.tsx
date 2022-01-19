@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import React, { Component} from 'react';
+import { route } from '../../utils/route';
 import * as accountAPI from '../../api/account';
 import * as backendAPI from '../../api/backend';
-import { apiGet } from '../../utils/request';
 import { alertUser } from '../../components/alert/Alert';
 import { Button, Input } from '../../components/forms';
 import Logo from '../../components/icon/logo';
 import { Header } from '../../components/layout';
 import { Toggle } from '../../components/toggle/toggle';
-import { Dialog } from '../../components/dialog/dialog';
+import { Dialog, DialogButtons } from '../../components/dialog/dialog';
 import { Message } from '../../components/message/message';
-import * as dialogStyle from '../../components/dialog/dialog.css';
 import { translate, TranslateProps } from '../../decorators/translate';
 import Guide from './manage-account-guide';
-import * as style from './manage-accounts.css';
+import style from './manage-accounts.module.css';
 
 interface ManageAccountsProps {
 }
 
 type Props = ManageAccountsProps & TranslateProps;
-
-export type TFavorites = {
-    readonly [key in string]: boolean;
-}
 
 type TShowTokens = {
     readonly [key in string]: boolean;
@@ -48,7 +42,6 @@ interface State {
     editAccountCode?: string;
     editAccountNewName: string;
     editErrorMessage?: string;
-    favorites?: TFavorites;
     accounts: accountAPI.IAccount[];
     showTokens: TShowTokens;
 }
@@ -57,7 +50,6 @@ class ManageAccounts extends Component<Props, State> {
     public readonly state: State = {
         editAccountNewName: '',
         editErrorMessage: undefined,
-        favorites: undefined,
         accounts: [],
         showTokens: {}
     };
@@ -68,47 +60,19 @@ class ManageAccounts extends Component<Props, State> {
 
     public componentDidMount() {
         this.fetchAccounts();
-
-        apiGet('config')
-            .then(({ frontend = {} }) => {
-                this.setState({
-                    favorites: frontend.favorites || {}
-                });
-            })
-            .catch(console.error);
     }
 
-    // TODO: keeping for next release when we enable favorite accounts
-    // private toggleFavorAccount = (e) => {
-    //     const { checked, id } = e.target as HTMLInputElement;
-    //     this.setState(({ favorites }) => ({
-    //         favorites: {
-    //             ...favorites,
-    //             [id]: checked,
-    //         }
-    //     }), () => {
-    //         setConfig({
-    //             frontend: {
-    //                 favorites: this.state.favorites
-    //             }
-    //         }).catch(console.error);
-    //     });
-    // }
-
     private renderAccounts = () => {
-        const { accounts, favorites, showTokens } = this.state;
+        const { accounts, showTokens } = this.state;
         const { t } = this.props;
-        if (!favorites) {
-            return null;
-        }
         return accounts.filter(account => !account.isToken).map(account => {
             const active = account.active;
             const tokensVisible = showTokens[account.code];
             return (
                 <div key={account.code} className={style.setting}>
                     <div
-                        className={`${style.acccountLink} ${style.accountActive}`}
-                        onClick={() => route(`/account/${account.code}`)}>
+                        className={`${style.acccountLink} ${active ? style.accountActive : ''}`}
+                        onClick={() => active && route(`/account/${account.code}`)}>
                         <Logo className={`${style.coinLogo} m-right-half`} coinCode={account.coinCode} alt={account.coinUnit} />
                         <span className={style.accountName}>
                             {account.name}
@@ -178,10 +142,6 @@ class ManageAccounts extends Component<Props, State> {
     };
 
     private renderTokens = (ethAccountCode: string, activeTokens?: accountAPI.IActiveToken[]) => {
-        const { favorites } = this.state;
-        if (!favorites) {
-            return null;
-        }
         return Object.entries(this.erc20TokenCodes)
             .map(([tokenCode, name]) => {
                 const activeToken = (activeTokens || []).find(t => t.tokenCode === tokenCode);
@@ -221,7 +181,7 @@ class ManageAccounts extends Component<Props, State> {
         });
     }
 
-    private updateAccountName = (event: Event) => {
+    private updateAccountName = (event: React.SyntheticEvent) => {
         event.preventDefault();
         const { editAccountCode, editAccountNewName } = this.state;
 
@@ -244,31 +204,28 @@ class ManageAccounts extends Component<Props, State> {
             });
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        { editAccountCode, editAccountNewName, editErrorMessage, favorites }: State,
-    ) {
+    public render() {
+        const { t } = this.props;
+        const { editAccountCode, editAccountNewName, editErrorMessage } = this.state;
         const accountList = this.renderAccounts();
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{t('manageAccounts.title')}</h2>} />
-                    <div class="innerContainer scrollContainer">
-                        <div class="content">
-                        { favorites ? (
-                            <div className="columnsContainer">
-                                <div class="buttons m-bottom-large m-top-large">
-                                    <Button
-                                        primary
-                                        onClick={() => route('/add-account', true)}>
-                                        {t('manageAccounts.addAccount')}
-                                    </Button>
-                                </div>
-                                <div className="box slim divide m-bottom-large">
-                                    { (accountList && accountList.length) ? accountList : t('manageAccounts.noAccounts') }
-                                </div>
+                    <div className="innerContainer scrollContainer">
+                        <div className="content">
+                        <div className="columnsContainer">
+                            <div className="buttons m-bottom-large m-top-large">
+                                <Button
+                                    primary
+                                    onClick={() => route('/add-account', true)}>
+                                    {t('manageAccounts.addAccount')}
+                                </Button>
                             </div>
-                        ) : null }
+                            <div className="box slim divide m-bottom-large">
+                                { (accountList && accountList.length) ? accountList : t('manageAccounts.noAccounts') }
+                            </div>
+                        </div>
                         { editAccountCode ? (
                             <Dialog
                                 onClose={() => this.setState({ editAccountCode: undefined, editAccountNewName: '', editErrorMessage: undefined })}
@@ -280,14 +237,14 @@ class ManageAccounts extends Component<Props, State> {
                                     <Input
                                         onInput={e => this.setState({ editAccountNewName: e.target.value })}
                                         value={editAccountNewName} />
-                                    <div className={dialogStyle.actions}>
+                                    <DialogButtons>
                                         <Button
                                             disabled={!editAccountNewName}
                                             primary
                                             type="submit">
                                             {t('button.update')}
                                         </Button>
-                                    </div>
+                                    </DialogButtons>
                                 </form>
                             </Dialog>
                         ) : null}
@@ -300,5 +257,5 @@ class ManageAccounts extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ManageAccountsProps>()(ManageAccounts);
+const HOC = translate()(ManageAccounts);
 export { HOC as ManageAccounts };

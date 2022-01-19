@@ -15,17 +15,17 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../../components/forms';
 import { Dialog } from '../../../../../components/dialog/dialog';
 import { WaitDialog } from '../../../../../components/wait-dialog/wait-dialog';
 import { apiPost } from '../../../../../utils/request';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
-import * as style from '../../../../../components/dialog/dialog.css';
+// TODO: use DialogButtons
+import style from '../../../../../components/dialog/dialog.module.css';
 
-@translate()
-export default class DeviveLock extends Component {
+class DeviceLock extends Component {
     state = {
         isConfirming: false,
         activeDialog: false,
@@ -50,14 +50,16 @@ export default class DeviveLock extends Component {
         this.setState({ activeDialog: false });
     }
 
-    render({
-        t,
-        disabled,
-        lock,
-    }, {
-        isConfirming,
-        activeDialog,
-    }) {
+    render() {
+        const {
+            t,
+            disabled,
+            lock,
+        } = this.props;
+        const {
+            isConfirming,
+            activeDialog,
+        } = this.state;
         return (
             <div>
                 <SettingsButton
@@ -75,7 +77,7 @@ export default class DeviveLock extends Component {
                             <p>{t('deviceLock.condition1')}</p>
                             <p>{t('deviceLock.condition2')}</p>
                             <p>{t('deviceLock.condition3')}</p>
-                            <div class={style.actions}>
+                            <div className={style.actions}>
                                 <Button danger onClick={this.resetDevice}>
                                     {t('deviceLock.confirm')}
                                 </Button>
@@ -95,3 +97,5 @@ export default class DeviveLock extends Component {
         );
     }
 }
+
+export default withTranslation()(DeviceLock);

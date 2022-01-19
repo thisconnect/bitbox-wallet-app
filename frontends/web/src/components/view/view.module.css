@@ -1,0 +1,198 @@
+.fullscreen {
+    background: var(--color-lightgray);
+    bottom: 0;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    left: 0;
+    overflow-x: inherit;
+    overflow-y: auto;
+    position: fixed;
+    right: 0;
+    top: 0;
+    /* z-index between sidebar (~4000) and wait-dialog (~10000) */
+    z-index: 5100;
+}
+
+:global(.container) .fullscreen {
+    /* view components within the content are i.e. unlock
+    should have lower z-index than outside content are, i.e. AOPP */
+    z-index: 5050;
+}
+
+.fill {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-bottom: var(--space-default);
+}
+
+.inner {
+    display: flex;
+    flex-direction: column;
+
+    margin: 0 auto;
+    max-width: 100%;
+    padding-bottom: var(--space-half);
+    padding-top: var(--space-half);
+    width: 480px;
+}
+.center {
+    margin-bottom: auto;
+    margin-top: auto;
+}
+.textCenter {
+    text-align: center;
+}
+.inner:not(.center) {
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    flex-shrink: 0;
+    padding-bottom: var(--space-large);
+    padding-top: 17vh;
+}
+@media (max-width: 768px) {
+    .inner {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        margin: 0 auto;
+        min-height: auto !important;
+    }
+    .inner:not(.center) {
+        padding-bottom: var(--space-half);
+        padding-top: 2vh;
+    }
+}
+@media (min-width: 1200px) {
+    .inner {
+        width: 580px;
+    }
+}
+
+.header {
+    color: var(--color-gray);
+    font-size: var(--size-default);
+    margin-bottom: var(--space-default);
+}
+@media (max-width: 768px) {
+    .header {
+        padding-left: var(--space-half);
+        padding-top: var(--space-default);
+        padding-right: var(--space-half);
+        margin-bottom: 0;
+    }
+    .smallHeader {
+        margin-bottom: var(--space-half);
+        padding-top: var(--space-half);
+    }
+}
+@media (max-width: 1199px) {
+    .header {
+        padding-top: var(--space-large);
+    }
+    .smallHeader {
+        padding-top: 0;
+    }
+}
+
+.title {
+    color: var(--color-default);
+    font-size: var(--size-subheader);
+    font-weight: 400;
+    margin-bottom: var(--space-half);
+}
+
+.header p {
+    margin-top: var(--space-quarter);
+}
+
+.closeButton {
+    background: transparent;
+    border: none;
+    color: var(--color-primary);
+    height: var(--header-height);
+    left: 0;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    width: var(--header-height);
+}
+
+.content {
+    flex-grow: 1;
+    flex-shrink: 0;
+    min-height: 80px;
+}
+@media (max-width: 768px) {
+    .content {
+        flex-grow: 1;
+        flex-basis: auto;
+        flex-shrink: 0;
+        padding: 0 var(--space-half);
+    }
+    .content.fullWidth {
+        padding: 0;
+    }
+}
+@media (min-width: 1200px) {
+    .content {
+        min-height: 130px;
+    }
+}
+
+.content ul {
+    font-size: var(--size-default);
+    line-height: 1.625;
+    padding-left: 1.4em;
+}
+
+.content label {
+    color: var(--color-default);
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-top: var(--space-default);
+    padding-bottom: var(--space-half);
+}
+@media (max-width: 768px) {
+    .buttons {
+        padding: 0 var(--space-half);
+    }
+}
+@media (max-width: 768px) and (orientation: portrait) {
+    .buttons {
+        align-items: stretch;
+        flex-direction: column;
+        flex-grow: 0;
+        justify-content: flex-end;
+        margin-top: var(--space-half);
+    }
+    .buttons > *:not(:last-child) {
+        margin-bottom: var(--space-half);
+    }
+}
+.textCenter .buttons > *:only-child {
+    justify-self: flex-end;
+    margin: 0 auto;
+}
+
+@media (min-width: 1200px) {
+    .title {
+        --size-subheader: 28px;
+    }
+    .header,
+    .inner p {
+        --size-default: 20px;
+    }
+    .fullscreen {
+        --size-default: 18px;
+    }
+    .inner footer p {
+        --size-default: 14px;
+    }
+}

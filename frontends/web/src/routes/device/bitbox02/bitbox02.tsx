@@ -15,29 +15,27 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
-import passwordEntryGif from '../../../assets/device/bb02PwEntry.gif';
-import passwordEntryOldGif from '../../../assets/device/bb02PwEntry_old.gif';
+import React, { Component} from 'react';
+import { Backup, BackupsListItem } from '../components/backup';
+import { route } from '../../../utils/route';
 import warning from '../../../assets/icons/warning.png';
 import { AppUpgradeRequired } from '../../../components/appupgraderequired';
 import { CenteredContent } from '../../../components/centeredcontent/centeredcontent';
 import { Button, Checkbox, Input  } from '../../../components/forms';
-import { Step, Steps } from '../../../components/steps';
-import * as style from '../../../components/steps/steps.css';
+import { Step, Steps } from './components/steps';
+import { View, ViewContent, ViewHeader } from '../../../components/view/view';
+import style from './components/steps/steps.module.css';
 import Toast from '../../../components/toast/Toast';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import '../../../style/animate.css';
 import { apiGet, apiPost } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
 import { alertUser } from '../../../components/alert/Alert';
 import { store as panelStore } from '../../../components/guide/guide';
 import { SwissMadeOpenSource } from '../../../components/icon/logo';
-import { LanguageSwitch } from '../../../components/language/language';
-import { Header } from '../../../components/layout/header';
 import { setSidebarStatus } from '../../../components/sidebar/sidebar';
 import Status from '../../../components/status/status';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { PasswordEntry } from './components/password-entry/password-entry';
 import { BackupsV2 } from './backups';
 import { Settings } from './settings';
 import { UpgradeButton, VersionInfo } from './upgradebutton';
@@ -82,6 +80,7 @@ interface State {
         title: string;
         text?: string;
     };
+    selectedBackup?: Backup;
 }
 
 class BitBox02 extends Component<Props, State> {
@@ -112,7 +111,7 @@ class BitBox02 extends Component<Props, State> {
 
     private unsubscribe!: () => void;
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
         const { sidebarStatus } = panelStore.state;
         if (['', 'forceCollapsed'].includes(sidebarStatus)) {
             setSidebarStatus('forceHidden');
@@ -176,7 +175,7 @@ class BitBox02 extends Component<Props, State> {
         const { sidebarStatus } = panelStore.state;
         apiGet(this.apiPrefix() + '/status').then(status => {
             const restoreSidebar = status === 'initialized' && !['createWallet', 'restoreBackup'].includes(appStatus) && sidebarStatus !== '';
-            if (restoreSidebar || status === 'connected') {
+            if (restoreSidebar) {
                 setSidebarStatus('');
             } else if (status !== 'initialized' && ['', 'forceCollapsed'].includes(sidebarStatus)) {
                 setSidebarStatus('forceHidden');
@@ -288,9 +287,10 @@ class BitBox02 extends Component<Props, State> {
         });
     }
 
-    private backupOnBeforeRestore = () => {
+    private backupOnBeforeRestore = (backup: Backup) => {
         this.setState({
             restoreBackupStatus: 'setPassword',
+            selectedBackup: backup,
         });
     }
 
@@ -298,6 +298,7 @@ class BitBox02 extends Component<Props, State> {
         if (!success) {
             this.restoreBackup();
         }
+        this.setState({ selectedBackup: undefined });
     }
 
     private createBackup = () => {
@@ -358,7 +359,7 @@ class BitBox02 extends Component<Props, State> {
         });
     }
 
-    private handleDisclaimerCheck = (event: InputEvent) => {
+    private handleDisclaimerCheck = (event: React.SyntheticEvent) => {
         const target = event.target as HTMLInputElement;
         const key = target.id as 'agreement1' | 'agreement2' | 'agreement3' | 'agreement4' | 'agreement5';
         const obj = {};
@@ -366,9 +367,9 @@ class BitBox02 extends Component<Props, State> {
         this.setState(obj);
     }
 
-    public render(
-        { t, deviceID }: RenderableProps<Props>,
-        {
+    public render() {
+        const { t, deviceID } = this.props;
+        const {
             attestationResult,
             versionInfo,
             hash,
@@ -390,8 +391,7 @@ class BitBox02 extends Component<Props, State> {
             agreement4,
             agreement5,
             waitDialog,
-        }: State,
-    ) {
+        } = this.state;
         if (status === '') {
             return null;
         }
@@ -420,7 +420,6 @@ class BitBox02 extends Component<Props, State> {
         if (!showWizard) {
             return <Settings deviceID={deviceID}/>;
         }
-        const passwordGif = versionInfo.currentVersion === '1.0.0' || versionInfo.currentVersion === '2.0.0' ? passwordEntryOldGif : passwordEntryGif;
         const readDisclaimers = agreement1 && agreement2 && agreement3 && agreement4 && agreement5;
         // TODO: move to wizard.tsx
         return (
@@ -433,24 +432,39 @@ class BitBox02 extends Component<Props, State> {
                     )
                 }
                 <div className="container">
-                    <Header title={<h2>{t('welcome.title')}</h2>}>
-                        <LanguageSwitch />
-                    </Header>
+                    <Status hidden={attestationResult !== false}>
+                        {t('bitbox02Wizard.attestationFailed')}
+                    </Status>
                     <div className="flex flex-1 scrollableContainer">
                         <Steps>
-                            <Step active={status === 'connected'} title={t('button.unlock')} width={700}>
-                                <div className={style.stepContext}>
-                                    <p className="text-center">{t('bitbox02Wizard.stepConnected.unlock')}</p>
-                                    <div className={style.passwordGesturesGifWrapper}>
-                                        <img class={style.passwordGesturesGif} src={passwordGif}/>
-                                    </div>
-                                </div>
-                                <div className="text-center m-top-large">
-                                    <SwissMadeOpenSource large />
-                                </div>
-                            </Step>
+                            { (status === 'connected') ? (
+                                <View
+                                    key="connection"
+                                    fullscreen
+                                    textCenter
+                                    withBottomBar
+                                    width="600px">
+                                    <ViewHeader title={t('button.unlock')}>
+                                        <p className="text-center">{t('bitbox02Wizard.stepConnected.unlock')}</p>
+                                    </ViewHeader>
+                                    <ViewContent fullWidth>
+                                    {/* the view component covers all other banners
+                                        i.e. the attestation warning at the top,
+                                        that is why added it there as well instead of
+                                        the password guesture. */}
+                                        {attestationResult === false ? (
+                                            <Status>
+                                                {t('bitbox02Wizard.attestationFailed')}
+                                            </Status>
+                                        ) : (
+                                            <PasswordEntry />
+                                        )}
+                                    </ViewContent>
+                                </View>
+                            ) : null }
 
                             <Step
+                                key="failed-pairing"
                                 active={status === 'unpaired' || status === 'pairingFailed'}
                                 title={t('bitbox02Wizard.pairing.title')}>
                                 {
@@ -482,19 +496,20 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 !unlockOnly && (
                                     <Step
+                                        key="uninitialized-pairing"
                                         active={status === 'uninitialized' && appStatus === ''}
                                         title={t('bitbox02Wizard.stepUninitialized.title')}
                                         large>
                                         <Toast theme="info">
-                                            <div class="flex flex-items-center">
-                                                <img src={warning} style="width: 18px; margin-right: 10px" />
+                                            <div className="flex flex-items-center">
+                                                <img src={warning} style={{width: 18, marginRight: 10}} />
                                                 {t('bitbox02Wizard.initialize.tip')}
                                             </div>
                                         </Toast>
                                         <div className="columnsContainer m-top-default">
                                             <div className="columns">
                                                 <div className="column column-1-2">
-                                                    <div className={style.stepContext} style="min-height: 330px">
+                                                    <div className={style.stepContext} style={{minHeight: 330}}>
                                                         <h3 className={style.stepSubHeader}>{t('button.create')}</h3>
                                                         <p className="text-center">{t('bitbox02Wizard.stepUninitialized.create')}</p>
                                                         <div className={['buttons text-center', style.fullWidth].join(' ')}>
@@ -508,7 +523,7 @@ class BitBox02 extends Component<Props, State> {
                                                     </div>
                                                 </div>
                                                 <div className="column column-1-2">
-                                                    <div className={style.stepContext} style="min-height: 330px">
+                                                    <div className={style.stepContext} style={{minHeight: 330}}>
                                                         <h3 className={style.stepSubHeader}>{t('button.restore')}</h3>
                                                         <p className="text-center">{t('bitbox02Wizard.stepUninitialized.restore')}</p>
                                                         <div className={['buttons text-center', style.fullWidth].join(' ')}>
@@ -537,6 +552,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 !unlockOnly && appStatus === 'createWallet' && (
                                     <Step
+                                        key="intro-pairing"
                                         active={createWalletStatus === 'intro'}
                                         title={t('bitbox02Wizard.stepCreate.title')}>
                                         {
@@ -580,6 +596,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 (!unlockOnly && appStatus === 'createWallet') && (
                                     <Step
+                                        key="create-wallet"
                                         width={700}
                                         active={createWalletStatus === 'setPassword'}
                                         title={t('bitbox02Wizard.stepPassword.title')}>
@@ -592,9 +609,7 @@ class BitBox02 extends Component<Props, State> {
                                                 )
                                             }
                                             <p className="text-center">{t('bitbox02Wizard.stepPassword.useControls')}</p>
-                                            <div className={style.passwordGesturesGifWrapper}>
-                                                <img class={style.passwordGesturesGif} src={passwordGif}/>
-                                            </div>
+                                            <PasswordEntry />
                                         </div>
                                         <div className="text-center m-top-large">
                                             <SwissMadeOpenSource large />
@@ -606,6 +621,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 (!unlockOnly && appStatus === 'createWallet') && (
                                     <Step
+                                        key="create-backup"
                                         width={700}
                                         active={status === 'seeded' && createWalletStatus === 'createBackup'}
                                         title={t('backup.create.title')}>
@@ -673,6 +689,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 (!unlockOnly && appStatus === 'restoreBackup') && (
                                     <Step
+                                        key="restore"
                                         width={700}
                                         active={status !== 'initialized' && restoreBackupStatus === 'restore'}
                                         title={t('backup.restore.confirmTitle')}>
@@ -696,9 +713,10 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 (!unlockOnly && appStatus === 'restoreBackup') && (
                                     <Step
+                                        key="set-password"
                                         width={700}
                                         active={status !== 'initialized' && restoreBackupStatus === 'setPassword'}
-                                        title={t('bitbox02Wizard.stepPassword.title')}>
+                                        title={t('backup.restore.confirmTitle')}>
                                         <div className={style.stepContext}>
                                             {
                                                 errorText && (
@@ -707,10 +725,16 @@ class BitBox02 extends Component<Props, State> {
                                                     </Toast>
                                                 )
                                             }
+                                            { this.state.selectedBackup ? (
+
+                                                  <BackupsListItem
+                                                      backup={this.state.selectedBackup}
+                                                      handleChange={() => {}}
+                                                      onFocus={() => {}}
+                                                      radio={false} />
+                                            ) : null }
                                             <p className="text-center">{t('bitbox02Wizard.stepPassword.useControls')}</p>
-                                            <div className={style.passwordGesturesGifWrapper}>
-                                                <img class={style.passwordGesturesGif} src={passwordGif}/>
-                                            </div>
+                                            <PasswordEntry />
                                         </div>
                                     </Step>
                                 )
@@ -719,6 +743,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 appStatus === 'createWallet' && (
                                     <Step
+                                        key="success"
                                         active={status === 'initialized'}
                                         title={t('bitbox02Wizard.success.title')}>
                                         <div className={style.stepContext}>
@@ -740,6 +765,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 appStatus === 'restoreBackup' && (
                                     <Step
+                                        key="backup-success"
                                         width={700}
                                         active={status === 'initialized'}
                                         title={t('bitbox02Wizard.stepBackupSuccess.title')}>
@@ -769,6 +795,7 @@ class BitBox02 extends Component<Props, State> {
                             {
                                 appStatus === 'restoreFromMnemonic' && (
                                     <Step
+                                    key="backup-success2"
                                         width={700}
                                         active={status === 'initialized'}
                                         title={t('bitbox02Wizard.stepBackupSuccess.title')}>
@@ -794,14 +821,11 @@ class BitBox02 extends Component<Props, State> {
                             }
                         </Steps>
                     </div>
-                    <Status hidden={attestationResult !== false}>
-                        {t('bitbox02Wizard.attestationFailed')}
-                    </Status>
                 </div>
             </div>
         );
     }
 }
 
-const HOC = translate<BitBox02Props>()(BitBox02);
+const HOC = translate()(BitBox02);
 export { HOC as BitBox02 };

@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import React, { Component, createRef} from 'react';
 import { BrowserQRCodeReader } from '@zxing/library';
 import * as accountApi from '../../../api/account';
 import { TDevices } from '../../../api/devices';
-import reject from '../../../assets/icons/cancel.svg';
-import approve from '../../../assets/icons/checked.svg';
+import { Checked, Cancel } from '../../../components/icon/icon';
 import qrcodeIcon from '../../../assets/icons/qrcode.png';
 import { alertUser } from '../../../components/alert/Alert';
 import A from '../../../components/anchor/anchor';
@@ -39,10 +37,11 @@ import { translate, TranslateProps } from '../../../decorators/translate';
 import { debug } from '../../../utils/env';
 import { apiGet, apiPost } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
-import { isBitcoinBased } from '../utils';
+import { isBitcoinBased, customFeeUnit } from '../utils';
 import { FeeTargets } from './feetargets';
-import * as style from './send.css';
-import { Props as UTXOsProps, SelectedUTXO, UTXOs } from './utxos';
+import style from './send.module.css';
+import { SelectedUTXO, UTXOs, UTXOsClass } from './utxos';
+import { route } from '../../../utils/route';
 
 interface SendProps {
     accounts: accountApi.IAccount[];
@@ -59,20 +58,20 @@ interface SignProgress {
 type Props = SendProps & TranslateProps;
 
 interface State {
-    account?: Account;
+    account?: accountApi.IAccount;
     balance?: accountApi.IBalance;
     proposedFee?: accountApi.IAmount;
     proposedTotal?: accountApi.IAmount;
-    recipientAddress?: string;
+    recipientAddress: string;
     proposedAmount?: accountApi.IAmount;
     valid: boolean;
-    amount?: string;
+    amount: string;
     data?: string;
-    fiatAmount?: string;
+    fiatAmount: string;
     fiatUnit: accountApi.Fiat;
     sendAll: boolean;
     feeTarget?: accountApi.FeeTargetCode;
-    feePerByte: string;
+    customFee: string;
     isConfirming: boolean;
     isSent: boolean;
     isAborted: boolean;
@@ -95,7 +94,7 @@ interface State {
 }
 
 class Send extends Component<Props, State> {
-    private utxos!: Component<UTXOsProps>;
+    private utxos = createRef<UTXOsClass>();
     private selectedUTXOs: SelectedUTXO = {};
     private unsubscribe!: () => void;
     private qrCodeReader?: BrowserQRCodeReader;
@@ -107,6 +106,9 @@ class Send extends Component<Props, State> {
     private proposeTimeout: any = null;
 
     public readonly state: State = {
+        recipientAddress: '',
+        amount: '',
+        fiatAmount: '',
         valid: false,
         sendAll: false,
         isConfirming: false,
@@ -122,7 +124,7 @@ class Send extends Component<Props, State> {
         activeScanQR: false,
         videoLoading: false,
         note: '',
-        feePerByte: '',
+        customFee: '',
     };
 
     private coinSupportsCoinControl = () => {
@@ -168,7 +170,7 @@ class Send extends Component<Props, State> {
         });
     }
 
-    public componentWillMount() {
+    public UNSAFE_componentWillMount() {
         this.registerEvents();
         const account = this.getAccount();
         if (account && !account.coinCode.startsWith('eth-erc20-') && account.coinCode !== 'eth') {
@@ -227,18 +229,18 @@ class Send extends Component<Props, State> {
                     sendAll: false,
                     isConfirming: false,
                     isSent: true,
-                    recipientAddress: undefined,
+                    recipientAddress: '',
                     proposedAmount: undefined,
                     proposedFee: undefined,
                     proposedTotal: undefined,
-                    fiatAmount: undefined,
-                    amount: undefined,
+                    fiatAmount: '',
+                    amount: '',
                     data: undefined,
                     note: '',
-                    feePerByte: '',
+                    customFee: '',
                 });
-                if (this.utxos) {
-                    (this.utxos as any).getWrappedInstance().clear();
+                if (this.utxos.current) {
+                    this.utxos.current.clear();
                 }
                 setTimeout(() => this.setState({
                     isSent: false,
@@ -263,7 +265,7 @@ class Send extends Component<Props, State> {
         address: this.state.recipientAddress,
         amount: this.state.amount,
         feeTarget: this.state.feeTarget || '',
-        feePerByte: this.state.feePerByte,
+        customFee: this.state.customFee,
         sendAll: this.state.sendAll ? 'yes' : 'no',
         selectedUTXOs: Object.keys(this.selectedUTXOs),
         data: this.state.data,
@@ -271,7 +273,7 @@ class Send extends Component<Props, State> {
 
     private sendDisabled = () => {
         const txInput = this.txInput();
-        return !txInput.address || this.state.feeTarget === undefined || (txInput.sendAll === 'no' && !txInput.amount) || (this.state.feeTarget === 'custom' && !this.state.feePerByte);
+        return !txInput.address || this.state.feeTarget === undefined || (txInput.sendAll === 'no' && !txInput.amount) || (this.state.feeTarget === 'custom' && !this.state.customFee);
     }
 
     private validateAndDisplayFee = (updateFiat: boolean = true) => {
@@ -310,11 +312,11 @@ class Send extends Component<Props, State> {
 
     private handleNoteInput = (event: Event) => {
         const target = (event.target as HTMLInputElement);
-        this.setState(prevState => ({
-            ...prevState,
-            [target.id]: target.value,
-        }));
-        apiPost('account/' + this.getAccount()!.code + '/propose-tx-note', this.state.note);
+        this.setState({
+            'note': target.value,
+        }, () => {
+            apiPost('account/' + this.getAccount()!.code + '/propose-tx-note', this.state.note);
+        });
     }
 
     private txProposal = (updateFiat, result) => {
@@ -355,6 +357,9 @@ class Send extends Component<Props, State> {
                 case 'feeTooLow':
                     this.setState({ feeError: this.props.t('send.error.feeTooLow') });
                     break;
+                case 'feesNotAvailable':
+                    this.setState({ feeError: this.props.t('send.error.feesNotAvailable') });
+                    break;
                 default:
                     this.setState({ proposedFee: undefined });
                     if (errorCode) {
@@ -366,7 +371,7 @@ class Send extends Component<Props, State> {
         }
     }
 
-    private handleFormChange = (event: Event) => {
+    private handleFormChange = (event: React.SyntheticEvent) => {
         const target = (event.target as HTMLInputElement);
         let value: string | boolean = target.value;
         if (target.type === 'checkbox') {
@@ -401,11 +406,11 @@ class Send extends Component<Props, State> {
                     if (data.success) {
                         this.setState({ fiatAmount: data.fiatAmount });
                     } else {
-                        this.setState({ amountError: this.props.t(`send.error.invalidAmount`) });
+                        this.setState({ amountError: this.props.t('send.error.invalidAmount') });
                     }
                 });
         } else {
-            this.setState({ fiatAmount: undefined });
+            this.setState({ fiatAmount: '' });
         }
     }
 
@@ -418,15 +423,15 @@ class Send extends Component<Props, State> {
                         this.setState({ amount: data.amount });
                         this.validateAndDisplayFee(false);
                     } else {
-                        this.setState({ amountError: this.props.t(`send.error.invalidAmount`) });
+                        this.setState({ amountError: this.props.t('send.error.invalidAmount') });
                     }
                 });
         } else {
-            this.setState({ amount: undefined });
+            this.setState({ amount: '' });
         }
     }
 
-    private sendToSelf = (event: Event) => {
+    private sendToSelf = (event: React.SyntheticEvent) => {
         accountApi.getReceiveAddressList(this.getAccount()!.code)
             .then(receiveAddresses => {
                 this.setState({ recipientAddress: receiveAddresses[0][0].address });
@@ -437,7 +442,7 @@ class Send extends Component<Props, State> {
 
     private feeTargetChange = (feeTarget: accountApi.FeeTargetCode) => {
         this.setState(
-            { feeTarget, feePerByte: '' },
+            { feeTarget, customFee: '' },
             () => this.validateAndDisplayFee(this.state.sendAll),
         );
     }
@@ -447,7 +452,11 @@ class Send extends Component<Props, State> {
         this.validateAndDisplayFee(true);
     }
 
-    private getAccount = () => {
+    private hasSelectedUTXOs = (): boolean => {
+        return Object.keys(this.selectedUTXOs).length !== 0;
+    }
+
+    private getAccount = (): accountApi.IAccount | undefined => {
         if (!this.props.accounts) {
             return undefined;
         }
@@ -456,20 +465,16 @@ class Send extends Component<Props, State> {
 
     private toggleCoinControl = () => {
         this.setState(({ activeCoinControl }) => {
-            if (activeCoinControl && this.utxos) {
-                (this.utxos as any).getWrappedInstance().clear();
+            if (activeCoinControl && this.utxos.current) {
+                this.utxos.current.clear();
             }
             return { activeCoinControl: !activeCoinControl };
         });
     }
 
-    private setUTXOsRef = (ref: Component<UTXOsProps>) => {
-        this.utxos = ref;
-    }
-
     private parseQRResult = uri => {
         let address;
-        let amount: string | undefined;
+        let amount = '';
         try {
             const url = new URL(uri);
             if (url.protocol !== 'bitcoin:' && url.protocol !== 'litecoin:') {
@@ -477,23 +482,22 @@ class Send extends Component<Props, State> {
                 return;
             }
             address = url.pathname;
-            amount = url.searchParams.get('amount') || undefined;
+            amount = url.searchParams.get('amount') || '';
         } catch {
             address = uri;
         }
-        this.setState({
+        let updateState = {
             recipientAddress: address,
             sendAll: false,
-            fiatAmount: undefined,
-        });
+            fiatAmount: '',
+        };
         if (amount) {
-            this.setState({ amount });
+            updateState['amount'] = amount;
         }
-        // TODO: similar to handleFormChange(). Refactor.
-        if (amount !== undefined) {
-            this.convertToFiat(amount);
-        }
-        this.validateAndDisplayFee(true);
+        this.setState(updateState, () => {
+            this.convertToFiat(this.state.amount);
+            this.validateAndDisplayFee(true);
+        });
     }
 
     private toggleScanQR = () => {
@@ -534,9 +538,9 @@ class Send extends Component<Props, State> {
         this.setState({ videoLoading: false });
     }
 
-    public render(
-        { t, code }: RenderableProps<Props>,
-        {
+    public render() {
+        const { t, code } = this.props;
+        const {
             balance,
             proposedFee,
             proposedTotal,
@@ -549,7 +553,7 @@ class Send extends Component<Props, State> {
             fiatUnit,
             sendAll,
             feeTarget,
-            feePerByte,
+            customFee,
             isConfirming,
             isSent,
             isAborted,
@@ -567,8 +571,7 @@ class Send extends Component<Props, State> {
             activeScanQR,
             videoLoading,
             note,
-        }: State,
-    ) {
+        } = this.state;
         const account = this.getAccount();
         if (!account) {
             return null;
@@ -585,14 +588,14 @@ class Send extends Component<Props, State> {
             </span>
         ) : undefined;
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Status type="warning" hidden={paired !== false}>
                         {t('warning.sendPairing')}
                     </Status>
                     <Header title={<h2>{t('send.title', { accountName: account.coinName })}</h2>} />
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content padded">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content padded">
                             <div>
                                 <label className="labelXLarge">{t('send.availableBalance')}</label>
                             </div>
@@ -607,7 +610,7 @@ class Send extends Component<Props, State> {
                                         explorerURL={account.blockExplorerTxPrefix}
                                         onClose={this.deactivateCoinControl}
                                         onChange={this.onSelectedUTXOsChange}
-                                        ref={this.setUTXOsRef}
+                                        ref={this.utxos}
                                     />
                                 )
                             }
@@ -619,7 +622,7 @@ class Send extends Component<Props, State> {
                             </div>
                             <div className="box large m-bottom-default">
                                 <div className="columnsContainer">
-                                    <div class="columns">
+                                    <div className="columns">
                                         <div className="column">
                                             <Input
                                                 label={t('send.address.label')}
@@ -656,11 +659,11 @@ class Send extends Component<Props, State> {
                                                 onInput={this.handleFormChange}
                                                 disabled={sendAll}
                                                 error={amountError}
-                                                value={sendAll ? proposedAmount && proposedAmount.amount : amount}
+                                                value={sendAll ? (proposedAmount ? proposedAmount.amount : '') : amount}
                                                 placeholder={t('send.amount.placeholder')}
                                                 labelSection={
                                                     <Checkbox
-                                                        label={t('send.maximum')}
+                                                        label={t(this.hasSelectedUTXOs() ? 'send.maximumSelectedCoins' : 'send.maximum')}
                                                         id="sendAll"
                                                         onChange={this.handleFormChange}
                                                         checked={sendAll}
@@ -689,10 +692,10 @@ class Send extends Component<Props, State> {
                                                 disabled={!amount && !sendAll}
                                                 fiatUnit={fiatUnit}
                                                 proposedFee={proposedFee}
-                                                feePerByte={feePerByte}
+                                                customFee={customFee}
                                                 showCalculatingFeeLabel={isUpdatingProposal}
                                                 onFeeTargetChange={this.feeTargetChange}
-                                                onFeePerByte={fee => this.setState({ feePerByte: fee }, this.validateAndDisplayFee)}
+                                                onCustomFee={customFee => this.setState({ customFee }, this.validateAndDisplayFee)}
                                                 error={feeError}/>
                                         </div>
                                         <div className="column column-1-2">
@@ -713,7 +716,7 @@ class Send extends Component<Props, State> {
                                 {
                                     /*
                                     (account.coinCode === 'eth' || account.coinCode === 'teth' || account.coinCode === 'reth') && (
-                                        <div class="row">
+                                        <div className="row">
                                             <Input
                                                 label={t('send.data.label')}
                                                 placeholder={t('send.data.placeholder')}
@@ -725,7 +728,7 @@ class Send extends Component<Props, State> {
                                     )
                                     */
                                 }
-                                <div class="buttons ignore reverse m-top-none">
+                                <div className="buttons ignore reverse m-top-none">
                                     <Button
                                         primary
                                         onClick={this.send}
@@ -734,7 +737,7 @@ class Send extends Component<Props, State> {
                                     </Button>
                                     <ButtonLink
                                         transparent
-                                        href={`/account/${code}`}>
+                                        to={`/account/${code}`}>
                                         {t('button.back')}
                                     </ButtonLink>
                                 </div>
@@ -756,7 +759,11 @@ class Send extends Component<Props, State> {
                                 <div className={style.confirmItem}>
                                     <label>{t('send.amount.label')}</label>
                                     <p>
-                                        <span>{proposedAmount && proposedAmount.amount || 'N/A'} <small>{proposedAmount && proposedAmount.unit || 'N/A'}</small></span>
+                                        <span key="proposedAmount">
+                                            {(proposedAmount && proposedAmount.amount) || 'N/A'}
+                                            {' '}
+                                            <small>{(proposedAmount && proposedAmount.unit) || 'N/A'}</small>
+                                        </span>
                                         {
                                             proposedAmount && proposedAmount.conversions && (
                                                 <span> <span className="text-gray">/</span> {proposedAmount.conversions[fiatUnit]} <small>{fiatUnit}</small></span>
@@ -773,25 +780,32 @@ class Send extends Component<Props, State> {
                                 <div className={style.confirmItem}>
                                     <label>{t('send.fee.label')}{feeTarget ? ' (' + t(`send.feeTarget.label.${feeTarget}`) + ')' : ''}</label>
                                     <p>
-                                        <span key="amount">{proposedFee && proposedFee.amount || 'N/A'} <small>{proposedFee && proposedFee.unit || 'N/A'}</small></span>
+                                        <span key="amount">
+                                            {(proposedFee && proposedFee.amount) || 'N/A'}
+                                            {' '}
+                                            <small>{(proposedFee && proposedFee.unit) || 'N/A'}</small>
+                                        </span>
                                         {proposedFee && proposedFee.conversions && (
                                             <span key="conversation">
                                                 <span className="text-gray"> / </span>
                                                 {proposedFee.conversions[fiatUnit]} <small>{fiatUnit}</small>
                                             </span>
                                         )}
-                                        {feePerByte ? (
-                                            <span key="feeperbyte"><br/><small>({feePerByte} sat/vB)</small></span>
+                                        {customFee ? (
+                                            <span key="customFee">
+                                                <br/>
+                                                <small>({customFee} {customFeeUnit(account.coinCode)})</small>
+                                            </span>
                                         ) : null}
                                     </p>
                                 </div>
                                 {
-                                    Object.keys(this.selectedUTXOs).length !== 0 && (
+                                    this.hasSelectedUTXOs() && (
                                         <div className={[style.confirmItem].join(' ')}>
                                             <label>{t('send.confirm.selected-coins')}</label>
                                             {
                                                 Object.keys(this.selectedUTXOs).map((uxto, i) => (
-                                                    <p class={style.confirmationValue} key={`selectedCoin-${i}`}>{uxto}</p>
+                                                    <p className={style.confirmationValue} key={`selectedCoin-${i}`}>{uxto}</p>
                                                 ))
                                             }
                                         </div>
@@ -800,7 +814,11 @@ class Send extends Component<Props, State> {
                                 <div className={[style.confirmItem, style.total].join(' ')}>
                                     <label>{t('send.confirm.total')}</label>
                                     <p>
-                                        <span><strong>{proposedTotal && proposedTotal.amount || 'N/A'}</strong> <small>{proposedTotal && proposedTotal.unit || 'N/A'}</small></span>
+                                        <span>
+                                            <strong>{(proposedTotal && proposedTotal.amount) || 'N/A'}</strong>
+                                            {' '}
+                                            <small>{(proposedTotal && proposedTotal.unit) || 'N/A'}</small>
+                                        </span>
                                         {(proposedTotal && proposedTotal.conversions) && (
                                             <span> <span className="text-gray">/</span> <strong>{proposedTotal.conversions[fiatUnit]}</strong> <small>{fiatUnit}</small></span>
                                         )}
@@ -812,8 +830,8 @@ class Send extends Component<Props, State> {
                     {
                         isSent && (
                             <WaitDialog>
-                                <div class="flex flex-row flex-center flex-items-center">
-                                    <img src={approve} alt="Success" style="height: 18px; margin-right: 1rem;" />{t('send.success')}
+                                <div className="flex flex-row flex-center flex-items-center">
+                                    <Checked style={{height: 18, marginRight: '1rem'}} />{t('send.success')}
                                 </div>
                             </WaitDialog>
                         )
@@ -821,8 +839,8 @@ class Send extends Component<Props, State> {
                     {
                         isAborted && (
                             <WaitDialog>
-                                <div class="flex flex-row flex-center flex-items-center">
-                                    <img src={reject} alt="Abort" style="height: 18px; margin-right: 1rem;" />{t('send.abort')}
+                                <div className="flex flex-row flex-center flex-items-center">
+                                    <Cancel alt="Abort" style={{height: 18, marginRight: '1rem'}} />{t('send.abort')}
                                 </div>
                             </WaitDialog>
                         )
@@ -839,7 +857,7 @@ class Send extends Component<Props, State> {
                                     height={300 /* fix height to avoid ugly resize effect after open */}
                                     className={style.qrVideo}
                                     onLoadedData={this.handleVideoLoad} />
-                                <div class={['buttons', 'flex', 'flex-row', 'flex-between'].join(' ')}>
+                                <div className={['buttons', 'flex', 'flex-row', 'flex-between'].join(' ')}>
                                     <Button
                                         secondary
                                         onClick={this.toggleScanQR}>
@@ -863,11 +881,12 @@ class Send extends Component<Props, State> {
                         )
                     }
                     <Entry key="guide.send.revert" entry={t('guide.send.revert')} />
+                    <Entry key="guide.send.plugout" entry={t('guide.send.plugout')} />
                 </Guide>
             </div>
         );
     }
 }
 
-const TranslatedSend = translate<SendProps>()(Send);
+const TranslatedSend = translate()(Send);
 export { TranslatedSend as Send };

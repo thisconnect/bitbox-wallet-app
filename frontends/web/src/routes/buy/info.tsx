@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import React, { Component} from 'react';
+import { route } from '../../utils/route';
 import { AccountCode, IAccount } from '../../api/account';
 import { TDevices } from '../../api/devices';
 import Guide from './guide';
@@ -28,7 +28,7 @@ import { Button, Checkbox, Select } from '../../components/forms';
 import { setConfig } from '../../utils/config';
 import { apiGet } from '../../utils/request';
 import { isBitcoinOnly } from '../account/utils';
-import * as style from './info.css';
+import style from './info.module.css';
 
 interface BuyInfoProps {
     accounts: IAccount[];
@@ -111,36 +111,35 @@ class BuyInfo extends Component<Props, State> {
         return t('buy.info.crypto');
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        {
+    public render() {
+        const { t } = this.props;
+        const {
             status,
             selected,
             options,
-        }: State
-    ) {
+        } = this.state;
         if (options === undefined) {
             return <Spinner text={t('loading')} />;
         }
         const name = this.getCryptoName();
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{t('buy.info.title', { name })}</h2>} />
-                    <div class="innerContainer">
+                    <div className="innerContainer">
                         { status === 'agree' ? (
-                            <div class={style.disclaimerContainer}>
-                                <div class={style.disclaimer}>
-                                    <h2 class={style.title}>
+                            <div className={style.disclaimerContainer}>
+                                <div className={style.disclaimer}>
+                                    <h2 className={style.title}>
                                         {t('buy.info.disclaimer.title', { name })}
                                     </h2>
                                     <p>{t('buy.info.disclaimer.intro.0', { name })}</p>
                                     <p>{t('buy.info.disclaimer.intro.1', { name })}</p>
-                                    <h2 class={style.title}>
+                                    <h2 className={style.title}>
                                         {t('buy.info.disclaimer.payment.title')}
                                     </h2>
                                     <p>{t('buy.info.disclaimer.payment.details', { name })}</p>
-                                    <div class={style.table}>
+                                    <div className={style.table}>
                                         <table>
                                             <colgroup>
                                                 <col width="*" />
@@ -157,44 +156,44 @@ class BuyInfo extends Component<Props, State> {
                                             <tbody>
                                                 <tr>
                                                     <td>{t('buy.info.disclaimer.payment.table.1_method')}</td>
-                                                    <td class={style.nowrap}>1.9 %</td>
+                                                    <td className={style.nowrap}>1.9 %</td>
                                                     <td>{t('buy.info.disclaimer.payment.table.1_description')}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>{t('buy.info.disclaimer.payment.table.2_method')}</td>
-                                                    <td class={style.nowrap}>4.9 %</td>
+                                                    <td className={style.nowrap}>4.9 %</td>
                                                     <td>{t('buy.info.disclaimer.payment.table.2_description')}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </div>
                                     <p>{t('buy.info.disclaimer.payment.footnote')}</p>
-                                    <h2 class={style.title}>
+                                    <h2 className={style.title}>
                                         {t('buy.info.disclaimer.security.title')}
                                     </h2>
                                     <p>{t('buy.info.disclaimer.security.description', { name })}</p>
                                     <p>
-                                        <A class={style.link} href="https://shiftcrypto.ch/bitbox02/threat-model/">
+                                        <A className={style.link} href="https://shiftcrypto.ch/bitbox02/threat-model/">
                                             {t('buy.info.disclaimer.security.link')}
                                         </A>
                                     </p>
-                                    <h2 class={style.title}>
+                                    <h2 className={style.title}>
                                         {t('buy.info.disclaimer.protection.title')}
                                     </h2>
                                     <p>{t('buy.info.disclaimer.protection.description', { name })}</p>
                                     <p>
-                                        <A class={style.link} href="https://www.moonpay.com/privacy_policy">
+                                        <A className={style.link} href="https://www.moonpay.com/privacy_policy">
                                             {t('buy.info.disclaimer.privacyPolicy')}
                                         </A>
                                     </p>
                                 </div>
-                                <div class="text-center m-bottom-quarter">
+                                <div className="text-center m-bottom-quarter">
                                     <Checkbox
                                         id="skip_disclaimer"
                                         label={t('buy.info.skip')}
                                         onChange={this.handleSkipDisclaimer} />
                                 </div>
-                                <div class="buttons text-center m-bottom-xlarge">
+                                <div className="buttons text-center m-bottom-xlarge">
                                     <Button
                                         primary
                                         onClick={this.handleProceed}>
@@ -204,10 +203,10 @@ class BuyInfo extends Component<Props, State> {
                             </div>
                         ) : (
                             options.length === 0 ? (
-                                <div class="content narrow isVerticallyCentered">{t('accountSummary.noAccount')}</div>
+                                <div className="content narrow isVerticallyCentered">{t('accountSummary.noAccount')}</div>
                             ) : (
-                                <div class="content narrow isVerticallyCentered">
-                                    <h1 class={style.title}>{t('buy.title', { name })}</h1>
+                                <div className="content narrow isVerticallyCentered">
+                                    <h1 className={style.title}>{t('buy.title', { name })}</h1>
                                     <Select
                                         options={[{
                                                 text: t('buy.info.selectLabel'),
@@ -216,12 +215,11 @@ class BuyInfo extends Component<Props, State> {
                                             },
                                             ...options]
                                         }
-                                        onChange={e => this.setState({ selected: e.target.value})}
-                                        value={selected}
-                                        defaultValue={'choose'}
+                                        onChange={(e: React.SyntheticEvent) => this.setState({ selected: (e.target as HTMLSelectElement).value})}
+                                        value={selected || 'choose'}
                                         id="coinAndAccountCode"
                                     />
-                                    <div class="buttons text-center m-bottom-xxlarge">
+                                    <div className="buttons text-center m-bottom-xxlarge">
                                         <Button
                                             primary
                                             onClick={this.handleProceed}
@@ -244,5 +242,5 @@ const loadHOC = load<LoadedBuyInfoProps, BuyInfoProps & TranslateProps>({
     config: 'config'
 })(BuyInfo);
 
-const HOC = translate<BuyInfoProps>()(loadHOC);
+const HOC = translate()(loadHOC);
 export { HOC as BuyInfo };

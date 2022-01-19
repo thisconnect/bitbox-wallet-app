@@ -15,28 +15,29 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { translate } from 'react-i18next';
+import { Component, PropsWithChildren } from 'react';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import * as accountApi from '../../../api/account';
-import checkIcon from '../../../assets/icons/check.svg';
 import A from '../../../components/anchor/anchor';
 import { Header } from '../../../components/layout';
 import { Entry } from '../../../components/guide/entry';
 import { Guide } from '../../../components/guide/guide';
 import { FiatConversion, formatCurrency } from '../../../components/rates/rates';
-import { TranslateProps } from '../../../decorators/translate';
+import { Check } from '../../../components/icon/icon';
 import Logo from '../../../components/icon/logo';
 import Spinner from '../../../components/spinner/ascii';
 import { debug } from '../../../utils/env';
 import { apiWebsocket } from '../../../utils/websocket';
 import { Chart } from './chart';
-import * as style from './accountssummary.css';
+import { AddBuyOnEmptyBalances } from '../info/buyCTA';
+import { apiPost } from '../../../utils/request';
+import style from './accountssummary.module.css';
 
 interface AccountSummaryProps {
     accounts: accountApi.IAccount[];
 }
 
-interface Balances {
+export interface Balances {
     [code: string]: accountApi.IBalance;
 }
 
@@ -51,7 +52,7 @@ interface State {
     syncStatus?: SyncStatus;
 }
 
-type Props = TranslateProps & AccountSummaryProps;
+type Props = WithTranslation & AccountSummaryProps;
 
 interface BalanceRowProps {
     code: string;
@@ -73,7 +74,7 @@ class AccountsSummary extends Component<Props, State> {
         this.getAccountSummary();
         this.unsubscribe = apiWebsocket(this.onEvent);
 
-        this.props.accounts.map((account) => {
+        this.props.accounts.forEach((account) => {
             this.onStatusChanged(account.code);
         });
     }
@@ -145,12 +146,12 @@ class AccountsSummary extends Component<Props, State> {
         .catch(console.error);
     }
 
-    private balanceRow = ({ code, name, coinCode, coinUnit }: RenderableProps<BalanceRowProps>) => {
+    private balanceRow = ({ code, name, coinCode, coinUnit }: PropsWithChildren<BalanceRowProps>) => {
         const { t } = this.props;
         const balance = this.state.balances ? this.state.balances[code] : undefined;
         const nameCol = (
             <td data-label={t('accountSummary.name')}>
-                <div class={style.coinName}>
+                <div className={style.coinName}>
                     <Logo className={style.coincode} coinCode={coinCode} active={true} alt={coinCode} />
                     {name}
                 </div>
@@ -180,31 +181,30 @@ class AccountsSummary extends Component<Props, State> {
                     { t('account.syncedAddressesCount', {
                         count: syncStatus?.toString(),
                         defaultValue: 0,
-                    }) }
+                    } as any) }
                     <Spinner />
                 </td>
             </tr>
         );
     }
 
-    public render(
-        { t, accounts }: RenderableProps<Props>,
-        { exported, data }: State,
-    ) {
+    public render() {
+        const { t, accounts } = this.props;
+        const { exported, data, balances } = this.state;
         return (
             <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('accountSummary.title')}</h2>}>
                         { debug && (
                             exported ? (
-                                <A href={exported} title={exported} className="flex flex-row flex-start flex-items-center">
+                                <A key="open" href="#" onClick={() => apiPost('open', exported)} title={exported} className="flex flex-row flex-start flex-items-center">
                                     <span>
-                                        <img src={checkIcon} style="margin-right: 5px !important;" />
+                                        <Check style={{marginRight: '5px !important'}} />
                                         <span>{t('account.openFile')}</span>
                                     </span>
                                 </A>
                             ) : (
-                                <a onClick={this.export} title={t('accountSummary.exportSummary')}>
+                                <a key="export" onClick={this.export} title={t('accountSummary.exportSummary')}>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#699ec6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                                         <polyline points="7 10 12 15 17 10"></polyline>
@@ -216,6 +216,7 @@ class AccountsSummary extends Component<Props, State> {
                     </Header>
                     <div className="innerContainer scrollableContainer">
                         <div className="content padded">
+                            { ( accounts.length === Object.keys(balances || {}).length ) && <AddBuyOnEmptyBalances balances={balances} /> }
                             {data ? (
                                 <Chart
                                     dataDaily={data.chartDataMissing ? undefined : data.chartDataDaily}
@@ -244,11 +245,7 @@ class AccountsSummary extends Component<Props, State> {
                                         { accounts.length > 0 ? (
                                             accounts.map(account => this.balanceRow(account))
                                         ) : (
-                                            <tr>
-                                                <td colSpan={3} className={style.loadingAccounts}>
-                                                    {t('loading')}
-                                                </td>
-                                            </tr>
+                                            <tr><td rowSpan={2}>{t('accountSummary.noAccount')}</td></tr>
                                         )}
                                     </tbody>
                                     {(data && data.chartTotal) ? (
@@ -283,5 +280,5 @@ class AccountsSummary extends Component<Props, State> {
     }
 }
 
-const HOC = translate()(AccountsSummary);
+const HOC = withTranslation()(AccountsSummary);
 export { HOC as AccountsSummary };

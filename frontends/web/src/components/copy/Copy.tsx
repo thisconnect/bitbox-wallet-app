@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import CheckIcon from '../../assets/icons/check.svg';
-import CopyIcon from '../../assets/icons/copy.svg';
+import { Component, createRef} from 'react';
 import { translate, TranslateProps } from '../../decorators/translate';
-import * as style from './Copy.css';
+import { Check, Copy } from '../icon/icon';
+import style from './Copy.module.css';
 
 interface CopyableInputProps {
+    alignLeft?: boolean;
+    alignRight?: boolean;
+    borderLess?: boolean;
     className?: string;
     disabled?: boolean;
     flexibleHeight?: boolean;
-    alignLeft?: boolean;
     value: string;
 }
 
@@ -40,7 +41,7 @@ class CopyableInput extends Component<Props, State> {
         success: false,
     }
 
-    private textArea!: HTMLTextAreaElement;
+    private textArea = createRef<HTMLTextAreaElement>();
 
     public componentDidMount() {
         this.setHeight();
@@ -51,26 +52,22 @@ class CopyableInput extends Component<Props, State> {
     }
 
     private setHeight() {
-        const textarea = this.textArea;
+        const textarea = this.textArea.current;
+        if (!textarea) {
+            return;
+        }
         const fontSize = window.getComputedStyle(textarea, null).getPropertyValue('font-size');
         const units = Number(fontSize.replace('px', '')) + 2;
         textarea.setAttribute('rows', '1');
         textarea.setAttribute('rows', String(Math.round((textarea.scrollHeight / units) - 2)));
     }
 
-    private setRef = (textarea: HTMLTextAreaElement) => {
-        this.textArea = textarea;
-    }
-
-    private onFocus = (e: FocusEvent) => {
-        const textarea = e.target as HTMLTextAreaElement;
-        if (textarea) {
-            textarea.focus();
-        }
+    private onFocus = (e: React.SyntheticEvent<HTMLTextAreaElement, FocusEvent>) => {
+        e.currentTarget.focus();
     }
 
     private copy = () => {
-        this.textArea.select();
+        this.textArea.current?.select();
         if (document.execCommand('copy')) {
             this.setState({ success: true }, () => {
                 setTimeout(() => this.setState({ success: false }), 1500);
@@ -78,31 +75,36 @@ class CopyableInput extends Component<Props, State> {
         }
     }
 
-    public render(
-        { alignLeft, t, value, className, disabled, flexibleHeight }: RenderableProps<Props>,
-        { success }: State,
-    ) {
+    public render() {
+        const { alignLeft, alignRight, borderLess, t, value, className, disabled, flexibleHeight } = this.props;
+        const { success } = this.state;
         const copyButton = disabled ? null : (
             <button
                 onClick={this.copy}
                 className={[style.button, success && style.success, 'ignore'].join(' ')}
                 title={t('button.copy')}>
-                <img src={success ? CheckIcon : CopyIcon} />
+                {success ? <Check /> : <Copy />}
             </button>
         );
         return (
-            <div class={['flex flex-row flex-start flex-items-start', style.container, className ? className : ''].join(' ')}>
+            <div className={[
+                'flex flex-row flex-start flex-items-start',
+                style.container,
+                className ? className : ''
+            ].join(' ')}>
                 <textarea
                     disabled={disabled}
                     readOnly
                     onFocus={this.onFocus}
                     value={value}
-                    ref={this.setRef}
+                    ref={this.textArea}
                     rows={1}
                     className={[
                         style.inputField,
                         flexibleHeight && style.flexibleHeight,
-                        alignLeft && style.alignLeft
+                        alignLeft && style.alignLeft,
+                        alignRight && style.alignRight,
+                        borderLess && style.borderLess,
                     ].join(' ')} />
                 {copyButton}
             </div>
@@ -110,5 +112,5 @@ class CopyableInput extends Component<Props, State> {
     }
 }
 
-const TranslatedCopyableInput = translate<CopyableInputProps>()(CopyableInput);
+const TranslatedCopyableInput = translate()(CopyableInput);
 export { TranslatedCopyableInput as CopyableInput };

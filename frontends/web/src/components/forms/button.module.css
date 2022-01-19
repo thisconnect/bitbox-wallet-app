@@ -1,0 +1,106 @@
+.button {
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    border-radius: 2px;
+    cursor: default;
+    /* Otter doesn't like display: inline-flex; */
+    display: inline-flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-family);
+    font-size: var(--size-default);
+    font-weight: 400;
+    justify-content: center;
+    min-width: 100px !important;
+    height: 50px;
+    padding: 0 var(--space-default);
+    position: relative;
+    outline: none;
+    text-align: center;
+    text-decoration: none;
+    -webkit-appearance: none;
+    transition: background-color .2s ease-out, color .2s ease-out;
+    will-change: background-color, color;
+}
+
+.button:focus {
+    outline: none;
+}
+
+.primary {
+    composes: button;
+    background: var(--color-blue);
+    color: var(--color-white);
+}
+
+.primary:not([disabled]):focus,
+.primary:not([disabled]):hover {
+    background-color: var(--color-lightblue);
+}
+
+.secondary {
+    composes: button;
+    background-color: var(--color-white);
+    border-color: var(--color-gray-alt);
+    color: var(--color-default);
+}
+
+.secondary:not([disabled]):focus,
+.secondary:not([disabled]):hover {
+    color: var(--color-blue);
+    border-color: var(--color-blue);
+}
+
+.secondary[disabled] {
+    color: var(--color-gray-alt);
+    border-color: var(--color-mediumgray);
+}
+
+.danger {
+    composes: button;
+    background-color: var(--color-softred);
+    border-color: var(--color-softred);
+    color: var(--color-white);
+}
+
+.danger:not([disabled]):focus,
+.danger:not([disabled]):hover {
+    background-color: var(--color-lightred);
+    border-color: var(--color-lightred);
+}
+
+.danger:focus {
+    outline-color: var(--color-swissred);
+}
+
+.transparent {
+    composes: button;
+    background-color: transparent;
+    color: var(--color-blue);
+    border-color: var(--color-blue);
+}
+
+.transparent:not([disabled]):focus,
+.transparent:not([disabled]):hover {
+    color: var(--color-lightblue);
+    border-color: var(--color-lightblue);
+}
+
+.primary[disabled],
+.danger[disabled],
+.transparent[disabled] {
+    opacity: 0.4;
+}
+
+.button[hidden] {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .button {
+        min-width: 90px;
+    }
+}

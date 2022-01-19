@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { route } from 'preact-router';
+import React, { Component, createRef} from 'react';
 import * as accountApi from '../../../api/account';
 import * as backendAPI from '../../../api/backend';
-import SimpleMarkup from '../../../utils/simplemarkup';
+import { SimpleMarkup } from '../../../utils/markup';
 import { Message } from '../../../components/message/message';
 import { Button, Input } from '../../../components/forms';
 import { Header } from '../../../components/layout';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { Step, Steps } from './components/steps';
 import { CoinDropDown } from './components/coin-dropdown';
-import * as styles from './add.css';
-import checkicon from '../../../assets/icons/check.svg';
+import { Check } from '../../../components/icon/icon';
 import { apiPost } from '../../../utils/request';
 import Guide from '../../settings/manage-account-guide';
+import { route } from '../../../utils/route';
+import styles from './add.module.css';
 
 interface AddAccountProps {
 }
@@ -58,6 +58,8 @@ class AddAccount extends Component<Props, State> {
         adding: false,
     };
 
+    private ref = createRef<HTMLInputElement>();
+
     private onlyOneSupportedCoin = (): boolean => {
         return this.state.supportedCoins.length === 1;
     }
@@ -75,6 +77,13 @@ class AddAccount extends Component<Props, State> {
                     this.setState({ accountName: coins[0].suggestedAccountName });
                 }
             });
+        this.ref.current?.focus();
+    }
+
+    public componentDidUpdate(_prevProps, prevState: State) {
+        if ((prevState.step !== this.state.step) && (this.state.step === 'choose-name')){
+            this.ref.current?.focus();
+        }
     }
 
     private back = () => {
@@ -88,7 +97,7 @@ class AddAccount extends Component<Props, State> {
         }
     }
 
-    private next = (e: Event) => {
+    private next = (e: React.SyntheticEvent) => {
         e.preventDefault();
         const { accountName, accountCode, coinCode, step } = this.state;
         const { t } = this.props;
@@ -147,15 +156,6 @@ class AddAccount extends Component<Props, State> {
         }
     }
 
-    private focusRef = (ref) => {
-        setTimeout(() => {
-            if (ref === document.activeElement) {
-                return;
-            }
-            ref?.focus();
-        }, 0);
-    }
-
     private renderContent = () => {
         const { t } = this.props;
         const { accountName, coinCode, step, supportedCoins} = this.state;
@@ -171,7 +171,7 @@ class AddAccount extends Component<Props, State> {
                 return (
                     <Input
                         autoFocus
-                        getRef={this.focusRef}
+                        ref={this.ref}
                         id="accountName"
                         onInput={e => this.setState({ accountName: e.target.value })}
                         value={accountName} />
@@ -179,7 +179,7 @@ class AddAccount extends Component<Props, State> {
             case 'success':
                 return (
                     <div className="text-center">
-                        <img src={checkicon} className={styles.successCheck} /><br />
+                        <Check className={styles.successCheck} /><br />
                         <SimpleMarkup
                             className={styles.successMessage}
                             markup={t('addAccount.success.message', { accountName })}
@@ -210,17 +210,16 @@ class AddAccount extends Component<Props, State> {
         }
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        {
+    public render() {
+        const { t } = this.props;
+        const {
             accountName,
             coinCode,
             errorMessage,
             step,
             supportedCoins,
             adding,
-        }: Readonly<State>
-    ) {
+        } = this.state;
         if (supportedCoins.length === 0) {
             return null;
         }
@@ -231,25 +230,25 @@ class AddAccount extends Component<Props, State> {
         ].indexOf(step);
         const { titleText, nextButtonText } = this.getTextFor(step);
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{t('manageAccounts.title')}</h2>} />
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content larger isVerticallyCentered">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content larger isVerticallyCentered">
                         <form
                             className={`${styles.manageContainer} box larger flex flex-column flex-between`}
                             onSubmit={this.next}>
                             <div className="text-center">
                                 {t('addAccount.title')}
-                                <h1 class={styles.title}>{titleText}</h1>
+                                <h1 className={styles.title}>{titleText}</h1>
                             </div>
-                            <div class="row" hidden={!errorMessage}>
+                            <div className="row" hidden={!errorMessage}>
                                 <Message type="warning">{errorMessage}</Message>
                             </div>
-                            <div class="row">
+                            <div className="row">
                                 {this.renderContent()}
                             </div>
-                            <div class="row">
+                            <div className="row">
                                 <Steps current={currentStep}>
                                     <Step key="select-coin" hidden={this.onlyOneSupportedCoin()}>
                                         {t('addAccount.selectCoin.step')}
@@ -262,7 +261,7 @@ class AddAccount extends Component<Props, State> {
                                     </Step>
                                 </Steps>
                             </div>
-                            <div class="row flex flex-row flex-between m-bottom" style="flex-direction: row-reverse;">
+                            <div className="row flex flex-row flex-between m-bottom" style={{flexDirection: 'row-reverse'}}>
                                 <Button
                                     disabled={
                                         (step === 'select-coin' && coinCode === 'choose')
@@ -290,6 +289,6 @@ class AddAccount extends Component<Props, State> {
     }
 }
 
-const HOC = translate<AddAccountProps>()(AddAccount);
+const HOC = translate()(AddAccount);
 
 export { HOC as AddAccount };

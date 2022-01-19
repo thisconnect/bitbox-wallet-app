@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2021 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +15,17 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import React, { Component} from 'react';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { Radio } from '../../../components/forms';
-import * as style from './backups.css';
+import style from './backups.module.css';
 
 interface BackupsListItemProps {
     disabled?: boolean;
     backup: Backup;
     selectedBackup?: string;
     handleChange: (value: string) => void;
-    onFocus: ({ target }: { target: HTMLElement; }) => void;
+    onFocus: (event: React.SyntheticEvent) => void;
     radio: boolean;
 }
 
@@ -37,20 +38,18 @@ export interface Backup {
 type Props = BackupsListItemProps & TranslateProps;
 
 class BackupsListItem extends Component<Props> {
-    public render(
-        { disabled, backup, selectedBackup, handleChange, onFocus, radio }: RenderableProps<Props>,
-    ) {
+    public render() {
+        const { disabled, backup, selectedBackup, handleChange, onFocus, radio } = this.props;
         let date = '';
         if (backup.date && backup.date !== '') {
-            const options = {
+            date = new Date(backup.date).toLocaleString(this.props.i18n.language, {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
                 hour: '2-digit',
                 minute: '2-digit',
-            };
-            date = new Date(backup.date).toLocaleString(this.context.i18n.language, options);
+            });
         } else {
             date = 'unknown';
         }
@@ -59,14 +58,14 @@ class BackupsListItem extends Component<Props> {
             <Radio
                 disabled={!!disabled}
                 checked={selectedBackup === backup.id}
-                onChange={event => handleChange(event.target.value)}
+                onChange={(event: React.SyntheticEvent) => handleChange((event.target as HTMLInputElement).value)}
                 id={backup.id}
                 label={backup.name && backup.name !== '' ? backup.name : backup.id}
                 value={backup.id}
                 onFocus={onFocus}
-                className={style.backupItem}
-                sizeMedium>
+                className={style.backupItem}>
                 <span className="text-small text-gray">{date}</span>
+                <span className="text-small text-gray">ID: {backup.id}</span>
             </Radio> :
             <div>
                 <div className="text-medium m-bottom-quarter">{backup.name}</div>
@@ -77,5 +76,5 @@ class BackupsListItem extends Component<Props> {
     }
 }
 
-const TranslatedBackupsListItem = translate<BackupsListItemProps>()(BackupsListItem);
+const TranslatedBackupsListItem = translate()(BackupsListItem);
 export { TranslatedBackupsListItem as BackupsListItem };

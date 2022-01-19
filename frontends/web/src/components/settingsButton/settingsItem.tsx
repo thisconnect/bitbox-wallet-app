@@ -1,12 +1,13 @@
-import { Component, h, RenderableProps } from 'preact';
-import * as style from './settingsButton.css';
+import { Component} from 'react';
+import style from './settingsButton.module.css';
 
 interface SettingsItemProps {
     optionalText?: string | null;
 }
 
 class SettingsItem extends Component<SettingsItemProps> {
-    public render({ optionalText, children }: RenderableProps<SettingsItemProps>) {
+    public render() {
+        const { optionalText, children } = this.props;
         return (
             <div className={[style.container, style.item].join(' ')}>
                 {children}

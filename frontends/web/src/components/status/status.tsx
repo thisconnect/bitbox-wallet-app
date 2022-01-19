@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { apiGet, apiPost } from '../../utils/request';
-import * as style from './status.css';
+import style from './status.module.css';
 
 interface State {
     show: boolean;
@@ -82,16 +82,15 @@ export default class Status extends Component<Props, State> {
         });
     }
 
-    public render({
-        children,
-        className,
-        dismissable,
-        hidden,
-        type = 'warning',
-    }: RenderableProps<Props>,
-    {
-        show,
-    }: State) {
+    public render() {
+        const {
+            children,
+            className,
+            dismissable,
+            hidden,
+            type = 'warning',
+        } = this.props;
+        const { show } = this.state;
         if (hidden || !show) {
             return null;
         }

@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import React, { Component, createRef} from 'react';
 import * as accountApi from '../../../api/account';
 import { Input, Select } from '../../../components/forms';
 import { load } from '../../../decorators/load';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import { getCoinCode, isBitcoinBased } from '../utils';
-import * as style from './feetargets.css';
+import { customFeeUnit, getCoinCode, isEthereumBased } from '../utils';
+import style from './feetargets.module.css';
 
 interface LoadedProps {
     config: any;
@@ -33,10 +33,10 @@ interface FeeTargetsProps {
     disabled: boolean;
     fiatUnit: accountApi.Fiat;
     proposedFee?: accountApi.IAmount;
-    feePerByte: string;
+    customFee: string;
     showCalculatingFeeLabel?: boolean;
     onFeeTargetChange: (code: accountApi.FeeTargetCode) => void;
-    onFeePerByte: (feePerByte: string) => void;
+    onCustomFee: (customFee: string) => void;
     error?: string;
 }
 
@@ -48,21 +48,24 @@ interface Options {
 }
 
 interface State {
-    feeTarget?: string | null;
+    feeTarget: string;
     options: Options[] | null;
 }
 
 class FeeTargets extends Component<Props, State> {
     public readonly state: State = {
-        feeTarget: null,
+        feeTarget: '',
         options: null,
     };
 
+    private input = createRef<HTMLInputElement & {autofocus: boolean}>();
+
     public componentDidMount() {
         this.updateFeeTargets(this.props.accountCode);
+        this.focusInput();
     }
 
-    public componentWillReceiveProps({ accountCode }) {
+    public UNSAFE_componentWillReceiveProps({ accountCode }) {
         if (this.props.accountCode !== accountCode) {
             this.updateFeeTargets(accountCode);
         }
@@ -76,7 +79,7 @@ class FeeTargets extends Component<Props, State> {
                     value: code,
                     text: this.props.t(`send.feeTarget.label.${code}`) + (expert && feeRateInfo ? ` (${feeRateInfo})` : ''),
                 }));
-                if (expert && isBitcoinBased(this.props.coinCode)) {
+                if (expert) {
                     options.push({
                         value: 'custom',
                         text: this.props.t('send.feeTarget.label.custom'),
@@ -88,14 +91,14 @@ class FeeTargets extends Component<Props, State> {
             .catch(console.error);
     }
 
-    private handleFeeTargetChange = (event: Event) => {
+    private handleFeeTargetChange = (event: React.SyntheticEvent) => {
         const target = event.target as HTMLSelectElement;
         this.setFeeTarget(target.options[target.selectedIndex].value as accountApi.FeeTargetCode);
     }
 
-    private handleFeePerByte = (event: Event) => {
+    private handleCustomFee = (event: Event) => {
         const target = event.target as HTMLInputElement;
-        this.props.onFeePerByte(target.value);
+        this.props.onCustomFee(target.value);
     }
 
     private setFeeTarget = (feeTarget: accountApi.FeeTargetCode) => {
@@ -112,19 +115,25 @@ class FeeTargets extends Component<Props, State> {
         return `${amount} ${unit} ${conversions ? ` = ${conversions[fiatUnit]} ${fiatUnit}` : ''}`;
     }
 
-    public render(
-    {
-        t,
-        coinCode,
-        disabled,
-        error,
-        showCalculatingFeeLabel = false,
-        feePerByte,
-    }: RenderableProps<Props>,
-    {
-        feeTarget,
-        options,
-    }: State) {
+    private focusInput = () => {
+        if (!this.props.disabled && this.input.current && this.input.current.autofocus) {
+            this.input.current.focus();
+        }
+    }
+
+    public render() {
+        const {
+            t,
+            coinCode,
+            disabled,
+            error,
+            showCalculatingFeeLabel = false,
+            customFee,
+        } = this.props;
+        const {
+            feeTarget,
+            options,
+        } = this.state;
         if (options === null) {
             return (
                 <Input
@@ -132,6 +141,7 @@ class FeeTargets extends Component<Props, State> {
                     id="feetarget"
                     placeholder={t('send.feeTarget.placeholder')}
                     disabled
+                    value=""
                     transparent />
             );
         }
@@ -148,6 +158,7 @@ class FeeTargets extends Component<Props, State> {
                                 disabled
                                 label={t('send.priority')}
                                 placeholder={t('send.feeTarget.placeholder')}
+                                value=''
                                 transparent />
                         ) : (
                             <Select
@@ -156,7 +167,6 @@ class FeeTargets extends Component<Props, State> {
                                 id="feeTarget"
                                 disabled={disabled}
                                 onChange={this.handleFeeTargetChange}
-                                selected={feeTarget}
                                 value={feeTarget}
                                 options={options} />
                         )
@@ -169,7 +179,6 @@ class FeeTargets extends Component<Props, State> {
                                     id="feeTarget"
                                     disabled={disabled}
                                     onChange={this.handleFeeTargetChange}
-                                    selected={feeTarget}
                                     value={feeTarget}
                                     options={options} />
                             </div>
@@ -182,22 +191,20 @@ class FeeTargets extends Component<Props, State> {
                                     align="right"
                                     className={`${style.fee} ${style.feeCustom}`}
                                     disabled={disabled}
-                                    label={t('send.fee.label')}
+                                    label={t('send.feeTarget.customLabel', {
+                                        context: isEthereumBased(coinCode) ? 'eth' : ''
+                                    })}
                                     id="proposedFee"
                                     placeholder={t('send.fee.customPlaceholder')}
                                     error={error}
                                     transparent
-                                    onInput={this.handleFeePerByte}
-                                    getRef={input => {
-                                        setTimeout(() => {
-                                            if (!disabled && input && input.autofocus) {
-                                                input.focus();
-                                            }
-                                        });
-                                    }}
-                                    value={feePerByte}
+                                    onInput={this.handleCustomFee}
+                                    ref={this.input}
+                                    value={customFee}
                                 >
-                                    <span className={style.customFeeUnit}>sat/vB</span>
+                                    <span className={style.customFeeUnit}>
+                                        { customFeeUnit(this.props.coinCode) }
+                                    </span>
                                 </Input>
                             </div>
                         </div>
@@ -205,14 +212,14 @@ class FeeTargets extends Component<Props, State> {
                     { feeTarget && (
                         <div>
                             {(showCalculatingFeeLabel || proposeFeeText ? (
-                                <p class={style.feeProposed}>
+                                <p className={style.feeProposed}>
                                     {t('send.fee.label')}:
                                     {' '}
                                     {showCalculatingFeeLabel ? t('send.feeTarget.placeholder') : proposeFeeText}
                                 </p>
                             ) : null)}
                             { !isCustom ? (
-                                <p class={style.feeDescription}>
+                                <p className={style.feeDescription}>
                                     {t('send.feeTarget.estimate')}
                                     {' '}
                                     {t(`send.feeTarget.description.${feeTarget}`, {
@@ -241,5 +248,5 @@ class FeeTargets extends Component<Props, State> {
 const loadedHOC = load<LoadedProps, FeeTargetsProps & TranslateProps>(
     { config: 'config' },
 )(FeeTargets);
-const TranslatedFeeTargets = translate<FeeTargetsProps>()(loadedHOC);
+const TranslatedFeeTargets = translate()(loadedHOC);
 export { TranslatedFeeTargets as FeeTargets };

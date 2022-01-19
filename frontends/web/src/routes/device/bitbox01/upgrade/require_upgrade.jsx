@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet } from '../../../../utils/request';
 import UpgradeFirmware from '../components/upgradefirmware';
 import { BitBox } from '../../../../components/icon/logo';
-import * as style from '../bitbox01.css';
+import style from '../bitbox01.module.css';
 
-@translate()
-export default class RequireUpgrade extends Component {
+class RequireUpgrade extends Component {
     state = {
         firmwareVersion: null
     }
@@ -35,9 +34,11 @@ export default class RequireUpgrade extends Component {
         });
     }
 
-    render({ t, deviceID }, { firmwareVersion }) {
+    render() {
+        const { t, deviceID } = this.props;
+        const { firmwareVersion } = this.state;
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className={style.container}>
                     <BitBox />
                     <div className="box">
@@ -51,3 +52,5 @@ export default class RequireUpgrade extends Component {
         );
     }
 }
+
+export default withTranslation()(RequireUpgrade);

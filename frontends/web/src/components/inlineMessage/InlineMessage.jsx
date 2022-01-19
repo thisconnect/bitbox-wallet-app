@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import * as style from './InlineMessage.css';
+import { Component} from 'react';
+import style from './InlineMessage.module.css';
 
 export default class InlineMessage extends Component {
     deactivate = () => {
         this.props.onEnd();
     }
 
-    render({
-        type,
-        message,
-        align,
-    }, {}) {
+    render() {
+        const {
+            type,
+            message,
+            align,
+        } = this.props;
         return (
-            <div class={[style.inlineMessage, style[type], align ? style[align] : ''].join(' ')}>
+            <div className={[style.inlineMessage, style[type], align ? style[align] : ''].join(' ')}>
                 {message}
-                <div class={style.close} onClick={this.deactivate}>✕</div>
+                <div className={style.close} onClick={this.deactivate}>✕</div>
             </div>
         );
     }

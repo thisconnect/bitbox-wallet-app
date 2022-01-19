@@ -1,0 +1,154 @@
+.balanceTable {
+    margin: 0 0 var(--spacing-large) 0;
+}
+.coincode {
+    height: 24px;
+    /* padding: 0px 0px 4px 10px; */
+}
+
+.coinheader {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.coinheader > div:first-child {
+    height: 24px;
+    margin-right: calc(var(--space-half) / 2);
+}
+
+.dataMissing {
+    text-align: center;
+}
+
+.openFileText {
+    color: var(--color-primary);
+    cursor: pointer;
+    font-size: var(--size-small);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--spacing-default);
+    border: solid 1px var(--color-mediumgray);
+}
+
+.table tr td,
+.table tr th {
+    height: 52px;
+    padding: var(--space-half);
+    text-align: left;
+    font-weight: 400;
+}
+
+.table tr > td:not(:first-child),
+.table tr > th:not(:first-child) {
+    text-align: right;
+}
+
+.table thead th,
+.table tfoot th {
+    font-size: var(--size-small);
+    background-color: var(--color-mediumgray);
+    color: var(--color-default);
+}
+
+.table tr td,
+.table tr td {
+    font-size: var(--size-default) !important;
+    line-height: 1.5714;
+}
+
+.table tbody td {
+    background-color: var(--color-white);
+}
+
+.summaryTableBalance {
+    white-space: nowrap;
+}
+
+.table tr td.loadingAccounts {
+    color: var(--color-gray);
+    text-align: center;
+}
+
+.table tfoot th,
+.table tfoot td {
+    background-color: var(--color-mediumgray);
+}
+
+.coinName {
+    display: flex;
+}
+
+.coinName img {
+    flex-shrink: 0;
+    margin-right: var(--spacing-default);
+    vertical-align: middle;
+}
+
+.coinUnit {
+  color: var(--color-secondary);
+}
+
+.table progress {
+    appearance: none;
+}
+
+.table progress::-webkit-progress-bar {
+}
+
+.table progress::-webkit-progress-value {
+}
+
+@media (max-width: 640px) {
+    .table tr td,
+    .table tr th {
+      padding: var(--spacing-default);
+    }
+
+    .table thead {
+        display: none;
+    }
+
+    .table,
+    .table tbody,
+    .table tbody tr,
+    .table tfoot {
+        display: block;
+    }
+
+    .table tfoot tr {
+        background-color: var(--color-mediumgray);
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .table tbody td {
+        display: flex;
+        justify-content: space-between;
+        height: auto;
+        padding-bottom: 0;
+    }
+
+    .table tbody td::before {
+        content: attr(data-label);
+        white-space: nowrap;
+    }
+
+    .table tbody td:last-child {
+        border-bottom: solid 1px var(--color-mediumgray);
+        padding-bottom: var(--spacing-default);
+    }
+
+    .coinName {
+        position: relative;
+    }
+
+    .coinName img {
+        left: -2rem;
+        position: absolute;
+        top: -3px;
+    }
+}

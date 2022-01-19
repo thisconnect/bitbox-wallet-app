@@ -22,9 +22,10 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcd/chaincfg"
-	"github.com/btcsuite/btcd/txscript"
+	"github.com/btcsuite/btcutil"
 	"github.com/btcsuite/btcutil/hdkeychain"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/btc"
+	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/btc/util"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/coin"
 	coinpkg "github.com/digitalbitbox/bitbox-wallet-app/backend/coins/coin"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/eth"
@@ -265,7 +266,7 @@ func (keystore *keystore) ExtendedPublicKey(
 			if err != nil {
 				return nil, err
 			}
-			return xpub.Child(keypathUint32[4])
+			return xpub.Derive(keypathUint32[4])
 		}
 		xpubStr, err := keystore.device.ETHPub(
 			msgCoin, keypathUint32, messages.ETHPubRequest_XPUB, false, []byte{})
@@ -351,16 +352,24 @@ func (keystore *keystore) signBTCTransaction(btcProposedTx *btc.ProposedTransact
 	}
 	outputs := make([]*messages.BTCSignOutputRequest, len(tx.TxOut))
 	for index, txOut := range tx.TxOut {
-		scriptClass, addresses, _, err := txscript.ExtractPkScriptAddrs(txOut.PkScript, coin.Net())
+		address, err := util.AddressFromPkScript(txOut.PkScript, coin.Net())
 		if err != nil {
-			return errp.WithStack(err)
+			return err
 		}
-		if len(addresses) != 1 {
-			return errp.New("couldn't parse pkScript")
-		}
-		msgOutputType, ok := btcMsgOutputTypeMap[scriptClass]
-		if !ok {
-			return errp.Newf("unsupported output type: %d", scriptClass)
+		var msgOutputType messages.BTCOutputType
+		switch address.(type) {
+		case *btcutil.AddressPubKeyHash:
+			msgOutputType = messages.BTCOutputType_P2PKH
+		case *btcutil.AddressScriptHash:
+			msgOutputType = messages.BTCOutputType_P2SH
+		case *btcutil.AddressWitnessPubKeyHash:
+			msgOutputType = messages.BTCOutputType_P2WPKH
+		case *btcutil.AddressWitnessScriptHash:
+			msgOutputType = messages.BTCOutputType_P2WSH
+		case *btcutil.AddressTaproot:
+			msgOutputType = messages.BTCOutputType_P2TR
+		default:
+			return errp.Newf("unsupported output type: %v", address)
 		}
 		changeAddress := btcProposedTx.TXProposal.ChangeAddress
 		isChange := changeAddress != nil && bytes.Equal(
@@ -375,7 +384,7 @@ func (keystore *keystore) signBTCTransaction(btcProposedTx *btc.ProposedTransact
 			Ours:    isChange,
 			Type:    msgOutputType,
 			Value:   uint64(txOut.Value),
-			Hash:    addresses[0].ScriptAddress(),
+			Payload: address.ScriptAddress(),
 			Keypath: keypath,
 		}
 	}
@@ -449,4 +458,31 @@ func (keystore *keystore) SignTransaction(proposedTx interface{}) error {
 	default:
 		panic("unknown proposal type")
 	}
+}
+
+// CanSignMessage implements keystore.Keystore.
+func (keystore *keystore) CanSignMessage(code coin.Code) bool {
+	return code == coin.CodeBTC || code == coin.CodeETH
+}
+
+// SignBTCMessage implements keystore.Keystore.
+func (keystore *keystore) SignBTCMessage(message []byte, keypath signing.AbsoluteKeypath, scriptType signing.ScriptType) ([]byte, error) {
+	sc, ok := btcMsgScriptTypeMap[scriptType]
+	if !ok {
+		return nil, errp.Newf("scriptType not supported: %s", scriptType)
+	}
+	_, _, electrum65, err := keystore.device.BTCSignMessage(
+		messages.BTCCoin_BTC,
+		&messages.BTCScriptConfigWithKeypath{
+			ScriptConfig: firmware.NewBTCScriptConfigSimple(sc),
+			Keypath:      keypath.ToUInt32(),
+		},
+		message,
+	)
+	return electrum65, err
+}
+
+// SignETHMessage implements keystore.Keystore.
+func (keystore *keystore) SignETHMessage(message []byte, keypath signing.AbsoluteKeypath) ([]byte, error) {
+	return keystore.device.ETHSignMessage(messages.ETHCoin_ETH, keypath.ToUInt32(), message)
 }

@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../components/forms';
 import { Dialog } from '../../../components/dialog/dialog';
 import { PasswordSingleInput } from '../../../components/password';
 import { apiPost } from '../../../utils/request';
-import * as style from '../../../components/dialog/dialog.css';
+// TODO: use DialogButtons
+import style from '../../../components/dialog/dialog.module.css';
 
-@translate()
-export default class Check extends Component {
+class Check extends Component {
     state = {
         password: null,
         activeDialog: false,
@@ -73,13 +73,15 @@ export default class Check extends Component {
         this.setState({ password });
     }
 
-    render({
-        t,
-        selectedBackup,
-    }, {
-        activeDialog,
-        message,
-    }) {
+    render() {
+        const {
+            t,
+            selectedBackup,
+        } = this.props;
+        const {
+            activeDialog,
+            message,
+        } = this.state;
         return (
             <div>
                 <Button
@@ -95,7 +97,7 @@ export default class Check extends Component {
                             onClose={this.abort}>
                             { message ? (
                                 <div>
-                                    <p style="min-height: 3rem;">{message}</p>
+                                    <p style={{minHeight: '3rem'}}>{message}</p>
                                     <div className={style.actions}>
                                         <Button transparent onClick={this.abort}>
                                             {t('button.back')}
@@ -126,3 +128,5 @@ export default class Check extends Component {
         );
     }
 }
+
+export default withTranslation()(Check);

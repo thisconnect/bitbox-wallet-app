@@ -15,21 +15,19 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { route } from 'preact-router';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { route } from '../../../../../utils/route';
+import { withTranslation } from 'react-i18next';
 import { Button, Checkbox } from '../../../../../components/forms';
-import { Dialog } from '../../../../../components/dialog/dialog';
+import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
 import { WaitDialog } from '../../../../../components/wait-dialog/wait-dialog';
 import { PasswordInput } from '../../../../../components/password';
 import { apiPost } from '../../../../../utils/request';
 import { alertUser } from '../../../../../components/alert/Alert';
-import * as style from '../../bitbox01.css';
+import style from '../../bitbox01.module.css';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
-import * as dialogStyle from '../../../../../components/dialog/dialog.css';
 
-@translate()
-export default class Reset extends Component {
+class Reset extends Component {
     state = {
         pin: null,
         isConfirming: false,
@@ -73,14 +71,14 @@ export default class Reset extends Component {
         });
     }
 
-    render({
-        t
-    }, {
-        isConfirming,
-        activeDialog,
-        understand,
-        pin,
-    }) {
+    render() {
+        const { t } = this.props;
+        const {
+            isConfirming,
+            activeDialog,
+            understand,
+            pin,
+        } = this.state;
         return (
             <div>
                 <SettingsButton danger onClick={() => this.setState({ activeDialog: true })}>
@@ -106,14 +104,14 @@ export default class Reset extends Component {
                                     checked={understand}
                                     onChange={this.handleUnderstandChange} />
                             </div>
-                            <div className={dialogStyle.actions}>
+                            <DialogButtons>
                                 <Button danger disabled={!pin || !understand} onClick={this.resetDevice}>
                                     {t('reset.title')}
                                 </Button>
                                 <Button transparent onClick={this.abort} disabled={isConfirming}>
                                     {t('button.back')}
                                 </Button>
-                            </div>
+                            </DialogButtons>
                         </Dialog>
                     )
                 }
@@ -124,3 +122,5 @@ export default class Reset extends Component {
         );
     }
 }
+
+export default withTranslation()(Reset);

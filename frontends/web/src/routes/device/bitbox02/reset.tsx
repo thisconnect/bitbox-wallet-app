@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiPost } from '../../../utils/request';
 import { alertUser } from '../../../components/alert/Alert';
-import { Dialog } from '../../../components/dialog/dialog';
-import * as dialogStyle from '../../../components/dialog/dialog.css';
+import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { Button, Checkbox } from '../../../components/forms';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
@@ -69,12 +68,13 @@ class Reset extends Component<Props, State> {
         });
     }
 
-    public render(
-        { t }: RenderableProps<Props>,
-        { understand,
-          isConfirming,
-          activeDialog,
-        }: State) {
+    public render() {
+        const { t } = this.props;
+        const {
+            understand,
+            isConfirming,
+            activeDialog,
+          } = this.state;
         return (
             <div>
                 <SettingsButton
@@ -103,11 +103,11 @@ class Reset extends Component<Props, State> {
                                     </div>
                                 </div>
                             </div>
-                            <div className={dialogStyle.actions}>
+                            <DialogButtons>
                                 <Button danger disabled={!understand} onClick={this.reset}>
                                     {t('reset.title')}
                                 </Button>
-                            </div>
+                            </DialogButtons>
                         </Dialog>
                     )
                 }
@@ -124,5 +124,5 @@ class Reset extends Component<Props, State> {
     }
 }
 
-const HOC = translate<ResetProps>()(Reset);
+const HOC = translate()(Reset);
 export { HOC as Reset };

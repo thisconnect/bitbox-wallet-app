@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { Link, route } from 'preact-router';
+import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { route } from '../../utils/route';
 import { alertUser } from '../../components/alert/Alert';
 import { Badge } from '../../components/badge/badge';
-import { Dialog } from '../../components/dialog/dialog';
-import * as dialogStyle from '../../components/dialog/dialog.css';
+import { Dialog, DialogButtons } from '../../components/dialog/dialog';
 import { Button, Input } from '../../components/forms';
 import { Entry } from '../../components/guide/entry';
 import { Guide } from '../../components/guide/guide';
@@ -33,7 +33,7 @@ import { translate, TranslateProps } from '../../decorators/translate';
 import { setConfig } from '../../utils/config';
 import { apiGet, apiPost } from '../../utils/request';
 import { FiatSelection } from './components/fiat/fiat';
-import * as style from './settings.css';
+import style from './settings.module.css';
 
 interface SettingsProps {
     manageAccountsLen: number;
@@ -50,7 +50,7 @@ interface State {
 }
 
 class Settings extends Component<Props, State> {
-    constructor(props) {
+    constructor(props: Props) {
         super(props);
         this.state = {
             restart: false,
@@ -66,13 +66,13 @@ class Settings extends Component<Props, State> {
         });
     }
 
-    public componentDidUpdate(prevProps) {
+    public componentDidUpdate(prevProps: Props) {
         if (prevProps.deviceIDs.length && !this.props.deviceIDs.length) {
             route('/', true);
         }
     }
 
-    private handleToggleFrontendSetting = (event: Event) => {
+    private handleToggleFrontendSetting = (event: React.SyntheticEvent) => {
         const target = (event.target as HTMLInputElement);
         setConfig({
             frontend: {
@@ -82,7 +82,7 @@ class Settings extends Component<Props, State> {
             .then(config => this.setState({ config }));
     }
 
-    private handleFormChange = (event: Event) => {
+    private handleFormChange = (event: React.SyntheticEvent) => {
         const target = (event.target as HTMLInputElement);
         if (target.name !== 'proxyAddress') {
             return;
@@ -105,7 +105,7 @@ class Settings extends Component<Props, State> {
         });
     }
 
-    private handleToggleProxy = (event: Event) => {
+    private handleToggleProxy = (event: React.SyntheticEvent) => {
         const config = this.state.config;
         if (!config) {
             return;
@@ -144,32 +144,29 @@ class Settings extends Component<Props, State> {
         this.setState({ restart: false });
     }
 
-    private backHome = () => {
-        route('/', true);
-    }
-
-    public render({
-        manageAccountsLen,
-        deviceIDs,
-        t,
-    }: RenderableProps<Props>,
-    {
-        config,
-        restart,
-        proxyAddress,
-        activeProxyDialog }: State,
-    ) {
+    public render() {
+        const {
+            manageAccountsLen,
+            deviceIDs,
+            t,
+        } = this.props;
+        const {
+            config,
+            restart,
+            proxyAddress,
+            activeProxyDialog
+        } = this.state;
         if (proxyAddress === undefined) {
             return null;
         }
 
         return (
-            <div class="contentWithGuide">
-                <div class="container">
+            <div className="contentWithGuide">
+                <div className="container">
                     <Header title={<h2>{t('settings.title')}</h2>}>
                         {
                             !deviceIDs.length && (
-                                <Link onClick={this.backHome} className="flex flex-row flex-items-center">
+                                <Link to='/' className="flex flex-row flex-items-center">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         viewBox="0 0 24 24"
@@ -187,11 +184,11 @@ class Settings extends Component<Props, State> {
                             )
                         }
                     </Header>
-                    <div class="innerContainer scrollableContainer">
-                        <div class="content padded-lgscreen">
+                    <div className="innerContainer scrollableContainer">
+                        <div className="content padded">
                             {
                                 config && (
-                                    <div class="flex-1">
+                                    <div className="flex-1">
                                         <div className="columnsContainer">
                                             <div className="columns">
                                                 <div className="column column-1-3">
@@ -200,11 +197,7 @@ class Settings extends Component<Props, State> {
                                                 <div className="column column-2-3">
                                                     { manageAccountsLen ? (
                                                         <div>
-                                                            <div class="subHeaderContainer">
-                                                                <div class="subHeader">
-                                                                    <h3>Accounts</h3>
-                                                                </div>
-                                                            </div>
+                                                            <h3 className="subTitle">Accounts</h3>
                                                             <div className="box slim divide m-bottom-large">
                                                                 <SettingsButton
                                                                     onClick={() => route('/settings/manage-accounts', true)}
@@ -215,19 +208,11 @@ class Settings extends Component<Props, State> {
                                                             </div>
                                                         </div>
                                                     ) : null}
-                                                    <div class="subHeaderContainer">
-                                                        <div class="subHeader">
-                                                            <h3>{t('settings.expert.title')}</h3>
-                                                        </div>
-                                                    </div>
+                                                    <h3 className="subTitle">{t('settings.expert.title')}</h3>
                                                     <div className="box slim divide">
                                                         <div className={style.setting}>
                                                             <div>
                                                                 <p className="m-none">{t('settings.expert.fee')}</p>
-                                                                <p className="m-none">
-                                                                    <Badge type="generic">BTC</Badge>
-                                                                    <Badge type="generic" className="m-left-quarter">LTC</Badge>
-                                                                </p>
                                                             </div>
                                                             <Toggle
                                                                 checked={config.frontend.expertFee}
@@ -272,24 +257,26 @@ class Settings extends Component<Props, State> {
                                                                             placeholder="127.0.0.1:9050"
                                                                             disabled={!config.backend.proxy.useProxy}
                                                                         />
-                                                                        <div className={dialogStyle.actions}>
+                                                                        <DialogButtons>
                                                                             <Button primary
                                                                                 onClick={this.setProxyAddress}
                                                                                 disabled={!config.backend.proxy.useProxy || proxyAddress === config.backend.proxy.proxyAddress}>
                                                                                 {t('settings.expert.setProxyAddress')}
                                                                             </Button>
-                                                                        </div>
+                                                                        </DialogButtons>
                                                                     </div>
                                                                 </Dialog>
                                                             )
                                                         }
-                                                        <SettingsButton link href="/settings/electrum">{t('settings.expert.electrum.title')}</SettingsButton>
+                                                        <SettingsButton onClick={() => route('/settings/electrum', true)}>
+                                                            {t('settings.expert.electrum.title')}
+                                                        </SettingsButton>
                                                     </div>
                                                 </div>
                                             </div>
                                             {
                                                 restart && (
-                                                    <div class="row">
+                                                    <div className="row">
                                                         <InlineMessage
                                                             type="success"
                                                             align="left"
@@ -319,5 +306,5 @@ class Settings extends Component<Props, State> {
     }
 }
 
-const HOC = translate<SettingsProps>()(Settings);
+const HOC = translate()(Settings);
 export { HOC as Settings };

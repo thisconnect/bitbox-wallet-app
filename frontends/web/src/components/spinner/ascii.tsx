@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-import { h } from 'preact';
-import * as style from './ascii.css';
+import style from './ascii.module.css';
 
 export default function AsciiSpinner() {
     return (
-        <div class={style.spinnerContainer}>
-            <div class={style.spinner}></div>
+        <div className={style.spinnerContainer}>
+            <div className={style.spinner}></div>
         </div>
     );
 }

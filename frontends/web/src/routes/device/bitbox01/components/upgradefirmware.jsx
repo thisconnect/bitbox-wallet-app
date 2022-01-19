@@ -15,17 +15,15 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { Button } from '../../../../components/forms';
-import { Dialog } from '../../../../components/dialog/dialog';
+import { Dialog, DialogButtons } from '../../../../components/dialog/dialog';
 import { WaitDialog } from '../../../../components/wait-dialog/wait-dialog';
 import { apiGet, apiPost } from '../../../../utils/request';
 import { SettingsButton } from '../../../../components/settingsButton/settingsButton';
-import * as dialogStyle from '../../../../components/dialog/dialog.css';
 
-@translate()
-export default class UpgradeFirmware extends Component {
+class UpgradeFirmware extends Component {
     state = {
         unlocked: false,
         newVersion: '',
@@ -60,17 +58,19 @@ export default class UpgradeFirmware extends Component {
         this.setState({ activeDialog: false });
     }
 
-    render({
-        t,
-        currentVersion,
-        disabled,
-        asButton,
-    }, {
-        unlocked,
-        newVersion,
-        isConfirming,
-        activeDialog,
-    }) {
+    render() {
+        const {
+            t,
+            currentVersion,
+            disabled,
+            asButton,
+        } = this.props;
+        const {
+            unlocked,
+            newVersion,
+            isConfirming,
+            activeDialog,
+        } = this.state;
         return (
             <div>
                 {
@@ -97,14 +97,14 @@ export default class UpgradeFirmware extends Component {
                             <p className="m-top-none">{t('upgradeFirmware.description', {
                                 currentVersion, newVersion
                             })}</p>
-                            <div class={dialogStyle.actions}>
+                            <DialogButtons>
                                 <Button primary onClick={this.upgradeFirmware}>
                                     {t('button.upgrade')}
                                 </Button>
                                 <Button transparent onClick={this.abort}>
                                     {t('button.back')}
                                 </Button>
-                            </div>
+                            </DialogButtons>
                         </Dialog>
                     )
                 }
@@ -115,7 +115,7 @@ export default class UpgradeFirmware extends Component {
                                 unlocked ? (
                                     <div>
                                         <p className="m-top-none">{t('upgradeFirmware.unlocked')}</p>
-                                        <ol style="line-height: 1.5;">
+                                        <ol style={{lineHeight: '1.5'}}>
                                             <li>{t('upgradeFirmware.unlocked1')}</li>
                                             <li>{t('upgradeFirmware.unlocked2')}</li>
                                             <li>{t('upgradeFirmware.unlocked3')}</li>
@@ -134,3 +134,5 @@ export default class UpgradeFirmware extends Component {
         );
     }
 }
+
+export default withTranslation()(UpgradeFirmware);

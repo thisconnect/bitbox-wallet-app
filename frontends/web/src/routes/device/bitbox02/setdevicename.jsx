@@ -15,18 +15,16 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component, createRef } from 'react';
 import { Button, Input } from '../../../components/forms';
 import { apiPost } from '../../../utils/request';
-import { Dialog } from '../../../components/dialog/dialog';
+import { Dialog, DialogButtons } from '../../../components/dialog/dialog';
 import { alertUser } from '../../../components/alert/Alert';
-import * as dialogStyles from '../../../components/dialog/dialog.css';
 import { SettingsButton } from '../../../components/settingsButton/settingsButton';
 import { WaitDialog } from '../../../components/wait-dialog/wait-dialog';
+import { withTranslation } from 'react-i18next';
 
-@translate()
-export class SetDeviceName extends Component {
+class SetDeviceNameClass extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -35,6 +33,8 @@ export class SetDeviceName extends Component {
             inProgress: false,
         };
     }
+
+    nameInput = createRef();
 
     setName = () => {
         this.setState({ inProgress: true });
@@ -69,14 +69,15 @@ export class SetDeviceName extends Component {
     }
 
     validate = () => {
-        // @ts-ignore
-        if (!this.nameInput || !this.nameInput.validity.valid || !this.state.deviceName) {
+        if (!this.nameInput.current || !this.nameInput.current.validity.valid || !this.state.deviceName) {
             return false;
         }
         return true;
     }
 
-    render({ t, name }, { deviceName, active, inProgress }) {
+    render() {
+        const { t, name } = this.props;
+        const { deviceName, active, inProgress } = this.state;
         return (
             <div>
                 <SettingsButton onClick={this.setNameDialog} optionalText={name}>
@@ -96,21 +97,21 @@ export class SetDeviceName extends Component {
                                             pattern="^.{0,63}$"
                                             label={t('bitbox02Settings.deviceName.input')}
                                             onInput={this.handleChange}
-                                            getRef={ref => this.nameInput = ref}
+                                            ref={this.nameInput}
                                             placeholder={t('bitbox02Settings.deviceName.placeholder')}
                                             value={deviceName}
                                             id="deviceName" />
                                     </div>
                                 </div>
                             </div>
-                            <div className={dialogStyles.actions}>
+                            <DialogButtons>
                                 <Button
                                     primary
                                     disabled={!this.validate()}
                                     onClick={this.setName}>
                                     {t('button.ok')}
                                 </Button>
-                            </div>
+                            </DialogButtons>
                         </Dialog>
                     ) : null
                 }
@@ -123,3 +124,5 @@ export class SetDeviceName extends Component {
         );
     }
 }
+
+export const SetDeviceName = withTranslation()(SetDeviceNameClass);

@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
-import { animate } from '../../utils/animation';
-import * as style from './dialog.css';
-
+import React, { Component, createRef } from 'react';
+import style from './dialog.module.css';
 interface Props {
     title?: string;
     small?: boolean;
@@ -29,6 +27,7 @@ interface Props {
     disableEscape?: boolean;
     onClose?: (e?: Event) => void;
     disabledClose?: boolean;
+    children: React.ReactNode;
 }
 
 interface State {
@@ -37,12 +36,12 @@ interface State {
 }
 
 class Dialog extends Component<Props, State> {
-    private overlay?: HTMLDivElement | null;
-    private modal?: HTMLDivElement | null;
-    private modalContent?: HTMLDivElement | null;
+    private overlay = createRef<HTMLDivElement>();
+    private modal = createRef<HTMLDivElement>();
+    private modalContent = createRef<HTMLDivElement>();
     private focusableChildren!: NodeListOf<HTMLElement>;
 
-    public readonly state: State = {
+    public state: State = {
         active: false,
         currentTab: 0,
     };
@@ -62,8 +61,8 @@ class Dialog extends Component<Props, State> {
     }
 
     private focusWithin = () => {
-        if (this.modalContent) {
-            this.focusableChildren = this.modalContent.querySelectorAll('a, button, input, textarea');
+        if (this.modalContent.current) {
+            this.focusableChildren = this.modalContent.current.querySelectorAll('a, button, input, textarea');
             const focusables = Array.from(this.focusableChildren);
             for (const c of focusables) {
                 c.classList.add('tabbable');
@@ -116,54 +115,33 @@ class Dialog extends Component<Props, State> {
     }
 
     private deactivate = () => {
-        if (!this.modal || !this.overlay) {
+        if (!this.modal.current || !this.overlay.current) {
             return;
         }
-        animate(this.modal, 'fadeOutUp', () => {
-            if (!this.modal) {
-                return;
+        this.modal.current.classList.remove(style.activeModal);
+        this.setState({ active: false, currentTab: 0 }, () => {
+            document.removeEventListener('keydown', this.handleKeyDown);
+            if (this.props.onClose) {
+                this.props.onClose();
             }
-            this.modal.classList.remove(style.activeModal);
-            this.setState({ active: false, currentTab: 0 }, () => {
-                document.removeEventListener('keydown', this.handleKeyDown);
-                if (this.props.onClose) {
-                    this.props.onClose();
-                }
-            });
         });
-        animate(this.overlay, 'fadeOut', () => {
-            if (!this.overlay) {
-                return;
-            }
-            this.overlay.classList.remove(style.activeOverlay);
-        });
-
+        this.overlay.current.classList.remove(style.activeOverlay);
     }
 
     private activate = () => {
         this.setState({ active: true }, () => {
-            if (!this.modal || !this.overlay) {
+            if (!this.modal.current || !this.overlay.current) {
                 return;
             }
-            animate(this.overlay, 'fadeIn', () => {
-                if (!this.overlay) {
-                    return;
-                }
-                this.overlay.classList.add(style.activeOverlay);
-            });
-            animate(this.modal, 'fadeInUp', () => {
-                if (!this.modal) {
-                    return;
-                }
-                this.modal.classList.add(style.activeModal);
-                this.focusWithin();
-                this.focusFirst();
-            });
+            this.overlay.current.classList.add(style.activeOverlay);
+            this.modal.current.classList.add(style.activeModal);
+            this.focusWithin();
+            this.focusFirst();
         });
     }
 
-    public render(
-        {
+    public render() {
+        const {
             title,
             small,
             medium,
@@ -173,23 +151,21 @@ class Dialog extends Component<Props, State> {
             onClose,
             disabledClose,
             children,
-        }: RenderableProps<Props>,
-        {}: State,
-    ) {
+        } = this.props;
         const isSmall = small ? style.small : '';
         const isMedium = medium ? style.medium : '';
         const isLarge = large ? style.large : '';
         const isSlim = slim ? style.slim : '';
         const isCentered = centered && !onClose ? style.centered : '';
         return (
-            <div className={style.overlay} ref={element => this.overlay = element}>
+            <div className={style.overlay} ref={this.overlay}>
                 <div
                     className={[style.modal, isSmall, isMedium, isLarge].join(' ')}
-                    ref={element => this.modal = element}>
+                    ref={this.modal}>
                     {
                         title && (
                             <div className={[style.header, isCentered].join(' ')}>
-                                <h3 class={style.title}>{title}</h3>
+                                <h3 className={style.title}>{title}</h3>
                                 { onClose ? (
                                     <button className={style.closeButton} onClick={this.deactivate} disabled={disabledClose}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -203,7 +179,7 @@ class Dialog extends Component<Props, State> {
                     }
                     <div
                         className={[style.contentContainer, isSlim].join(' ')}
-                        ref={element => this.modalContent = element}>
+                        ref={this.modalContent}>
                         <div className={style.content}>
                             {children}
                         </div>
@@ -214,4 +190,33 @@ class Dialog extends Component<Props, State> {
     }
 }
 
-export { Dialog };
+/**
+ * ### Container to place buttons in a dialog
+ *
+ * Example:
+ * ```jsx
+ *   <Dialog title={t('title')}>
+ *       <p>{t('message')}</p>
+ *       <DialogButtons>
+ *           <Button primary onClick={aoppAPI.approve}>
+ *               {t('button.continue')}
+ *           </Button>
+ *           <Button secondary onClick={aoppAPI.cancel}>
+ *               {t('dialog.cancel')}
+ *           </Button>
+ *       </DialogButtons>
+ *   </Dialog>
+ * ```
+ */
+
+interface DialogButtonsProps {
+    children: React.ReactNode;
+};
+
+function DialogButtons({ children }: DialogButtonsProps) {
+    return (
+        <div className={style.dialogButtons}>{children}</div>
+    );
+}
+
+export { Dialog, DialogButtons };

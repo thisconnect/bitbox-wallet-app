@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
 import { AppUpgradeRequired } from '../../../components/appupgraderequired';
 import { apiGet } from '../../../utils/request';
 import { apiWebsocket } from '../../../utils/websocket';
@@ -30,6 +29,7 @@ import { Initialize } from './setup/initialize';
 import Success from './setup/success';
 import Settings from './settings/settings';
 import { setSidebarStatus } from '../../../components/sidebar/sidebar';
+import { withTranslation } from 'react-i18next';
 
 const DeviceStatus = Object.freeze({
     BOOTLOADER: 'bootloader',
@@ -46,13 +46,12 @@ const GOAL = Object.freeze({
     RESTORE: 'restore'
 });
 
-@translate()
-export default class Device extends Component {
+class Device extends Component {
     state = {
         firmwareVersion: null,
         deviceRegistered: false,
-        deviceStatus: null,
-        goal: null,
+        deviceStatus: '',
+        goal: '',
         success: null,
     }
 
@@ -131,14 +130,16 @@ export default class Device extends Component {
         this.setState({ success: true });
     }
 
-    render({
-        deviceID,
-    }, {
-        deviceRegistered,
-        deviceStatus,
-        goal,
-        success,
-    }) {
+    render() {
+        const {
+            deviceID,
+        } = this.props;
+        const {
+            deviceRegistered,
+            deviceStatus,
+            goal,
+            success,
+        } = this.state;
         if (!deviceRegistered || !deviceStatus) {
             return null;
         }
@@ -191,3 +192,5 @@ export default class Device extends Component {
         }
     }
 }
+
+export default withTranslation()(Device);

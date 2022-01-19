@@ -16,12 +16,12 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component} from 'react';
 import { CoinCode } from '../../api/account';
 import { subscribe } from '../../decorators/subscribe';
 import { translate, TranslateProps } from '../../decorators/translate';
 import Spinner from '../spinner/ascii';
-import * as style from './headerssync.css';
+import style from './headerssync.module.css';
 
 interface IHeadersSyncProps {
     coinCode: CoinCode;
@@ -60,12 +60,12 @@ class HeadersSync extends Component<Props, IState> {
         }
     }
 
-    render({
-        t,
-        status,
-    }: RenderableProps<Props>, {
-        show,
-    }: IState) {
+    render() {
+        const {
+            t,
+            status,
+        } = this.props;
+        const { show } = this.state;
         if (!status || !show) {
             return null;
         }
@@ -75,21 +75,21 @@ class HeadersSync extends Component<Props, IState> {
         let formatted = status.tip.toString();
         let position = formatted.length - 3;
         while (position > 0) {
-            formatted = formatted.slice(0, position) + "'" + formatted.slice(position);
+            formatted = formatted.slice(0, position) + '\'' + formatted.slice(position);
             position = position - 3;
         }
 
         return (
-            <div class={style.syncContainer}>
-                <div class={style.syncMessage}>
-                    <div class={style.syncText}>
+            <div className={style.syncContainer}>
+                <div className={style.syncMessage}>
+                    <div className={style.syncText}>
                         {t('headerssync.blocksSynced', { blocks: formatted })}
                         { !loaded && `(${Math.ceil(value)}%)` }
                     </div>
                     { !loaded ? (<Spinner />) : null }
                 </div>
-                <div class={style.progressBar}>
-                    <div class={style.progressValue} style={{ width: `${value}%` }}></div>
+                <div className={style.progressBar}>
+                    <div className={style.progressValue} style={{ width: `${value}%` }}></div>
                 </div>
             </div>
         );
@@ -100,5 +100,5 @@ const subscribeHOC = subscribe<ISubscribedHeadersSyncProps, IHeadersSyncProps & 
     status: `coins/${coinCode}/headers/status`,
 }), false, true)(HeadersSync);
 
-const HOC = translate<IHeadersSyncProps>()(subscribeHOC);
+const HOC = translate()(subscribeHOC);
 export { HOC as HeadersSync };

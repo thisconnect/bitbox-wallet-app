@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Component, h, RenderableProps } from 'preact';
+import { Component } from 'react';
 import { Button } from '../../../../components/forms';
 import { SwissMadeOpenSource } from '../../../../components/icon/logo';
 import { LanguageSwitch } from '../../../../components/language/language';
@@ -24,7 +24,7 @@ import { PasswordRepeatInput } from '../../../../components/password';
 import { Spinner } from '../../../../components/spinner/Spinner';
 import { translate, TranslateProps } from '../../../../decorators/translate';
 import { apiPost } from '../../../../utils/request';
-import * as style from '../bitbox01.css';
+import style from '../bitbox01.module.css';
 
 const stateEnum = Object.freeze({
     DEFAULT: 'default',
@@ -49,8 +49,6 @@ interface State {
 }
 
 class Initialize extends Component<Props, State> {
-    private passwordInput!: HTMLInputElement;
-
     constructor(props) {
         super(props);
         this.state = {
@@ -84,14 +82,7 @@ class Initialize extends Component<Props, State> {
                     errorMessage: data.errorMessage,
                 });
             }
-            if (this.passwordInput) {
-                (this.passwordInput as any).getWrappedInstance().clear();
-            }
         });
-    }
-
-    private setPasswordInputRef = (ref: HTMLInputElement) => {
-        this.passwordInput = ref;
     }
 
     private setValidPassword = password => {
@@ -102,10 +93,9 @@ class Initialize extends Component<Props, State> {
         this.setState({ showInfo: false });
     }
 
-    public render(
-        { t, goBack }: RenderableProps<Props>,
-        { showInfo, password, status, errorCode, errorMessage }: State,
-    ) {
+    public render() {
+        const { t, goBack } = this.props;
+        const { showInfo, password, status, errorCode, errorMessage } = this.state;
         let formSubmissionState;
         switch (status) {
         case stateEnum.DEFAULT:
@@ -126,11 +116,7 @@ class Initialize extends Component<Props, State> {
 
         const content = showInfo ? (
             <div className="box large">
-                <div class="subHeaderContainer first">
-                    <div class="subHeader">
-                        <h3>{t('initialize.info.subtitle')}</h3>
-                    </div>
-                </div>
+                <h3 className="subTitle">{t('initialize.info.subtitle')}</h3>
                 <ul>
                     <li>{t('initialize.info.description1')}</li>
                     <li>{t('initialize.info.description2')}</li>
@@ -148,13 +134,12 @@ class Initialize extends Component<Props, State> {
                 </div>
             </div>
         ) : (
-            <form onSubmit={this.handleSubmit} class="box large">
+            <form onSubmit={this.handleSubmit} className="box large">
                 <PasswordRepeatInput
                     pattern="^.{4,}$"
                     label={t('initialize.input.label')}
                     repeatLabel={t('initialize.input.labelRepeat')}
                     repeatPlaceholder={t('initialize.input.placeholderRepeat')}
-                    ref={this.setPasswordInputRef}
                     disabled={status === stateEnum.WAITING}
                     onValidPassword={this.setValidPassword} />
                 <div className="buttons">
@@ -174,7 +159,7 @@ class Initialize extends Component<Props, State> {
         );
 
         return (
-            <div class="contentWithGuide">
+            <div className="contentWithGuide">
                 <div className="container">
                     <Header title={<h2>{t('welcome.title')}</h2>}>
                         <LanguageSwitch />
@@ -200,5 +185,5 @@ class Initialize extends Component<Props, State> {
     }
 }
 
-const TranslatedInitialize = translate<InitializeProps>()(Initialize);
+const TranslatedInitialize = translate()(Initialize);
 export { TranslatedInitialize as Initialize };

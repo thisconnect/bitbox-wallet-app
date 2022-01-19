@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { apiGet, apiPost } from '../../../../utils/request';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { BitBox } from '../../../../components/icon/logo';
 import { Button } from '../../../../components/forms';
-import * as style from '../bitbox01.css';
+import style from '../bitbox01.module.css';
 
-@translate()
-export default class Bootloader extends Component {
+class Bootloader extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -53,6 +52,8 @@ export default class Bootloader extends Component {
         case 'bootloaderStatusChanged':
             this.onStatusChanged();
             break;
+        default: 
+            break;
         }
     }
 
@@ -72,14 +73,14 @@ export default class Bootloader extends Component {
         apiPost('devices/' + this.props.deviceID + '/bootloader/upgrade-firmware');
     }
 
-    render({
-        t
-    }, {
-        upgrading,
-        progress,
-        upgradeSuccessful,
-        errMsg,
-    }) {
+    render() {
+        const { t } = this.props;
+        const {
+            upgrading,
+            progress,
+            upgradeSuccessful,
+            errMsg,
+        } = this.state;
         let UpgradeOrStatus;
 
         if (upgrading) {
@@ -111,7 +112,7 @@ export default class Bootloader extends Component {
             <div className="contentWithGuide">
                 <div className="container">
                     <div className="innerContainer">
-                        <div class="content narrow isVerticallyCentered">
+                        <div className="content narrow isVerticallyCentered">
                             <div className={[style.container, style.scrollable].join(' ')}>
                                 <BitBox />
                                 <div className="box large">
@@ -130,3 +131,5 @@ export default class Bootloader extends Component {
         );
     }
 }
+
+export default withTranslation()(Bootloader);

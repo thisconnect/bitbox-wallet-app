@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component, createRef } from 'react';
 import { Input, Checkbox, Field } from './forms';
 import { alertUser } from './alert/Alert';
-import * as style from './password.css';
+import style from './password.module.css';
+import { withTranslation } from 'react-i18next';
 
 export function PasswordInput (props) {
     const { seePlaintext, ...rest } = props;
@@ -30,25 +30,29 @@ export function PasswordInput (props) {
     );
 }
 
-@translate(null, { withRef: true })
-export class PasswordSingleInput extends Component {
+class PasswordSingleInputClass extends Component {
     state = {
         password: '',
         seePlaintext: false,
         capsLock: false
     }
 
+    password = createRef();
+
     idPrefix = () => {
         return this.props.idPrefix || '';
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         window.addEventListener('keydown', this.handleCheckCaps);
     }
 
     componentDidMount() {
         if (this.props.pattern) {
             this.regex = new RegExp(this.props.pattern);
+        }
+        if (this.props.autoFocus && this.password?.current) {
+            this.password.current.focus();
         }
     }
 
@@ -74,7 +78,7 @@ export class PasswordSingleInput extends Component {
     }
 
     validate = () => {
-        if (this.regex && this.password && !this.password.validity.valid) {
+        if (this.regex && this.password.current && !this.password.current.validity.valid) {
             return this.props.onValidPassword(null);
         }
         if (this.state.password) {
@@ -100,19 +104,21 @@ export class PasswordSingleInput extends Component {
         }
     }
 
-    render({
-        t,
-        disabled,
-        label,
-        placeholder,
-        pattern,
-        title,
-        showLabel,
-    }, {
-        password,
-        seePlaintext,
-        capsLock,
-    }) {
+    render() {
+        const {
+            t,
+            disabled,
+            label,
+            placeholder,
+            pattern,
+            title,
+            showLabel,
+        } = this.props;
+        const {
+            password,
+            seePlaintext,
+            capsLock,
+        } = this.state;
         const warning = (capsLock && !seePlaintext) && (
             <span className={style.capsWarning}
                 title={t('password.warning.caps')}>⇪</span>
@@ -129,7 +135,7 @@ export class PasswordSingleInput extends Component {
                 placeholder={placeholder}
                 onInput={this.handleFormChange}
                 onPaste={this.tryPaste}
-                getRef={ref => this.password = ref}
+                ref={this.password}
                 value={password}
                 labelSection={
                     <Checkbox
@@ -147,8 +153,10 @@ export class PasswordSingleInput extends Component {
 
 }
 
-@translate(null, { withRef: true })
-export class PasswordRepeatInput extends Component {
+export const PasswordSingleInput = withTranslation(null, { withRef: true })(PasswordSingleInputClass);
+
+
+class PasswordRepeatInputClass extends Component {
     state = {
         password: '',
         passwordRepeat: '',
@@ -156,17 +164,23 @@ export class PasswordRepeatInput extends Component {
         capsLock: false
     }
 
+    password = createRef();
+    passwordRepeat = createRef();
+
     idPrefix = () => {
         return this.props.idPrefix || '';
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         window.addEventListener('keydown', this.handleCheckCaps);
     }
 
     componentDidMount() {
         if (this.props.pattern) {
             this.regex = new RegExp(this.props.pattern);
+        }
+        if (this.props.autoFocus && this.password?.current) {
+            this.password.current.focus();
         }
     }
 
@@ -183,19 +197,10 @@ export class PasswordRepeatInput extends Component {
         }
     }
 
-    clear = () => {
-        this.setState({
-            password: '',
-            passwordRepeat: '',
-            seePlaintext: false,
-            capsLock: false
-        });
-    }
-
     validate = () => {
         if (
-            this.regex && this.password && this.passwordRepeat
-            && (!this.password.validity.valid || !this.passwordRepeat.validity.valid)
+            this.regex && this.password.current && this.passwordRepeat.current
+            && (!this.password.current.validity.valid || !this.passwordRepeat.current.validity.valid)
         ) {
             return this.props.onValidPassword(null);
         }
@@ -222,22 +227,24 @@ export class PasswordRepeatInput extends Component {
         }
     }
 
-    render({
-        t,
-        disabled,
-        label,
-        placeholder,
-        pattern,
-        title,
-        repeatLabel,
-        repeatPlaceholder,
-        showLabel,
-    }, {
-        password,
-        passwordRepeat,
-        seePlaintext,
-        capsLock,
-    }) {
+    render() {
+        const {
+            t,
+            disabled,
+            label,
+            placeholder,
+            pattern,
+            title,
+            repeatLabel,
+            repeatPlaceholder,
+            showLabel,
+        } = this.props;
+        const {
+            password,
+            passwordRepeat,
+            seePlaintext,
+            capsLock,
+        } = this.state;
         const warning = (capsLock && !seePlaintext) && (
             <span className={style.capsWarning}
                 title={t('password.warning.caps')}>⇪</span>
@@ -255,7 +262,7 @@ export class PasswordRepeatInput extends Component {
                     placeholder={placeholder}
                     onInput={this.handleFormChange}
                     onPaste={this.tryPaste}
-                    getRef={ref => this.password = ref}
+                    ref={this.password}
                     value={password}>
                     {warning}
                 </Input>
@@ -273,7 +280,7 @@ export class PasswordRepeatInput extends Component {
                     placeholder={repeatPlaceholder}
                     onInput={this.handleFormChange}
                     onPaste={this.tryPaste}
-                    getRef={ref => this.passwordRepeat = ref}
+                    ref={this.password}
                     value={passwordRepeat}>
                     {warning}
                 </Input>
@@ -295,13 +302,15 @@ export class PasswordRepeatInput extends Component {
     }
 }
 
+export const PasswordRepeatInput = withTranslation(null, { withRef: true })(PasswordRepeatInputClass);
+
 function MatchesPattern({ regex, value = '', text }) {
     if (!regex || !value.length || regex.test(value)) {
         return null;
     }
 
     return (
-        <p style="color: var(--color-error);">{text}</p>
+        <p style={{color: 'var(--color-error)'}}>{text}</p>
     );
 }
 
@@ -314,5 +323,6 @@ function hasCaps({ key }) {
     }
     // ideally we return event.getModifierState('CapsLock')) but this currently does always return false in Qt
     // @ts-ignore (event can be undefined and shiftKey exists only on MouseEvent but not Event)
+    // eslint-disable-next-line no-restricted-globals
     return key.toUpperCase() === key && key.toLowerCase() !== key && !event.shiftKey;
 }

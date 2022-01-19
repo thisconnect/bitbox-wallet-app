@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-import { Component, h } from 'preact';
-import { translate } from 'react-i18next';
+import { Component} from 'react';
+import { withTranslation } from 'react-i18next';
 import { SettingsButton } from '../../../../../components/settingsButton/settingsButton';
 import { apiPost } from '../../../../../utils/request';
 
-@translate()
-export default class Blink extends Component {
+class Blink extends Component {
     blinkDevice = () => {
         apiPost('devices/' + this.props.deviceID + '/blink');
     };
 
-    render({ t }, {}) {
+    render() {
+        const { t } = this.props;
         return (
             <SettingsButton onClick={this.blinkDevice}>{t('blink.button')}</SettingsButton>
         );
     }
 }
+
+export default withTranslation()(Blink);

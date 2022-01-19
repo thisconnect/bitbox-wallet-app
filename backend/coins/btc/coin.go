@@ -31,6 +31,7 @@ import (
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/btc/electrum"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/btc/headers"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/coin"
+	coinpkg "github.com/digitalbitbox/bitbox-wallet-app/backend/coins/coin"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/config"
 	"github.com/digitalbitbox/bitbox-wallet-app/util/errp"
 	"github.com/digitalbitbox/bitbox-wallet-app/util/logging"
@@ -158,9 +159,8 @@ func (coin *Coin) Decimals(isFee bool) uint {
 
 // FormatAmount implements coin.Coin.
 func (coin *Coin) FormatAmount(amount coin.Amount, isFee bool) string {
-	return strings.TrimRight(strings.TrimRight(
-		new(big.Rat).SetFrac(amount.BigInt(), big.NewInt(unitSatoshi)).FloatString(8),
-		"0"), ".")
+	s := new(big.Rat).SetFrac(amount.BigInt(), big.NewInt(unitSatoshi)).FloatString(8)
+	return strings.TrimRight(strings.TrimRight(s, "0"), ".")
 }
 
 // ToUnit implements coin.Coin.
@@ -207,6 +207,15 @@ func (coin *Coin) DecodeAddress(address string) (btcutil.Address, error) {
 	}
 	if !btcAddress.IsForNet(coin.Net()) {
 		return nil, errp.WithStack(errors.ErrInvalidAddress)
+	}
+	if _, ok := btcAddress.(*btcutil.AddressTaproot); ok {
+		switch coin.code {
+		case coinpkg.CodeBTC, coinpkg.CodeTBTC, coinpkg.CodeRBTC:
+			// Taproot activated on Bitcoin.
+		default:
+			// Taproot not activated on other coins.
+			return nil, errp.WithStack(errors.ErrInvalidAddress)
+		}
 	}
 	return btcAddress, nil
 }
