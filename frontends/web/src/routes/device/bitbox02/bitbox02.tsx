@@ -193,9 +193,6 @@ class BitBox02 extends Component<Props, State> {
                 status,
                 errorText: undefined,
             });
-            if (status === 'initialized' && unlockOnly && showWizard) {
-                route('/account-summary', true);
-            }
         });
     }
 
