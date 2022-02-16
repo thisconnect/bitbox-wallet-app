@@ -60,12 +60,24 @@ interface LoadedReceiveProps {
 
 type Props = LoadedReceiveProps & ReceiveProps & TranslateProps;
 
+// For BTC/LTC: all possible address types we want to offer to the user, ordered by priority (first one is default).
+// Types that are not available in the addresses delivered by the backend should be ignored.
+const scriptTypes: accountApi.ScriptType[] = ['p2wpkh', 'p2tr', 'p2wpkh-p2sh']
+
 class Receive extends Component<Props, State> {
+    // Find index in list of receive addresses that matches the given script type, or -1 if not found.
+    private getIndexOfMatchingScriptType = (scriptType: accountApi.ScriptType): number => {
+        return this.props.receiveAddresses.findIndex(addrs => addrs.scriptType !== null && scriptType === addrs.scriptType);
+    }
+
+    // All script types that are present in the addresses delivered by the backend. Will be empty for if there are no such addresses, e.g. in Ethereum.
+    private availableScriptTypes: accountApi.ScriptType[] = scriptTypes.filter(sc => this.getIndexOfMatchingScriptType(sc) >= 0);
     public readonly state: State = {
         verifying: false,
         activeIndex: 0,
         paired: null,
-        addressType: 0,
+        // Initialize address type to the first type listed in scriptTypes that is available, or 0. ScriptType is `null` if it is not a BTC simple type (e.g. Ethereum).
+        addressType: scriptTypes.map(this.getIndexOfMatchingScriptType).find(index => index >= 0) || 0,
     }
 
     public componentDidMount() {
@@ -150,10 +162,11 @@ class Receive extends Component<Props, State> {
         return this.props.devices[this.props.deviceIDs[0]];
     }
 
-    private toggleAddressType = () => {
-        this.setState(({ addressType }) => ({
-            addressType: addressType ? 0 : 1,
-        }));
+    private switchToScriptType = (scriptType: accountApi.ScriptType) => {
+        this.setState({
+            addressType: this.props.receiveAddresses.findIndex(addrs => addrs.scriptType! === scriptType),
+            activeIndex: 0,
+        });
     }
 
     public render() {
@@ -232,11 +245,14 @@ class Receive extends Component<Props, State> {
                     }
                 </div>
                 <CopyableInput disabled={!enableCopy} value={address} flexibleHeight />
-                { receiveAddresses.length > 1 && (
-                    <p className={style.changeType} onClick={this.toggleAddressType}>
-                        {t(`receive.addressType.${this.state.addressType}`)}
-                    </p>
-                )}
+                { this.availableScriptTypes.length > 1 && (
+                      this.availableScriptTypes.map(scriptType => (
+                          <p className={style.changeType} onClick={() => this.switchToScriptType(scriptType)}>
+                              {t(`receive.scriptType.${scriptType}`)}
+                              { scriptType === receiveAddresses[addressType].scriptType && ' (active)' }
+                          </p>
+                      ))
+                  )}
                 <div className="buttons">
                     {
                         forceVerification && (
