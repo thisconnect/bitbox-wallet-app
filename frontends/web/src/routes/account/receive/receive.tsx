@@ -162,11 +162,15 @@ class Receive extends Component<Props, State> {
         return this.props.devices[this.props.deviceIDs[0]];
     }
 
-    private switchToScriptType = (scriptType: accountApi.ScriptType) => {
-        this.setState({
-            addressType: this.props.receiveAddresses.findIndex(addrs => addrs.scriptType! === scriptType),
+    private nextAddressType = () => {
+        this.setState(({ addressType }) => ({
             activeIndex: 0,
-        });
+            addressType: this.getNextAddressTypeIndex(addressType)
+        }));
+    }
+
+    private getNextAddressTypeIndex = (currentAddressType: number) => {
+        return (currentAddressType + 1) % this.availableScriptTypes.length;
     }
 
     public render() {
@@ -246,13 +250,10 @@ class Receive extends Component<Props, State> {
                 </div>
                 <CopyableInput disabled={!enableCopy} value={address} flexibleHeight />
                 { this.availableScriptTypes.length > 1 && (
-                      this.availableScriptTypes.map(scriptType => (
-                          <p className={style.changeType} onClick={() => this.switchToScriptType(scriptType)}>
-                              {t(`receive.scriptType.${scriptType}`)}
-                              { scriptType === receiveAddresses[addressType].scriptType && ' (active)' }
-                          </p>
-                      ))
-                  )}
+                    <button className={style.changeType} onClick={this.nextAddressType}>
+                        {t(`receive.scriptType.${receiveAddresses[this.getNextAddressTypeIndex(addressType)].scriptType}`)}
+                    </button>
+                )}
                 <div className="buttons">
                     {
                         forceVerification && (
