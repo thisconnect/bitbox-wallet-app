@@ -22,7 +22,7 @@ import { Message } from '../../../components/message/message';
 import { Button, Input } from '../../../components/forms';
 import { Header } from '../../../components/layout';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import { Step, Steps } from './components/steps';
+import { Step, Steps } from '../../../components/steps/steps';
 import { CoinDropDown } from './components/coin-dropdown';
 import { Check } from '../../../components/icon/icon';
 import { apiPost } from '../../../utils/request';
