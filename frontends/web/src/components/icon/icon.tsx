@@ -18,6 +18,7 @@
 import alert from './assets/icons/alert-triangle.svg';
 import BB02Stylized from '../../assets/device/bitbox02-stylized-reflection.png';
 import info from './assets/icons/info.svg';
+import angleDownSVG from './assets/icons/angle-down.svg';
 import arrowDownSVG from './assets/icons/arrow-down-active.svg';
 import arrowCircleLeftSVG from './assets/icons/arrow-circle-left.svg';
 import arrowCircleLeftActiveSVG from './assets/icons/arrow-circle-left-active.svg';
@@ -29,6 +30,7 @@ import copySVG from './assets/icons/copy.svg';
 import closeSVG from './assets/icons/close.svg';
 import closeXWhiteSVG from './assets/icons/close-x-white.svg';
 import warningPNG from './assets/icons/warning.png';
+import QRCodeSVG from './assets/icons/qrcode.svg';
 import style from './icon.module.css';
 
 export const ExpandOpen = (): JSX.Element => (
@@ -97,6 +99,7 @@ type ImgProps = JSX.IntrinsicElements['img'];
 
 export const Info = (props: ImgProps) => (<img src={info} draggable={false} {...props} />);
 export const BitBox02Stylized = (props: ImgProps) => (<img src={BB02Stylized} draggable={false} {...props} />);
+export const AngleDown = (props: ImgProps) => (<img src={angleDownSVG} draggable={false} {...props} />);
 export const ArrowDown = (props: ImgProps) => (<img src={arrowDownSVG} draggable={false} {...props} />);
 export const ArrowCirlceLeft = (props: ImgProps) => (<img src={arrowCircleLeftSVG} draggable={false} {...props} />);
 export const ArrowCirlceLeftActive = (props: ImgProps) => (<img src={arrowCircleLeftActiveSVG} draggable={false} {...props} />);
@@ -107,6 +110,7 @@ export const Cancel = (props: ImgProps) => (<img src={cancelSVG} draggable={fals
 export const Copy = (props: ImgProps) => (<img src={copySVG} draggable={false} {...props} />);
 export const Close = (props: ImgProps) => (<img src={closeSVG} draggable={false} {...props} />);
 export const CloseXWhite = (props: ImgProps) => (<img src={closeXWhiteSVG} draggable={false} {...props} />);
+export const QRCode = (props: ImgProps) => (<img src={QRCodeSVG} draggable={false} {...props} />);
 export const Warning = (props: ImgProps) => (<img src={warningPNG} draggable={false} {...props} />);
 /**
  * @deprecated Alert is only used for BitBox01 use `Warning` icon instead
