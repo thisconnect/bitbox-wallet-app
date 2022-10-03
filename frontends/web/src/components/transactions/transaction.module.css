@@ -3,7 +3,7 @@
 }
 
 .row {
-    background-color: var(--color-white) !important;
+    background-color: var(--background-secondary) !important;
     min-height: 52px;
 }
 

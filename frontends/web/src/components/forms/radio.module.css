@@ -50,7 +50,7 @@
 /* checked */
 
 .radio input:checked + label::before {
-    background-color: var(--color-white);
+    background-color: var(--background-secondary);
 }
 
 .radio input:checked + label::after {
