@@ -113,9 +113,6 @@ class Dialog extends Component<Props, State> {
     this.overlay.current.classList.remove(style.closingOverlay);
     this.setState({ active: false, currentTab: 0, renderDialog: false }, () => {
       document.removeEventListener('keydown', this.handleKeyDown);
-      if (this.props.onClose) {
-        this.props.onClose();
-      }
     });
   };
 
@@ -159,6 +156,10 @@ class Dialog extends Component<Props, State> {
     this.overlay.current.classList.remove(style.activeOverlay);
     this.overlay.current.classList.add(style.closingOverlay);
     this.timerId = setTimeout(this.deactivateModal, 300);
+
+    if (this.props.onClose) {
+      this.props.onClose();
+    }
   };
 
   private activate = () => {
