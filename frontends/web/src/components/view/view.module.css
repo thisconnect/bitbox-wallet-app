@@ -44,7 +44,7 @@
     padding-top: var(--space-half);
     width: 480px;
 }
-.fill .inner {
+.fill:not(.verticallyCentered) .inner {
     margin: 0;
     width: 100%;
 }
