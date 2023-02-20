@@ -38,12 +38,14 @@
 .inner {
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
     margin: 0 auto;
     max-width: var(--content-width);
     padding: var(--space-half) 0;
     width: 100%;
 }
 .verticallyCentered .inner {
+    flex-grow: 0;
     margin-bottom: auto;
     margin-top: auto;
 }

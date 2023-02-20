@@ -758,7 +758,7 @@ class BitBox02 extends Component<Props, State> {
             textCenter
             verticallyCentered
             withBottomBar>
-            <ViewHeader title={t('bitbox02Wizard.success.title')}>
+            <ViewHeader small title={t('bitbox02Wizard.success.title')}>
               <p>{t('bitbox02Wizard.stepCreateSuccess.success')}</p>
             </ViewHeader>
             <ViewContent withIcon="success">
