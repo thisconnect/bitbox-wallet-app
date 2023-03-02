@@ -213,20 +213,26 @@ func (updater *RateUpdater) HistoryEarliestTimestamp(coin, fiat string) time.Tim
 	return t
 }
 
-// HistoryLatestTimestampAll returns the latest timestamp for which there an exchange rates is
-// available for all coins. In other words: the earliest of all latest timestamps.
-func (updater *RateUpdater) HistoryLatestTimestampAll(coins []string, fiat string) time.Time {
+// HistoryLatestTimestampAll returns:
+// @1: the latest timestamp for which an exchange rates is available for all coins.
+// In other words: the earliest of all latest timestamps.
+// @2: a map that associates each coin/fiat pair to the latest timestamp available
+// for that exchange rate.
+func (updater *RateUpdater) HistoryLatestTimestampAll(coins []string, fiat string) (time.Time, map[string]time.Time) {
 	var result time.Time
+	timestamps := make(map[string]time.Time)
 	for _, coin := range coins {
-		latest := updater.HistoryLatestTimestamp(coin, fiat)
-		if latest.IsZero() {
-			return latest
+		timestamps[coin] = updater.HistoryLatestTimestamp(coin, fiat)
+	}
+	for _, timestamp := range timestamps {
+		if timestamp.IsZero() {
+			return timestamp, timestamps
 		}
-		if result.IsZero() || latest.Before(result) {
-			result = latest
+		if result.IsZero() || timestamp.Before(result) {
+			result = timestamp
 		}
 	}
-	return result
+	return result, timestamps
 }
 
 type fetchTimeRange struct {

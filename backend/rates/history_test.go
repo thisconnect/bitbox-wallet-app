@@ -153,12 +153,17 @@ func TestHistoryEarliestLatest(t *testing.T) {
 	assert.Zero(t, updater.HistoryEarliestTimestamp("foo", "bar"), "zero earliest")
 	assert.Zero(t, updater.HistoryLatestTimestamp("foo", "bar"), "zero latest")
 
-	assert.Equal(t,
-		updater.history["ltcUSD"][1].timestamp,
-		updater.HistoryLatestTimestampAll([]string{"btc", "ltc"}, "USD"))
+	earliest, timestamps := updater.HistoryLatestTimestampAll([]string{"btc", "ltc"}, "USD")
+	assert.Equal(t, updater.history["ltcUSD"][1].timestamp, earliest)
+	assert.Equal(t, updater.history["ltcUSD"][1].timestamp, timestamps["ltc"])
+	assert.Equal(t, updater.history["btcUSD"][3].timestamp, timestamps["btc"])
 
-	assert.Zero(t, updater.HistoryLatestTimestampAll([]string{"btc", "foo"}, "USD"))
-	assert.Zero(t, updater.HistoryLatestTimestampAll([]string{"foo", "btc"}, "USD"))
+	earliest, timestamps = updater.HistoryLatestTimestampAll([]string{"btc", "foo"}, "USD")
+	assert.Zero(t, earliest)
+	assert.Equal(t, updater.history["btcUSD"][3].timestamp, timestamps["btc"])
+	earliest, timestamps = updater.HistoryLatestTimestampAll([]string{"foo", "btc"}, "USD")
+	assert.Zero(t, earliest)
+	assert.Equal(t, updater.history["btcUSD"][3].timestamp, timestamps["btc"])
 }
 
 // TestLoadDumpUnusableDB ensures no panic when the RateUpdater.historyDB is unusable.

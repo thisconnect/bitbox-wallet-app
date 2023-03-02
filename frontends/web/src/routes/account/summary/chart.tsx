@@ -16,7 +16,7 @@
 
 import { createChart, IChartApi, BarsInfo, LineData, LineStyle, LogicalRange, ISeriesApi, UTCTimestamp, MouseEventHandler, MouseEventParams, BarPrice } from 'lightweight-charts';
 import { Component, createRef, ReactChild } from 'react';
-import { ISummary } from '../../../api/account';
+import { ISummary, CoinCode, ConversionUnit } from '../../../api/account';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { formatNumber } from '../../../components/rates/rates';
@@ -25,6 +25,7 @@ import styles from './chart.module.css';
 import Filters from './filters';
 import { getDarkmode } from '../../../components/darkmode/darkmode';
 import { TChartDisplay, TChartFiltersProps } from './types';
+import { Warning } from '../../../components/icon';
 
 export interface FormattedLineData extends LineData {
   formattedValue: string;
@@ -139,9 +140,9 @@ class Chart extends Component<Props, State> {
   };
 
   private createChart = () => {
-    const { data: { chartIsUpToDate, chartDataMissing } } = this.props;
+    const { data: { chartDataMissing } } = this.props;
     const darkmode = getDarkmode();
-    if (this.ref.current && this.hasData() && (chartIsUpToDate && !chartDataMissing)) {
+    if (this.ref.current && this.hasData() && !chartDataMissing) {
       if (!this.chart) {
         const chartWidth = !this.state.isMobile ? this.ref.current.offsetWidth : document.body.clientWidth;
         const chartHeight = !this.state.isMobile ? this.height : this.mobileHeight;
@@ -411,6 +412,13 @@ class Chart extends Component<Props, State> {
     });
   };
 
+  private renderRatesTimestamps = (ratesTimestamps: { [key in CoinCode]: number }, chartFiat: ConversionUnit) => {
+    return (<ul>
+      {Object.keys(ratesTimestamps).map((key) =>
+        <li key={key}>[{key}/{chartFiat}]: {this.props.t('chart.lastDatapoint') + new Date(ratesTimestamps[key as CoinCode]).toLocaleString()}</li>
+      )}
+    </ul>);
+  };
 
 
   private renderDate = (date: number) => {
@@ -432,7 +440,7 @@ class Chart extends Component<Props, State> {
     const {
       t,
       data: {
-        chartDataDaily,
+        ratesTimestamps,
         chartDataMissing,
         chartFiat,
         chartIsUpToDate,
@@ -505,13 +513,26 @@ class Chart extends Component<Props, State> {
           {!isMobile && <Filters {...chartFiltersProps} />}
         </header>
         <div className={styles.chartCanvas} style={{ minHeight: chartHeight }}>
-          {(!chartIsUpToDate || chartDataMissing) ? (
+          {chartDataMissing ? (
             <div className={styles.chartUpdatingMessage} style={{ height: chartHeight }}>
-              {chartDataDaily === undefined
-                ? t('chart.dataMissing')
-                : t('chart.dataUpdating')}
+              {t('chart.dataMissing')}
             </div>
-          ) : hasData ? null : noDataPlaceholder}
+          ) : hasData ? !chartIsUpToDate && (
+            <div className={styles.chartUpdatingMessage}>
+              {ratesTimestamps ? (
+                <>
+                  <div >
+                    <Warning/>
+                    <span>{t('chart.dataOutOfDate')}</span>
+                  </div>
+                  <div>
+                    {this.renderRatesTimestamps(ratesTimestamps, chartFiat)}
+                  </div>
+                </>
+              ) : t('chart.dataUpdating')
+              }
+            </div>
+          ) : noDataPlaceholder}
           <div ref={this.ref} className={styles.invisible}></div>
           <span
             ref={this.refToolTip}

@@ -12,11 +12,26 @@
   align-items: center;
   color: var(--color-tertiary);
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   text-align: center;
 }
 
+.chartUpdatingMessage img {
+  max-height: 20px;
+  margin-right: .25rem;
+  vertical-align: text-bottom;
+}
+
+.chartUpdatingMessage div {
+  text-align: left;
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.chartUpdatingMessage ul {
+  margin-top: .25rem;
+}
 
 .chart header {
   display: flex;

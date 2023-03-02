@@ -445,13 +445,15 @@
   },
   "chart": {
     "dataMissing": "Gathering historical data... stay tuned.",
+    "dataOutOfDate": "Chart data can be out of date:",
     "dataUpdating": "updating data…",
     "filter": {
       "all": "All",
       "month": "Month",
       "week": "Week",
       "year": "Year"
-    }
+    },
+    "lastDatapoint": "last datapoint available at "
   },
   "checkSDcard": "checking microSD card",
   "clickHere": "Click here.",

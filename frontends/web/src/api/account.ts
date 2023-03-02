@@ -124,6 +124,7 @@ export interface ISummary {
     chartTotal: number | null;
     formattedChartTotal: string | null;
     chartIsUpToDate: boolean; // only valid if chartDataMissing is false
+    ratesTimestamps?: { [key in CoinCode]: number };
 }
 
 export const getSummary = (): Promise<ISummary> => {

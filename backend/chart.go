@@ -72,6 +72,8 @@ type Chart struct {
 	FormattedTotal string `json:"formattedChartTotal"`
 	// Only valid if DataMissing is false
 	IsUpToDate bool `json:"chartIsUpToDate"`
+	// Map of latest rate timestamps for each coin against chart fiat.
+	RatesTimestamps map[string]int64 `json:"ratesTimestamps"`
 }
 
 func (backend *Backend) addChartData(
@@ -119,12 +121,18 @@ func (backend *Backend) ChartData() (*Chart, error) {
 
 	fiat := backend.Config().AppConfig().Backend.MainFiat
 	// Chart data until this point in time.
-	until := backend.RatesUpdater().HistoryLatestTimestampAll(backend.allCoinCodes(), fiat)
+	until, timestamps := backend.RatesUpdater().HistoryLatestTimestampAll(backend.allCoinCodes(), fiat)
 	if until.IsZero() {
 		chartDataMissing = true
 		backend.log.Info("ChartDataMissing, until is zero")
 	}
 	isUpToDate := time.Since(until) < 2*time.Hour
+
+	unixTimestamps := make(map[string]int64)
+	for coin, timestamp := range timestamps {
+		// js Date is based on milliseconds.
+		unixTimestamps[coin] = timestamp.UnixMilli()
+	}
 
 	formatBtcAsSat := util.FormatBtcAsSat(backend.Config().AppConfig().Backend.BtcUnit)
 
@@ -309,12 +317,13 @@ func (backend *Backend) ChartData() (*Chart, error) {
 		formattedChartTotal = coin.FormatAsCurrency(currentTotal, fiat, formatBtcAsSat)
 	}
 	return &Chart{
-		DataMissing:    chartDataMissing,
-		DataDaily:      toSortedSlice(chartEntriesDaily, fiat),
-		DataHourly:     toSortedSlice(chartEntriesHourly, fiat),
-		Fiat:           chartFiat,
-		Total:          chartTotal,
-		FormattedTotal: formattedChartTotal,
-		IsUpToDate:     isUpToDate,
+		DataMissing:     chartDataMissing,
+		DataDaily:       toSortedSlice(chartEntriesDaily, fiat),
+		DataHourly:      toSortedSlice(chartEntriesHourly, fiat),
+		Fiat:            chartFiat,
+		Total:           chartTotal,
+		FormattedTotal:  formattedChartTotal,
+		IsUpToDate:      isUpToDate,
+		RatesTimestamps: unixTimestamps,
 	}, nil
 }
