@@ -43,15 +43,20 @@ export interface SelectedUTXO {
 
 export type Props = UTXOsProps & TranslateProps;
 
+type TTxNotesMap = {
+  [txId: string]: string;
+};
 interface State {
     utxos: accountApi.UTXO[];
     selectedUTXOs: SelectedUTXO;
+    notes: TTxNotesMap;
 }
 
 export class UTXOsClass extends Component<Props, State> {
   public readonly state: State = {
     utxos: [],
     selectedUTXOs: {},
+    notes: {},
   };
 
   private subscriptions: UnsubscribeList = [];
@@ -72,9 +77,17 @@ export class UTXOsClass extends Component<Props, State> {
   }
 
   private getUTXOs() {
-    accountApi.getUTXOs(this.props.accountCode).then(utxos => {
-      this.setState({ utxos });
-    });
+    const { accountCode } = this.props;
+    accountApi.getUTXOs(accountCode)
+      .then(utxos => {
+        this.setState({ utxos });
+        return Promise.all(utxos.map(utxo => accountApi.getTransaction(accountCode, utxo.txId)));
+      })
+      .then(txs => {
+        const notes: TTxNotesMap = {};
+        txs.forEach(tx => tx?.txID && (notes[tx?.txID] = tx?.note));
+        this.setState({ notes });
+      });
   }
 
   public clear = () => {
@@ -99,7 +112,7 @@ export class UTXOsClass extends Component<Props, State> {
 
   private renderUTXOs = (scriptType: accountApi.ScriptType) => {
     const { t, explorerURL } = this.props;
-    const { utxos, selectedUTXOs } = this.state;
+    const { notes, utxos, selectedUTXOs } = this.state;
     const filteredUTXOs = utxos.filter(utxo => utxo.scriptType === scriptType);
     if (filteredUTXOs.length === 0) {
       return null;
@@ -118,6 +131,9 @@ export class UTXOsClass extends Component<Props, State> {
                 <div className={style.utxoContent}>
                   <div className={style.utxoData}>
                     <div className={style.amounts}>
+                      {notes[utxo.txId] && (
+                        <strong>{notes[utxo.txId]}{' '}</strong>
+                      )}
                       <span className={style.amount}>
                         {utxo.amount.amount}
                         {' '}
