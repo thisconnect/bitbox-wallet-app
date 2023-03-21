@@ -1316,6 +1316,7 @@
     },
     "maximum": "Send all",
     "maximumSelectedCoins": "Send selected coins",
+    "noFeeTargets": "Automatic fee rate estimations are currently not available. Please enter a custom fee rate or try again later.",
     "priority": "Priority",
     "scanQR": "Scan QR code",
     "signprogress": {
