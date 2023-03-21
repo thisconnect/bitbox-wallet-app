@@ -18,6 +18,7 @@
 import React, { Component, createRef } from 'react';
 import * as accountApi from '../../../api/account';
 import { Input, Select } from '../../../components/forms';
+import { Message } from '../../../components/message/message';
 import { load } from '../../../decorators/load';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { customFeeUnit, getCoinCode, isEthereumBased } from '../utils';
@@ -180,7 +181,9 @@ class FeeTargets extends Component<Props, State> {
           ) : (
             <div className={style.rowCustomFee}>
               { noFeeTargets ? (
-                <div>{t('send.noFeeTargets')}</div>
+                <Message small type="warning">
+                  {t('send.noFeeTargets')}
+                </Message>
               ) : null }
               <div className={style.column}>
                 <Select
