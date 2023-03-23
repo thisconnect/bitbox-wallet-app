@@ -445,7 +445,8 @@
   },
   "chart": {
     "dataMissing": "Gathering historical data... stay tuned.",
-    "dataOutOfDate": "Chart data can be out of date:",
+    "dataOldTimestamps_one": "Exchange rates for {{name}} is older than expected. Last updated {{timeAgo}}",
+    "dataOldTimestamps_other": "Exchange rates for {{name}} are older than expected. Last updated {{timeAgo}}",
     "dataUpdating": "updating data…",
     "filter": {
       "all": "All",
@@ -579,6 +580,7 @@
     "appVersion": "App version:"
   },
   "generic": {
+    "and": "and",
     "enabled_false": "Disabled",
     "enabled_true": "Enabled"
   },

@@ -16,7 +16,7 @@
 
 import { createChart, IChartApi, BarsInfo, LineData, LineStyle, LogicalRange, ISeriesApi, UTCTimestamp, MouseEventHandler, MouseEventParams, BarPrice } from 'lightweight-charts';
 import { Component, createRef, ReactChild } from 'react';
-import { ISummary, CoinCode, ConversionUnit } from '../../../api/account';
+import { ISummary, CoinCode } from '../../../api/account';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { Skeleton } from '../../../components/skeleton/skeleton';
 import { formatNumber } from '../../../components/rates/rates';
@@ -25,7 +25,6 @@ import styles from './chart.module.css';
 import Filters from './filters';
 import { getDarkmode } from '../../../components/darkmode/darkmode';
 import { TChartDisplay, TChartFiltersProps } from './types';
-import { Warning } from '../../../components/icon';
 
 export interface FormattedLineData extends LineData {
   formattedValue: string;
@@ -412,14 +411,31 @@ class Chart extends Component<Props, State> {
     });
   };
 
-  private renderRatesTimestamps = (ratesTimestamps: { [key in CoinCode]: number }, chartFiat: ConversionUnit) => {
-    return (<ul>
-      {Object.keys(ratesTimestamps).map((key) =>
-        <li key={key}>[{key}/{chartFiat}]: {this.props.t('chart.lastDatapoint') + new Date(ratesTimestamps[key as CoinCode]).toLocaleString()}</li>
-      )}
-    </ul>);
-  };
+  private relativeTime = new Intl.RelativeTimeFormat(this.props.i18n.language, { style: 'long' });
 
+  private renderRatesTimestamps = (ratesTimestamps: { [key in CoinCode]: number }) => {
+    const { t } = this.props;
+    const twoHoursAgo = Date.now() - (2 * 60 * 60 * 1000);
+    const outdatedCoins = Object.keys(ratesTimestamps).filter(coin => ratesTimestamps[coin as CoinCode] < twoHoursAgo);
+    // can be either "COIN", "COIN and COIN" or "COIN, COIN and COIN"
+    const coinOrCoinsWithAnd =
+      (outdatedCoins.length >= 2)
+        ? [
+          outdatedCoins.slice(0, -1).map(coin => coin.toUpperCase()).join(', '),
+          t('generic.and'),
+          outdatedCoins.at(-1)?.toUpperCase()
+        ].join(' ')
+        : outdatedCoins[0].toUpperCase();
+
+    const oldestTimestamp = Math.min(...Object.values(ratesTimestamps));
+    const hoursAgo = Math.ceil((oldestTimestamp - Date.now()) / 3600000);
+
+    return t('chart.dataOldTimestamps', {
+      count: outdatedCoins.length,
+      name: coinOrCoinsWithAnd,
+      timeAgo: this.relativeTime.format(hoursAgo, 'hours'),
+    });
+  };
 
   private renderDate = (date: number) => {
     return new Date(date).toLocaleString(
@@ -519,17 +535,9 @@ class Chart extends Component<Props, State> {
             </div>
           ) : hasData ? !chartIsUpToDate && (
             <div className={styles.chartUpdatingMessage}>
-              {ratesTimestamps ? (
-                <>
-                  <div >
-                    <Warning/>
-                    <span>{t('chart.dataOutOfDate')}</span>
-                  </div>
-                  <div>
-                    {this.renderRatesTimestamps(ratesTimestamps, chartFiat)}
-                  </div>
-                </>
-              ) : t('chart.dataUpdating')
+              {ratesTimestamps
+                ? this.renderRatesTimestamps(ratesTimestamps)
+                : t('chart.dataUpdating')
               }
             </div>
           ) : noDataPlaceholder}
