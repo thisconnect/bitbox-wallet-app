@@ -95,8 +95,19 @@ Description of the translation issue:
 `);
   }
 
+  private getSupportLink(language: string) {
+    switch (language) {
+    case 'de':
+      return 'https://shiftcrypto.ch/de/support/';
+    case 'es':
+      return 'https://shiftcrypto.ch/es/soporte/';
+    default:
+      return 'https://shiftcrypto.ch/support/';
+    }
+  }
+
   public render() {
-    const { shown, t, children } = this.props;
+    const { shown, t, i18n, children } = this.props;
     return (
       <div className={style.wrapper}>
         <div className={[style.overlay, shown && style.show].join(' ')} onClick={toggle}></div>
@@ -113,7 +124,7 @@ Description of the translation issue:
             <div className={style.entry}>
               {t('guide.appendix.text')}
               {' '}
-              <A href="https://shiftcrypto.ch/contact">{t('guide.appendix.link')}</A>
+              <A href={this.getSupportLink(i18n.language)}>{t('guide.appendix.link')}</A>
               <br />
               <br />
               Translation feedback:
