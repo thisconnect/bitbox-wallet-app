@@ -28,12 +28,16 @@ import { WithSDCard } from './sdcard';
 type TCreateWalletStatus = 'intro' | 'setName' | 'setPassword' | 'showDisclaimer' | 'createBackup';
 
 type Props = {
+  backupType: 'sdcard' | 'mnemonic';
+  backupSeedLength: 16 | 32;
   deviceID: string;
   isSeeded: boolean;
   onAbort: () => void;
 };
 
 export const CreateWallet = ({
+  backupType,
+  backupSeedLength,
   deviceID,
   isSeeded,
   onAbort,
@@ -43,10 +47,13 @@ export const CreateWallet = ({
   const [status, setStatus] = useState<TCreateWalletStatus>('intro');
   const [errorText, setErrorText] = useState('');
 
+  console.log('CreateWallet', backupType, backupSeedLength);
+
   const ensurePassword = async () => {
     setStatus('setPassword');
     try {
-      const result = await bitbox02.setPassword(deviceID);
+      console.log(`TODO: set seed/password with ${backupSeedLength}`);
+      const result = await bitbox02.setPassword(deviceID/*, backupSeedLength */);
       if (!result.success) {
         if (result.code === bitbox02.errUserAbort) {
           // On user abort, just go back to the first screen. This is a bit lazy, as we should show
@@ -89,7 +96,10 @@ export const CreateWallet = ({
   const createBackup = async () => {
     setStatus('createBackup');
     try {
-      const result = await bitbox02.createBackup(deviceID, 'sdcard');
+      const result = await bitbox02.createBackup(
+        deviceID,
+        backupType === 'mnemonic' ? 'recovery-words' : 'sdcard',
+      );
       if (!result.success) {
         if (result.code === bitbox02.errUserAbort) {
           alertUser(t('bitbox02Wizard.createBackupAborted'), {
@@ -107,11 +117,18 @@ export const CreateWallet = ({
 
   if (isSeeded) {
     if (status === 'showDisclaimer') {
-      return (
-        <WithSDCard deviceID={deviceID}>
+      switch (backupType) {
+      case 'sdcard':
+        return (
+          <WithSDCard deviceID={deviceID}>
+            <ChecklistWalletCreate key="create-backup" onContinue={createBackup} />
+          </WithSDCard>
+        );
+      case 'mnemonic':
+        return (
           <ChecklistWalletCreate key="create-backup" onContinue={createBackup} />
-        </WithSDCard>
-      );
+        );
+      }
     }
     if (status === 'createBackup') {
       return (
@@ -137,7 +154,8 @@ export const CreateWallet = ({
     );
   case 'setPassword':
     return (
-      <SetPassword key="create-wallet" errorText={errorText} />
+      <SetPassword
+        errorText={errorText} />
     );
   default:
     return null;

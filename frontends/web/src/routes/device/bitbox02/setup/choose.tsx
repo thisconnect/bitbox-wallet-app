@@ -47,7 +47,7 @@ export const SetupOptions = ({
   const [with12Words, setWith12Words] = useState(false);
 
   if (advanced) {
-    const { canBackupWithRecoveryWords } = versionInfo;
+    const { canBackupWithRecoveryWords/*, canCreate12Words */ } = versionInfo;
     // test dummy, needs https://github.com/digitalbitbox/bitbox-wallet-app/pull/2136
     const canCreate12Words = Math.random() >= 0.5;
     return (

@@ -131,6 +131,7 @@ class BitBox02 extends Component<Props, State> {
     const { t, deviceID } = this.props;
     const {
       attestation,
+      createOptions,
       versionInfo,
       status,
       appStatus,
@@ -204,6 +205,8 @@ class BitBox02 extends Component<Props, State> {
 
         { (!unlockOnly && appStatus === 'create-wallet') && (
           <CreateWallet
+            backupType={(createOptions?.withMnemonic ? 'mnemonic' : 'sdcard')}
+            backupSeedLength={createOptions?.with12Words ? 16 : 32}
             deviceID={deviceID}
             isSeeded={status === 'seeded'}
             onAbort={this.handleAbort} />
