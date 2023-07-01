@@ -49,6 +49,7 @@
 464aed55623d6c97e63950bb7183c4b832e697366a34d14cca3f21bb256bf827  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/tr.pak
 480417d6cfaf5cb070700632e94d07bb586ded5e9ea0cec8cd31978d04c7f8ac  ./Contents/Frameworks/QtQml.framework/Versions/5/Resources/QtQml.prl
 483b4dc14429986b343eebf52d154e0a4821e593bd38c62bfdf8e42f49377b7c  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/uk.pak
+485e286114d25825b816c0d527f91590ecdcd890d25d070352f5bc8f51e9b782  ./Contents/Frameworks/libserver.so
 48b7e7fa04314d32bceea8d34adc2cd147fbf9e8116b6f02a9877c58594a7795  ./Contents/Frameworks/QtQuick.framework/Versions/5/Resources/Info.plist
 491bcd55a8ac3996f43b32f02fe7cf36f08f69dc93cdc61a4842e608bd55a18a  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/lt.pak
 4ae0e173fbd01e977f542171a9766c7846781f4dde549f7fba96cb54bdde33ff  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/fil.pak
@@ -106,7 +107,6 @@
 93e4c1fc412e28861e38f315cf8f7e81abce49ef96a1ffec31332d9c22a96398  ./Contents/Frameworks/QtSerialPort.framework/Versions/5/Resources/QtSerialPort.prl
 93fa4be542a07e9afa53c9e06bae4a6aeca240cf9a4d3908a87ea1c938e0e761  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/sk.pak
 94ec2c8bf988e2bd26127a8927bbf179b2909e995df59d0a32454a6971498f43  ./Contents/PlugIns/virtualkeyboard/libqtvirtualkeyboard_tcime.dylib
-965067c5b7cf6df06e37f5680612b0eabdddcc61dac2dacf1ba75dfb99097019  ./Contents/Frameworks/libserver.so
 96f0c2c4fab9eb543ea0d86cf22c061231f3a6b1605fde51dc4e7898f8b714bc  ./Contents/PlugIns/position/libqtposition_serialnmea.dylib
 97697cf3b23b379533a0e06b1a416692fc4669b2d9ffc4dbf30b06a542c3d5cb  ./Contents/Frameworks/QtSvg.framework/Versions/5/Resources/Info.plist
 9bab6c3088c1a23b8a3c90b2d1d6a1738d7037f49cc9971afd408c225d78cd6c  ./Contents/Frameworks/QtPdf.framework/Versions/5/QtPdf
@@ -119,7 +119,6 @@ aa97375f75685d268b1db060f26bc955931c1688312300b61d998115f8001fb0  ./Contents/Res
 ae16eefb0fd81510ddb93285c60a3be4ced73bea3ad82c0b3b1a285d7e2d9fa1  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/bg.pak
 b1b0331d11dea4aa3ee2e6fd31884293c36ede2a42350e7572c3cc7bcb1849c9  ./Contents/PlugIns/imageformats/libqtiff.dylib
 b1ec1e20b328031c99d73f224c8952e192bd633407be14f88387e3be51365f4c  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/fi.pak
-b2af56c3acd02cfbb0bce26c451e41201ae662504380ca7cbe10b1cb668b1c69  ./Contents/MacOS/assets.rcc
 b747597c79b270862b17663002ece1160535b52cfc96d22dde4e95e21ce1df24  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Helpers/QtWebEngineProcess.app/Contents/Info.plist
 b859a08780fd8497939ecd6d7a745c22a93a022c6bcfde16b9ac205fc300844e  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/hi.pak
 b8994bf5a6f1bb0529b7592f1c356bc8da7b26654972d018ebd5637e800aedb5  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/ca.pak
@@ -154,6 +153,7 @@ e6019a11073487eb065f40e3266ce9b90cac0d18cea19788921b967e4427148c  ./Contents/Fra
 e85f55f0be6a446c1cb9b5e8ec66f1792fa7a8d17aa7edf588a6831c7f20716f  ./Contents/Frameworks/QtVirtualKeyboard.framework/Versions/5/Resources/QtVirtualKeyboard.prl
 e9de0b85d4c24961bfa86d757a5707354f22cdcf3f4a1c5d4c673c2262563c13  ./Contents/PlugIns/imageformats/libqtga.dylib
 eba2acd2a99130d7b57b05a1b84a98a63025f2ac49b55d940193b0b42e710bbc  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Helpers/QtWebEngineProcess.app/Contents/Resources/QtWebEngineProcess.entitlements
+ef73e0da0c3585f08ad44d77f53afcbf64a2d5c86948e5c67645d8bd19691c7a  ./Contents/MacOS/assets.rcc
 efcf16e07e81edf1afae00883777797590adc4a2920948182ac4838e5e1b7db0  ./Contents/Frameworks/QtWidgets.framework/Versions/5/QtWidgets
 f2d38ac40c0066055b775aa7565eef3e1bd964c36f90be98247c44dd5caf9a20  ./Contents/Frameworks/QtWebEngineCore.framework/Versions/5/Resources/qtwebengine_locales/ro.pak
 f9e0562f95b9f7271e458c3c0df3ed2878ad1d585c8022a49ab1ba3b99fcba79  ./Contents/Frameworks/QtNetwork.framework/Versions/5/Resources/Info.plist
