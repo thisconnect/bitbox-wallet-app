@@ -53,7 +53,6 @@
 
 .header {
     align-items: center;
-    border-bottom: solid 1px var(--color-lightgray);
     display: flex;
     flex-direction: row;
     height: var(--item-height);
@@ -95,7 +94,7 @@
 .contentContainer {
     font-size: var(--size-default);
     font-weight: 400;
-    padding: var(--space-half);
+    padding: var(--space-quarter) var(--space-half) var(--space-half) var(--space-half);
 }
 
 .contentContainer.slim {
