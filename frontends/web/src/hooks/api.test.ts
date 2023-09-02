@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-import { renderHook } from '@testing-library/react-hooks';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { renderHook, waitFor } from '@testing-library/react';
+import { useState } from 'react';
 import { TSubscriptionCallback } from '../api/subscribe';
 import { useSubscribe, useLoad, useSync } from './api';
 import * as utils from './mount';
 import { TStatus } from '../api/coins';
-import { useState } from 'react';
 import { act } from 'react-dom/test-utils';
 
-const useMountedRefSpy = jest.spyOn(utils, 'useMountedRef');
+const useMountedRefSpy = vi.spyOn(utils, 'useMountedRef');
 
 describe('hooks for api calls', () => {
   beforeEach(() => {
@@ -31,18 +32,17 @@ describe('hooks for api calls', () => {
 
   describe('useLoad', () => {
     it('should load promise and return the correct resolved value', async () => {
-      const mockApiCall = jest.fn().mockImplementation(() => Promise.resolve(true));
-      const { result, waitForNextUpdate } = renderHook(() => useLoad(mockApiCall));
-      await waitForNextUpdate();
-      expect(result.current).toBe(true);
+      const mockApiCall = vi.fn().mockImplementation(() => Promise.resolve(true));
+      const { result } = renderHook(() => useLoad(mockApiCall));
+      await waitFor(() => expect(result.current).toBe(true));
     });
 
     it('re-calls apiCall when dependencies change', async () => {
       // mock apiCall function
-      const mockApiCall = jest.fn().mockImplementation(() => Promise.resolve(true));
+      const mockApiCall = vi.fn().mockImplementation(() => Promise.resolve(true));
 
       // initialize hook with mock apiCall function and initial dependencies
-      const { result, waitForNextUpdate } = renderHook(() => {
+      const { result } = renderHook(() => {
         const [state, setState] = useState([3]);
         // wrap call to useLoad hook in act
         act(() => {
@@ -54,18 +54,15 @@ describe('hooks for api calls', () => {
 
       //apiCall called for 2nd time
       act(() => result.current.setState([4]));
-      await waitForNextUpdate();
-
+    
       // for the 3rd
       act(() => result.current.setState([5]));
-      await waitForNextUpdate();
 
       // for the 4th
       act(() => result.current.setState([6]));
-      await waitForNextUpdate();
 
       // assert that apiCall was re-called
-      expect(mockApiCall).toHaveBeenCalledTimes(4);
+      await waitFor(() => expect(mockApiCall).toHaveBeenCalledTimes(4));
     });
   });
 
@@ -77,8 +74,8 @@ describe('hooks for api calls', () => {
       targetHeight: 2408940
     };
 
-    const mockSubscribe = jest.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
-    const mockSubscribeEndpoint = jest.fn().mockImplementation((cb) => cb(MOCK_RETURN_STATUS));
+    const mockSubscribe = vi.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
+    const mockSubscribeEndpoint = vi.fn().mockImplementation((cb) => cb(MOCK_RETURN_STATUS));
 
 
     const { result } = renderHook(() => useSubscribe(mockSubscribe()));
@@ -87,16 +84,15 @@ describe('hooks for api calls', () => {
   });
 
   it('useSync should load promise and sync to a subscription function', async () => {
-    const mockApiCall = jest.fn().mockImplementation(() => () => Promise.resolve('some_value'));
+    const mockApiCall = vi.fn().mockImplementation(() => () => Promise.resolve('some_value'));
 
-    const mockSubscribe = jest.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
-    const mockSubscribeEndpoint = jest.fn().mockImplementation((cb) => cb());
+    const mockSubscribe = vi.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
+    const mockSubscribeEndpoint = vi.fn().mockImplementation((cb) => cb());
 
-    const { result, waitForNextUpdate } = renderHook(() => useSync(mockApiCall(), mockSubscribe()));
+    const { result } = renderHook(() => useSync(mockApiCall(), mockSubscribe()));
 
-    await waitForNextUpdate();
+    await waitFor(() => expect(mockSubscribe).toHaveBeenCalled());
 
-    expect(mockSubscribe).toHaveBeenCalled();
     expect(mockSubscribeEndpoint).toHaveBeenCalled();
 
     expect(result.current).toBe('some_value');

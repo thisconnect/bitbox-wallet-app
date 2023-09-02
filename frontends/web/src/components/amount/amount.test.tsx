@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { Amount } from './amount';
 import { CoinUnit, ConversionUnit } from './../../api/account';
@@ -26,6 +27,7 @@ describe('Amount formatting', () => {
       it('12345678901234 ' + coin + ' with removeBtcTrailingZeroes enabled gets spaced', () => {
         const { getByTestId } = render(<Amount amount="12345678901234" unit={coin} removeBtcTrailingZeroes/>);
         const blocks = getByTestId('amountBlocks');
+        console.log(blocks.innerHTML)
         expect(blocks.innerHTML).toBe(
           '<span class="">12</span>' +
           '<span class="space">345</span>' +

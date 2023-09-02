@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { IBalance } from '../../api/account';
 import I18NWrapper from '../../i18n/forTests/i18nwrapper';

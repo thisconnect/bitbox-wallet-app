@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Shift Crypto AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import { fireEvent } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
-import { useEsc } from './keyboard';
+import { describe, expect, it, vi } from 'vitest';
+import { fireEvent, renderHook } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import { useEsc } from './keyboard';
 
 describe('useEsc', () => {
   it('should fire its callback when escape key gets pressed', () => {
-    const mock = jest.fn();
+    const mock = vi.fn();
     renderHook((() => useEsc(mock)));
     act(() => {
       fireEvent.keyDown(document, { key: 'Escape', code: 27 });
@@ -29,4 +29,3 @@ describe('useEsc', () => {
     expect(mock).toHaveBeenCalled();
   });
 });
-

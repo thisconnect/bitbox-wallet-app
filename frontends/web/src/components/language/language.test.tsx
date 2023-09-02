@@ -1,5 +1,5 @@
 /**
- * Copyright 2020 Shift Crypto AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import 'jest';
+import { describe, expect, it, Mock, vi } from 'vitest';
 import { LanguageSwitch } from './language';
 import { render, fireEvent } from '@testing-library/react';
 
 import { useTranslation } from 'react-i18next';
 import { TLanguagesList } from './types';
 
-jest.mock('react-i18next');
+vi.mock('react-i18next');
 const useTranslationSpy = useTranslation;
 
 describe('components/language/language', () => {
@@ -47,8 +47,8 @@ describe('components/language/language', () => {
   describe('selectedIndex', () => {
     supportedLangs.forEach((lang) => {
       it(`returns exact match (${lang.code})`, () => {
-        (useTranslationSpy as jest.Mock).mockReturnValue({
-          t: jest.fn(),
+        (useTranslationSpy as Mock).mockReturnValue({
+          t: vi.fn(),
           i18n: {
             language: lang.code
           },
@@ -61,8 +61,8 @@ describe('components/language/language', () => {
     });
 
     it('matches main language tag', () => {
-      (useTranslationSpy as jest.Mock).mockReturnValue({
-        t: jest.fn(),
+      (useTranslationSpy as Mock).mockReturnValue({
+        t: vi.fn(),
         i18n: {
           language: 'de'
         },
@@ -73,8 +73,8 @@ describe('components/language/language', () => {
     });
 
     it('returns default if none matched', () => {
-      (useTranslationSpy as jest.Mock).mockReturnValue({
-        t: jest.fn(),
+      (useTranslationSpy as Mock).mockReturnValue({
+        t: vi.fn(),
         i18n: {
           language: 'it'
         },
