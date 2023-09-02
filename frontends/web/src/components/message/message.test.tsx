@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,10 +15,10 @@
  * limitations under the License.
  */
 
-import 'jest';
+import { describe, expect, it } from 'vitest';
 import { render } from '@testing-library/react';
 import { Message } from './message';
-import '@testing-library/jest-dom';
+import '@testing-library/jest-dom'; // TODO needed?
 
 describe('components/message/message', () => {
   it('should have child nodes', () => {

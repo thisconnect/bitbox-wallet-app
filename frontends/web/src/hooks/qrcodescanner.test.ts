@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
+import { describe, expect, it, vi } from 'vitest';
 import { MutableRefObject } from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import { BrowserQRCodeReader } from '@zxing/library';
 import { useQRCodeScanner } from './qrcodescanner';
 
 const mockedQRCodeReaderInstance = () => ({
-  getVideoInputDevices: jest.fn().mockResolvedValue(['camera1']),
-  decodeFromInputVideoDevice: jest.fn().mockResolvedValue({
-    getText: jest.fn().mockReturnValue('mockedQRValue')
+  getVideoInputDevices: vi.fn().mockResolvedValue(['camera1']),
+  decodeFromInputVideoDevice: vi.fn().mockResolvedValue({
+    getText: vi.fn().mockReturnValue('mockedQRValue')
   }),
-  reset: jest.fn()
+  reset: vi.fn()
 });
 
-
-jest.mock('../components/alert/Alert', () => ({
-  alertUser: jest.fn()
+vi.mock('../components/alert/Alert', () => ({
+  alertUser: vi.fn()
 }));
 
 describe('useQRCodeScanner', () => {
@@ -38,15 +38,14 @@ describe('useQRCodeScanner', () => {
     const props = {
       qrCodeReaderRef,
       activeScanQR: false,
-      onChangeActiveScanQR: jest.fn(),
-      parseQRResult: jest.fn()
+      onChangeActiveScanQR: vi.fn(),
+      parseQRResult: vi.fn()
     };
 
-    const { result, waitForNextUpdate } = renderHook(() => useQRCodeScanner(props));
+    const { result } = renderHook(() => useQRCodeScanner(props));
 
-    await waitForNextUpdate();
+    await waitFor(() => expect(result.current).toBe(true));
 
-    expect(result.current).toBe(true);
   });
 
   it('should process QR code scanning', async () => {
@@ -54,8 +53,8 @@ describe('useQRCodeScanner', () => {
       current: mockedQRCodeReaderInstance()
     } as unknown as MutableRefObject<BrowserQRCodeReader | undefined>;
 
-    const onChangeActiveScanQR = jest.fn();
-    const parseQRResult = jest.fn();
+    const onChangeActiveScanQR = vi.fn();
+    const parseQRResult = vi.fn();
 
     const props = {
       qrCodeReaderRef,
@@ -64,11 +63,10 @@ describe('useQRCodeScanner', () => {
       parseQRResult
     };
 
-    const { waitForNextUpdate } = renderHook(() => useQRCodeScanner(props));
+    renderHook(() => useQRCodeScanner(props));
 
-    await waitForNextUpdate();
+    await waitFor(() => expect(qrCodeReaderRef.current).not.toBeNull());
 
-    expect(qrCodeReaderRef.current).not.toBeNull();
     expect(onChangeActiveScanQR).toHaveBeenCalledWith(false);
     expect(parseQRResult).toHaveBeenCalledWith('mockedQRValue');
   });
