@@ -16,10 +16,15 @@
 
 import { describe, expect, it, Mock, vi } from 'vitest';
 vi.mock('./i18n');
-vi.mock('../utils/request');
+
+vi.mock('../utils/request', () => ({
+  apiGet: vi.fn().mockResolvedValue(null),
+}));
+
 
 import { apiGet } from '../utils/request';
 import { languageFromConfig } from './config';
+
 
 describe('language detector', () => {
   it('defaults to english', () => new Promise<void>(done => {

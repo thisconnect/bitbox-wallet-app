@@ -9,13 +9,3 @@ exports[`components/message/message > should have child nodes 1`] = `
   </span>
 </div>
 `;
-
-exports[`components/message/message should have child nodes 1`] = `
-<div
-  class="message "
->
-  <span>
-    hello
-  </span>
-</div>
-`;

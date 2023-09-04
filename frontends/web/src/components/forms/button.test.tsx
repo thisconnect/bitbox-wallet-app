@@ -35,7 +35,7 @@ describe('components/forms/button', () => {
   describe('Button', () => {
     it('renders a button with proper styling', () => {
       render(<Button primary>A Button</Button>);
-      expect(screen.getByRole('button', { name: /A Button/i })).toHaveClass('primary');
+      expect(screen.getByRole('button', { name: /A Button/i }).getAttribute('class')).toContain('primary');
     });
   });
 });

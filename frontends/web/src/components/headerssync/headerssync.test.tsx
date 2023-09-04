@@ -25,6 +25,9 @@ import I18NWrapper from '../../i18n/forTests/i18nwrapper';
 const useSubscribeSpy = vi.spyOn(apiHooks, 'useSubscribe');
 const useMountedRefSpy = vi.spyOn(mountHooks, 'useMountedRef');
 
+vi.mock('../../utils/request', () => ({
+  apiGet: vi.fn().mockResolvedValue(''),
+}));
 
 describe('components/headerssync/headerssync', () => {
   beforeEach(() => {

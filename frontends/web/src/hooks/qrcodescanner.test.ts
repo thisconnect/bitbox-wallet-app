@@ -63,7 +63,7 @@ describe('useQRCodeScanner', () => {
       parseQRResult
     };
 
-    await renderHook(() => useQRCodeScanner(props));
+    renderHook(() => useQRCodeScanner(props));
 
     await waitFor(() => expect(qrCodeReaderRef.current).not.toBeNull());
 

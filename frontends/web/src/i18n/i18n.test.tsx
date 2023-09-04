@@ -16,7 +16,12 @@
 
 import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { waitFor } from '@testing-library/react';
-vi.mock('../utils/request');
+
+vi.mock('../utils/request', () => ({
+  ...vi.importActual('../utils/request'),
+  apiPost: vi.fn().mockImplementation(() => Promise.resolve()),
+  apiGet: vi.fn().mockResolvedValue(''),
+}));
 
 import { apiGet, apiPost } from '../utils/request';
 import { i18n } from './i18n';
@@ -24,9 +29,7 @@ import { i18n } from './i18n';
 describe('i18n', () => {
   describe('languageChanged', () => {
     beforeEach(() => {
-      (apiPost as Mock).mockImplementation(() => {
-        return Promise.resolve();
-      });
+       (apiPost as Mock).mockClear();
     });
 
     const table = [
@@ -44,15 +47,14 @@ describe('i18n', () => {
           default: { return Promise.resolve(); }
           }
         });
-        let callbackPromise = await i18n.changeLanguage(test.newLang);
-        await callbackPromise; // wait for setConfig to complete
-
-        // await waitFor(() => expect(apiPost).toHaveBeenCalledTimes(1));
-
-        expect(apiPost).toHaveBeenCalledWith('config', {
-          frontend: {},
-          backend: { userLanguage: test.userLang },
-        });
+        await i18n.changeLanguage(test.newLang);
+        await waitFor(() => {
+          expect(apiPost).toHaveBeenCalledTimes(1);
+          expect(apiPost).toHaveBeenCalledWith('config', {
+            frontend: {},
+            backend: { userLanguage: test.userLang },
+          });
+        })
       });
     });
   });

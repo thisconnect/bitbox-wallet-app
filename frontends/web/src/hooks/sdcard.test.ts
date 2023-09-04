@@ -22,6 +22,10 @@ import * as bitbox01Apis from '../api/bitbox01';
 import * as bitbox02Apis from '../api/bitbox02';
 import * as utils from './mount';
 
+vi.mock('../utils/request', () => ({
+  apiGet: vi.fn().mockResolvedValue(''),
+}));
+
 const useMountedRefSpy = vi.spyOn(utils, 'useMountedRef');
 const checkSDCardSpy = vi.spyOn(bitbox02Apis, 'checkSDCard');
 const getDeviceInfoSpy = vi.spyOn(bitbox01Apis, 'getDeviceInfo');
@@ -42,8 +46,7 @@ describe('useSDCard', () => {
       const { result } = renderHook(() => useSDCard({ '000': 'bitbox02' }));
 
       await waitFor(() => expect(checkSDCard).toHaveBeenCalled());
-
-      expect(result.current).toBe(true);
+      await waitFor(()=> expect(result.current).toBe(true));
     });
 
     it('should apply for bitbox01', async () => {
@@ -69,7 +72,7 @@ describe('useSDCard', () => {
 
       await waitFor(() => expect(getDeviceInfo).toHaveBeenCalled());
 
-      expect(result.current).toBe(true);
+      await waitFor(()=> expect(result.current).toBe(true));
     });
 
   });

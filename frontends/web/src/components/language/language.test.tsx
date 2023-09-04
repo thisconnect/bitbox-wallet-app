@@ -21,8 +21,9 @@ import { render, fireEvent } from '@testing-library/react';
 import { useTranslation } from 'react-i18next';
 import { TLanguagesList } from './types';
 
-vi.mock('react-i18next');
-const useTranslationSpy = useTranslation;
+vi.mock('react-i18next', () => ({
+  useTranslation: vi.fn()
+}));
 
 describe('components/language/language', () => {
   const supportedLangs = [
@@ -47,7 +48,7 @@ describe('components/language/language', () => {
   describe('selectedIndex', () => {
     supportedLangs.forEach((lang) => {
       it(`returns exact match (${lang.code})`, () => {
-        (useTranslationSpy as Mock).mockReturnValue({
+        (useTranslation as Mock).mockReturnValue({
           t: vi.fn(),
           i18n: {
             language: lang.code
@@ -56,12 +57,14 @@ describe('components/language/language', () => {
 
         const { getByTestId } = renderSwitchAndOpenDialog();
         const selectedLang = getByTestId(`language-selection-${lang.code}`);
-        expect(selectedLang.classList.contains('selected')).toBe(true);
+        expect(selectedLang.getAttribute("class")).toContain('selected')
       });
     });
 
+
+    
     it('matches main language tag', () => {
-      (useTranslationSpy as Mock).mockReturnValue({
+      (useTranslation as Mock).mockReturnValue({
         t: vi.fn(),
         i18n: {
           language: 'de'
@@ -69,11 +72,11 @@ describe('components/language/language', () => {
       });
       const { getByTestId } = renderSwitchAndOpenDialog();
       const selectedLang = getByTestId('language-selection-de');
-      expect(selectedLang.classList.contains('selected')).toBe(true);
+      expect(selectedLang.getAttribute("class")).toContain('selected');
     });
 
     it('returns default if none matched', () => {
-      (useTranslationSpy as Mock).mockReturnValue({
+      (useTranslation as Mock).mockReturnValue({
         t: vi.fn(),
         i18n: {
           language: 'it'
@@ -81,7 +84,7 @@ describe('components/language/language', () => {
       });
       const { getByTestId } = renderSwitchAndOpenDialog();
       const defaultLang = getByTestId('language-selection-en-US');
-      expect(defaultLang.classList.contains('selected')).toBe(true);
+      expect(defaultLang.getAttribute("class")).toContain('selected');
     });
   });
 });

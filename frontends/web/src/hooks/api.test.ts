@@ -37,22 +37,19 @@ describe('hooks for api calls', () => {
       await waitFor(() => expect(result.current).toBe(true));
     });
 
-    it('re-calls apiCall when dependencies change', async () => {
+    it('re-calls apiCall when dependencies change', () => {
       // mock apiCall function
       const mockApiCall = vi.fn().mockImplementation(() => Promise.resolve(true));
 
       // initialize hook with mock apiCall function and initial dependencies
       const { result } = renderHook(() => {
         const [state, setState] = useState([3]);
-        // wrap call to useLoad hook in act
-        act(() => {
-          //apiCall called for the first time during render
-          useLoad(() => mockApiCall(), state);
-        });
-        return { setState };
+        
+        //apiCall called for the first time during render
+        useLoad(() => mockApiCall(), state);
+        return { state, setState };
       });
-
-      //apiCall called for 2nd time
+      
       act(() => result.current.setState([4]));
     
       // for the 3rd
@@ -60,44 +57,71 @@ describe('hooks for api calls', () => {
 
       // for the 4th
       act(() => result.current.setState([6]));
-
-      // assert that apiCall was re-called
-      await waitFor(() => expect(mockApiCall).toHaveBeenCalledTimes(4));
+    
+      waitFor(() => expect(mockApiCall).toHaveBeenCalledTimes(4));
     });
   });
 
-  it('useSubscribe should return proper value of a subscription function', () => {
-    const MOCK_RETURN_STATUS: TStatus = {
-      tipAtInitTime: 2408855,
-      tip: 2408940,
-      tipHashHex: '0000000000000015f61742c773181dd368527575a6ac02ea5ecbace8e73cc083',
-      targetHeight: 2408940
-    };
+  describe('useSubscribe', () => {
+    it('should return proper value of a subscription function', () => {
+      const MOCK_RETURN_STATUS: TStatus = {
+        tipAtInitTime: 2408855,
+        tip: 2408940,
+        tipHashHex: '0000000000000015f61742c773181dd368527575a6ac02ea5ecbace8e73cc083',
+        targetHeight: 2408940
+      };
+  
+      const mockSubscribe = vi.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
+      const mockSubscribeEndpoint = vi.fn().mockImplementation((cb) => cb(MOCK_RETURN_STATUS));
+  
+  
+      const { result } = renderHook(() => useSubscribe(mockSubscribe()));
+  
+      expect(result.current).toBe(MOCK_RETURN_STATUS);
+    });
+  })
 
-    const mockSubscribe = vi.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
-    const mockSubscribeEndpoint = vi.fn().mockImplementation((cb) => cb(MOCK_RETURN_STATUS));
+  
 
-
-    const { result } = renderHook(() => useSubscribe(mockSubscribe()));
-
-    expect(result.current).toBe(MOCK_RETURN_STATUS);
-  });
-
-  it('useSync should load promise and sync to a subscription function', async () => {
-    const mockApiCall = vi.fn().mockImplementation(() => () => Promise.resolve('some_value'));
-
-    const mockSubscribe = vi.fn().mockImplementation(() => (cb: TSubscriptionCallback<any>) => mockSubscribeEndpoint(cb));
-    const mockSubscribeEndpoint = vi.fn().mockImplementation((cb) => cb());
-
-    const { result } = renderHook(() => useSync(mockApiCall(), mockSubscribe()));
-
-    await waitFor(() => expect(mockSubscribe).toHaveBeenCalled());
-
-    expect(mockSubscribeEndpoint).toHaveBeenCalled();
-
-    expect(result.current).toBe('some_value');
+  describe('useSync', () => {
+    it('should load promise and sync to a subscription function', async () => {
+      const apiValue = 'apiValue';
+      const subscriptionValue = 'subscriptionValue';
+      let subscriptionCallback: TSubscriptionCallback<any> | undefined;
+  
+      //A mock api call which will return `apiValue` when resolved
+      const mockApiCall = vi.fn().mockResolvedValue(apiValue);
+  
+      //A mock subscription fn, which accepts a callback
+      //callback will be saved to `subscriptionCallback`
+      //returns an empty fn (TUnsubscribe)
+      const mockSubscription = vi.fn((callback: TSubscriptionCallback<any>) => {
+        subscriptionCallback = callback;
+        return () => {}; // Mocking `TUnsubscribe` (a "no-op" / "empty" fn)
+      });
+  
+      //Renders the hook
+      const { result } = renderHook(() => useSync(mockApiCall, mockSubscription));
+  
+      // This waits for the hook to be rendered
+      // and then when the state changes the first time.
+      // This ensures that the hook has completed the API call
+      // and updated its internal state to be `apiValue`.
+      await waitFor(() => expect(result.current).toBe(apiValue));
+  
+      // If `subscriptionCallback` is truthy
+      // it means, subscription was invoked by the hook.
+      if (subscriptionCallback) {
+        // We manually simulate receiving new data
+        // from the subscription fn.
+        subscriptionCallback(subscriptionValue);
+      }
+  
+      // Finally, we wait until the hook updates its internal state
+      // and returns it. The returned value should be `subscriptionValue`
+      await waitFor(() => expect(result.current).toBe(subscriptionValue)); 
+    });
   });
 });
-
 
 

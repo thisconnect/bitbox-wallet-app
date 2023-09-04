@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { Entry, TEntryProp } from './entry';
+
+vi.mock('../../utils/request', () => ({
+  apiGet: vi.fn().mockResolvedValue(''),
+}));
 
 describe('components/guide/entry', () => {
   describe('renders correct entry values', () => {

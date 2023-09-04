@@ -16,9 +16,9 @@
 
 import { describe, expect, it, Mock, vi } from 'vitest';
 
-vi.mock('../../../utils/request');
-import { apiGet } from '../../../utils/request';
-
+vi.mock('../../../utils/request', () => ({
+  apiGet: vi.fn().mockResolvedValue(''),
+}));
 vi.mock('../../../i18n/i18n');
 vi.mock('../../../decorators/translate', () => ({
   // this mock makes sure any components using the translate HoC receive the t function as a prop
@@ -35,8 +35,9 @@ vi.mock('../../../../src/decorators/load', () => ({
   },
 }));
 
-import { FeeTargets } from '../../../routes/account/send/feetargets';
 import { render } from '@testing-library/react';
+import { FeeTargets } from '../../../routes/account/send/feetargets';
+import { apiGet } from '../../../utils/request';
 
 describe('routes/account/send/feetargets', () => {
 
