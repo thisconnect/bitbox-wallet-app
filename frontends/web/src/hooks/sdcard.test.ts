@@ -46,7 +46,7 @@ describe('useSDCard', () => {
       const { result } = renderHook(() => useSDCard({ '000': 'bitbox02' }));
 
       await waitFor(() => expect(checkSDCard).toHaveBeenCalled());
-      await waitFor(()=> expect(result.current).toBe(true));
+      await waitFor(() => expect(result.current).toBe(true));
     });
 
     it('should apply for bitbox01', async () => {
@@ -72,7 +72,7 @@ describe('useSDCard', () => {
 
       await waitFor(() => expect(getDeviceInfo).toHaveBeenCalled());
 
-      await waitFor(()=> expect(result.current).toBe(true));
+      await waitFor(() => expect(result.current).toBe(true));
     });
 
   });
