@@ -57,7 +57,7 @@ describe('components/language/language', () => {
 
         const { getByTestId } = renderSwitchAndOpenDialog();
         const selectedLang = getByTestId(`language-selection-${lang.code}`);
-        expect(selectedLang.getAttribute('class')).toContain('selected')
+        expect(selectedLang.getAttribute('class')).toContain('selected');
       });
     });
 

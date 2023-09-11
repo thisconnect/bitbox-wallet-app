@@ -29,7 +29,7 @@ import { i18n } from './i18n';
 describe('i18n', () => {
   describe('languageChanged', () => {
     beforeEach(() => {
-       (apiPost as Mock).mockClear();
+      (apiPost as Mock).mockClear();
     });
 
     const table = [
@@ -54,7 +54,7 @@ describe('i18n', () => {
             frontend: {},
             backend: { userLanguage: test.userLang },
           });
-        })
+        });
       });
     });
   });
