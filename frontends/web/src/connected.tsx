@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +15,16 @@
  * limitations under the License.
  */
 
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import { backendConnected } from './api/subscribe';
 
 interface State {
-    connected: boolean;
+  connected: boolean;
 }
 
-interface Props {}
+interface Props {
+  children: ReactNode;
+}
 
 class ConnectedApp extends Component<Props, State> {
   public readonly state: State = {

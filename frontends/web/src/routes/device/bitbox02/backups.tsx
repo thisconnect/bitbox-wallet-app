@@ -1,5 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component } from 'react';
+import { Component, ReactNode } from 'react';
 import { restoreBackup } from '../../../api/bitbox02';
 import Toast from '../../../components/toast/Toast';
 import { subscribe } from '../../../decorators/subscribe';
@@ -39,6 +40,7 @@ interface BackupsProps {
     showRadio: boolean;
     onSelectBackup?: (backup: Backup) => void;
     onRestoreBackup?: (success: boolean) => void;
+    children?: ReactNode;
 }
 
 type Props = SubscribedBackupsProps & BackupsProps & TranslateProps;

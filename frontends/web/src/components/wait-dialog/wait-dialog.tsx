@@ -1,6 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
- * Copyright 2021 Shift Crypto AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { Component, createRef } from 'react';
+import { Component, createRef, ReactNode } from 'react';
 import { translate, TranslateProps } from '../../decorators/translate';
 import approve from '../../assets/icons/hold.png';
 import reject from '../../assets/icons/tap.png';
@@ -28,6 +28,7 @@ interface WaitDialogProps {
     title?: string;
     paired?: boolean;
     touchConfirm?: boolean;
+    children?: ReactNode;
 }
 
 type Props = WaitDialogProps & TranslateProps;

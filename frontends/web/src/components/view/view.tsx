@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Shift Crypto AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { FunctionComponent, ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { useDarkmode } from '../../hooks/darkmode';
 import { LanguageSwitch } from '../language/language';
 import { Version } from '../layout/version';
@@ -148,6 +148,7 @@ type THeaderProps = {
     small?: boolean;
     title: ReactNode;
     withAppLogo?: boolean;
+    children?: ReactNode;
 }
 
 /**
@@ -156,12 +157,12 @@ type THeaderProps = {
  * @param title the title of the view
  * @param withAppLogo if true includes the BitBoxApp logo before the title
  */
-export const ViewHeader: FunctionComponent<THeaderProps> = ({
+export const ViewHeader = ({
   children,
   small,
   title,
   withAppLogo,
-}) => {
+}: THeaderProps) => {
   const { isDarkMode } = useDarkmode();
   const headerStyles = small ? `${style.header} ${style.smallHeader}` : style.header;
   return (

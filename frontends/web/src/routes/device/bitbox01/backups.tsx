@@ -1,6 +1,6 @@
 /**
  * Copyright 2018 Shift Devices AG
- * Copyright 2022 Shift Crypto AG
+ * Copyright 2023 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { Component, createRef } from 'react';
+import React, { Component, createRef, ReactNode } from 'react';
 import { getDeviceInfo } from '../../../api/bitbox01';
 import { translate, TranslateProps } from '../../../decorators/translate';
 import { apiGet } from '../../../utils/request';
@@ -34,6 +34,7 @@ interface BackupsProps {
     showRestore?: boolean;
     requireConfirmation?: boolean;
     onRestore?: () => void;
+    children: ReactNode;
 }
 
 type Props = BackupsProps & TranslateProps;
