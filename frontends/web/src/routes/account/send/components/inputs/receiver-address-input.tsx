@@ -22,9 +22,7 @@ import DarkModeContext from '../../../../../contexts/DarkmodeContext';
 import { useHasCamera } from '../../../../../hooks/qrcodescanner';
 import { Input } from '../../../../../components/forms';
 import { QRCodeLight, QRCodeDark } from '../../../../../components/icon';
-import { Dialog, DialogButtons } from '../../../../../components/dialog/dialog';
-import { Button } from '../../../../../components/forms';
-import { ScanQRVideo } from '../inputs/scan-qr-video';
+import { ScanQRDialog } from '../dialogs/scan-qr-dialog';
 import style from '../../send.module.css';
 
 type TToggleScanQRButtonProps = {
@@ -85,24 +83,12 @@ export const ReceiverAddressInput = ({
 
   return (
     <>
-      <Dialog
-        large
-        open={activeScanQR}
-        title={t('send.scanQR')}
-        onClose={toggleScanQR}>
-        <ScanQRVideo
-          onResult={result => {
-            parseQRResult(result);
-            onChangeActiveScanQR(false);
-          }} />
-        <DialogButtons>
-          <Button
-            secondary
-            onClick={toggleScanQR}>
-            {t('button.back')}
-          </Button>
-        </DialogButtons>
-      </Dialog>
+      <ScanQRDialog
+        activeScanQR={activeScanQR}
+        toggleScanQR={toggleScanQR}
+        onChangeActiveScanQR={onChangeActiveScanQR}
+        parseQRResult={parseQRResult}
+      />
       <Input
         label={t('send.address.label')}
         placeholder={t('send.address.placeholder')}

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-import { useRef/*, useState */ } from 'react';
+import { useRef } from 'react';
 import { useQRScanner } from '../../../../../hooks/qrcodescanner';
-// import { SpinnerAnimation } from '../../../../../components/spinner/SpinnerAnimation';
+import { SpinnerAnimation } from '../../../../../components/spinner/SpinnerAnimation';
 import style from '../../send.module.css';
 
 type TProps = {
@@ -26,23 +26,21 @@ type TProps = {
 export const ScanQRVideo = ({
   onResult,
 }: TProps) => {
-  // unfortunatelly chaning videoLoading state unmounts the effect in useQRScanner causing the video stop after it is loaded
-  // const [videoLoading, setVideoLoading] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useQRScanner(videoRef, {
-    // onStart: () => setVideoLoading(false),
     onResult: result => onResult(result.data),
     onError: console.error
   });
 
   return (
     <>
-      {/* {videoLoading &&
-        <div className={style.spinnerAnimationContainer}>
-          <SpinnerAnimation />
-        </div>
-      } */}
+      {/*As a "side effect", the spinner will always
+      be hidden once the camera / video component
+       gets loaded.*/}
+      <div className={style.spinnerAnimationContainer}>
+        <SpinnerAnimation />
+      </div>
       <video
         className={style.qrVideo}
         ref={videoRef}
