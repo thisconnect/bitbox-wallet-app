@@ -18,6 +18,8 @@ import { useRef } from 'react';
 import { useQRScanner } from '../../../../../hooks/qrcodescanner';
 import { SpinnerAnimation } from '../../../../../components/spinner/SpinnerAnimation';
 import style from '../../send.module.css';
+import { useDevicePermission } from '../../../../../hooks/permissions';
+import { useTranslation } from 'react-i18next';
 
 type TProps = {
   onResult: (result: string) => void;
@@ -26,12 +28,18 @@ type TProps = {
 export const ScanQRVideo = ({
   onResult,
 }: TProps) => {
+  const { t } = useTranslation();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const permission = useDevicePermission('camera');
 
   useQRScanner(videoRef, {
     onResult: result => onResult(result.data),
     onError: console.error
   });
+
+  const permissionWarning = permission !== 'granted'
+    ? <div>{t('permission.camera')}</div>
+    : null;
 
   return (
     <>
@@ -40,6 +48,7 @@ export const ScanQRVideo = ({
        gets loaded.*/}
       <div className={style.spinnerAnimationContainer}>
         <SpinnerAnimation />
+        {permissionWarning}
       </div>
       <video
         className={style.qrVideo}
