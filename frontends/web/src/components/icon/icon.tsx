@@ -47,6 +47,8 @@ import globeLightSVG from './assets/icons/globe-light.svg';
 import guideSVG from './assets/icons/guide.svg';
 import menuDarkSVG from './assets/icons/menu-dark.svg';
 import menuLightSVG from './assets/icons/menu-light.svg';
+import walletConnectLightSVG from './assets/icons/wallet-connect-light.svg';
+import walletConnectDefaultSVG from './assets/icons/wallet-connect-default.svg';
 import warningPNG from './assets/icons/warning.png';
 import warningOutlinedSVG from './assets/icons/warning-outlined.svg';
 import qrCodeDarkSVG from './assets/icons/qr-dark.svg';
@@ -155,6 +157,8 @@ export const GlobeLight = (props: ImgProps) => (<img src={globeLightSVG} draggab
 export const GuideActive = (props: ImgProps) => (<img src={guideSVG} draggable={false} {...props} />);
 export const MenuDark = (props: ImgProps) => (<img src={menuDarkSVG} draggable={false} {...props} />);
 export const MenuLight = (props: ImgProps) => (<img src={menuLightSVG} draggable={false} {...props} />);
+export const WalletConnectLight = (props: ImgProps) => (<img src={walletConnectLightSVG} draggable={false} {...props} />);
+export const WalletConnectDefaultLogo = (props: ImgProps) => (<img src={walletConnectDefaultSVG} draggable={false} {...props} />);
 export const Warning = (props: ImgProps) => (<img src={warningPNG} draggable={false} {...props} />);
 export const WarningOutlined = (props: ImgProps) => (<img src={warningOutlinedSVG} draggable={false} {...props} />);
 export const QRCodeDark = (props: ImgProps) => (<img src={qrCodeDarkSVG} draggable={false} {...props} />);

@@ -8,6 +8,7 @@ import (
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/coins/coin"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/keystore"
 	"github.com/digitalbitbox/bitbox-wallet-app/backend/signing"
+	"github.com/ethereum/go-ethereum/core/types"
 	"sync"
 )
 
@@ -42,6 +43,15 @@ var _ keystore.Keystore = &KeystoreMock{}
 //			SignETHMessageFunc: func(message []byte, keypath signing.AbsoluteKeypath) ([]byte, error) {
 //				panic("mock out the SignETHMessage method")
 //			},
+<<<<<<< HEAD
+=======
+//			SignETHTypedMessageFunc: func(chainID uint64, data []byte, keypath signing.AbsoluteKeypath) ([]byte, error) {
+//				panic("mock out the SignETHTypedMessage method")
+//			},
+//			SignETHWalletConnectTransactionFunc: func(chainID uint64, tx *types.Transaction, keypath signing.AbsoluteKeypath) ([]byte, error) {
+//				panic("mock out the SignETHWalletConnectTransaction method")
+//			},
+>>>>>>> staging-walletconnect
 //			SignTransactionFunc: func(ifaceVal interface{}) error {
 //				panic("mock out the SignTransaction method")
 //			},
@@ -93,6 +103,12 @@ type KeystoreMock struct {
 
 	// SignETHMessageFunc mocks the SignETHMessage method.
 	SignETHMessageFunc func(message []byte, keypath signing.AbsoluteKeypath) ([]byte, error)
+
+	// SignETHTypedMessageFunc mocks the SignETHTypedMessage method.
+	SignETHTypedMessageFunc func(chainID uint64, data []byte, keypath signing.AbsoluteKeypath) ([]byte, error)
+
+	// SignETHWalletConnectTransactionFunc mocks the SignETHWalletConnectTransaction method.
+	SignETHWalletConnectTransactionFunc func(chainID uint64, tx *types.Transaction, keypath signing.AbsoluteKeypath) ([]byte, error)
 
 	// SignTransactionFunc mocks the SignTransaction method.
 	SignTransactionFunc func(ifaceVal interface{}) error
@@ -159,6 +175,24 @@ type KeystoreMock struct {
 			// Keypath is the keypath argument value.
 			Keypath signing.AbsoluteKeypath
 		}
+		// SignETHTypedMessage holds details about calls to the SignETHTypedMessage method.
+		SignETHTypedMessage []struct {
+			// ChainID is the chainID argument value.
+			ChainID uint64
+			// Data is the data argument value.
+			Data []byte
+			// Keypath is the keypath argument value.
+			Keypath signing.AbsoluteKeypath
+		}
+		// SignETHWalletConnectTransaction holds details about calls to the SignETHWalletConnectTransaction method.
+		SignETHWalletConnectTransaction []struct {
+			// ChainID is the chainID argument value.
+			ChainID uint64
+			// Tx is the tx argument value.
+			Tx *types.Transaction
+			// Keypath is the keypath argument value.
+			Keypath signing.AbsoluteKeypath
+		}
 		// SignTransaction holds details about calls to the SignTransaction method.
 		SignTransaction []struct {
 			// IfaceVal is the ifaceVal argument value.
@@ -200,6 +234,7 @@ type KeystoreMock struct {
 			Configuration *signing.Configuration
 		}
 	}
+<<<<<<< HEAD
 	lockCanSignMessage             sync.RWMutex
 	lockCanVerifyAddress           sync.RWMutex
 	lockCanVerifyExtendedPublicKey sync.RWMutex
@@ -215,6 +250,25 @@ type KeystoreMock struct {
 	lockType                       sync.RWMutex
 	lockVerifyAddress              sync.RWMutex
 	lockVerifyExtendedPublicKey    sync.RWMutex
+=======
+	lockCanSignMessage                  sync.RWMutex
+	lockCanVerifyAddress                sync.RWMutex
+	lockCanVerifyExtendedPublicKey      sync.RWMutex
+	lockExtendedPublicKey               sync.RWMutex
+	lockRootFingerprint                 sync.RWMutex
+	lockSignBTCMessage                  sync.RWMutex
+	lockSignETHMessage                  sync.RWMutex
+	lockSignETHTypedMessage             sync.RWMutex
+	lockSignETHWalletConnectTransaction sync.RWMutex
+	lockSignTransaction                 sync.RWMutex
+	lockSupportsAccount                 sync.RWMutex
+	lockSupportsCoin                    sync.RWMutex
+	lockSupportsMultipleAccounts        sync.RWMutex
+	lockSupportsUnifiedAccounts         sync.RWMutex
+	lockType                            sync.RWMutex
+	lockVerifyAddress                   sync.RWMutex
+	lockVerifyExtendedPublicKey         sync.RWMutex
+>>>>>>> staging-walletconnect
 }
 
 // CanSignMessage calls CanSignMessageFunc.
@@ -444,6 +498,89 @@ func (mock *KeystoreMock) SignETHMessageCalls() []struct {
 	mock.lockSignETHMessage.RLock()
 	calls = mock.calls.SignETHMessage
 	mock.lockSignETHMessage.RUnlock()
+<<<<<<< HEAD
+=======
+	return calls
+}
+
+// SignETHTypedMessage calls SignETHTypedMessageFunc.
+func (mock *KeystoreMock) SignETHTypedMessage(chainID uint64, data []byte, keypath signing.AbsoluteKeypath) ([]byte, error) {
+	if mock.SignETHTypedMessageFunc == nil {
+		panic("KeystoreMock.SignETHTypedMessageFunc: method is nil but Keystore.SignETHTypedMessage was just called")
+	}
+	callInfo := struct {
+		ChainID uint64
+		Data    []byte
+		Keypath signing.AbsoluteKeypath
+	}{
+		ChainID: chainID,
+		Data:    data,
+		Keypath: keypath,
+	}
+	mock.lockSignETHTypedMessage.Lock()
+	mock.calls.SignETHTypedMessage = append(mock.calls.SignETHTypedMessage, callInfo)
+	mock.lockSignETHTypedMessage.Unlock()
+	return mock.SignETHTypedMessageFunc(chainID, data, keypath)
+}
+
+// SignETHTypedMessageCalls gets all the calls that were made to SignETHTypedMessage.
+// Check the length with:
+//
+//	len(mockedKeystore.SignETHTypedMessageCalls())
+func (mock *KeystoreMock) SignETHTypedMessageCalls() []struct {
+	ChainID uint64
+	Data    []byte
+	Keypath signing.AbsoluteKeypath
+} {
+	var calls []struct {
+		ChainID uint64
+		Data    []byte
+		Keypath signing.AbsoluteKeypath
+	}
+	mock.lockSignETHTypedMessage.RLock()
+	calls = mock.calls.SignETHTypedMessage
+	mock.lockSignETHTypedMessage.RUnlock()
+	return calls
+}
+
+// SignETHWalletConnectTransaction calls SignETHWalletConnectTransactionFunc.
+func (mock *KeystoreMock) SignETHWalletConnectTransaction(chainID uint64, tx *types.Transaction, keypath signing.AbsoluteKeypath) ([]byte, error) {
+	if mock.SignETHWalletConnectTransactionFunc == nil {
+		panic("KeystoreMock.SignETHWalletConnectTransactionFunc: method is nil but Keystore.SignETHWalletConnectTransaction was just called")
+	}
+	callInfo := struct {
+		ChainID uint64
+		Tx      *types.Transaction
+		Keypath signing.AbsoluteKeypath
+	}{
+		ChainID: chainID,
+		Tx:      tx,
+		Keypath: keypath,
+	}
+	mock.lockSignETHWalletConnectTransaction.Lock()
+	mock.calls.SignETHWalletConnectTransaction = append(mock.calls.SignETHWalletConnectTransaction, callInfo)
+	mock.lockSignETHWalletConnectTransaction.Unlock()
+	return mock.SignETHWalletConnectTransactionFunc(chainID, tx, keypath)
+}
+
+// SignETHWalletConnectTransactionCalls gets all the calls that were made to SignETHWalletConnectTransaction.
+// Check the length with:
+//
+//	len(mockedKeystore.SignETHWalletConnectTransactionCalls())
+func (mock *KeystoreMock) SignETHWalletConnectTransactionCalls() []struct {
+	ChainID uint64
+	Tx      *types.Transaction
+	Keypath signing.AbsoluteKeypath
+} {
+	var calls []struct {
+		ChainID uint64
+		Tx      *types.Transaction
+		Keypath signing.AbsoluteKeypath
+	}
+	mock.lockSignETHWalletConnectTransaction.RLock()
+	calls = mock.calls.SignETHWalletConnectTransaction
+	mock.lockSignETHWalletConnectTransaction.RUnlock()
+>>>>>>> staging-walletconnect
 	return calls
 }
 

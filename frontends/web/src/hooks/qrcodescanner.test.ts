@@ -36,6 +36,7 @@ describe('useQRCodeScanner', () => {
   it('should determine if a camera is available', async () => {
     const qrCodeReaderRef = { current: mockedQRCodeReaderInstance() } as unknown as MutableRefObject<BrowserQRCodeReader | undefined>;
     const props = {
+      onError: () => {},
       qrCodeReaderRef,
       activeScanQR: false,
       onChangeActiveScanQR: vi.fn(),
@@ -57,6 +58,7 @@ describe('useQRCodeScanner', () => {
     const parseQRResult = vi.fn();
 
     const props = {
+      onError: () => {},
       qrCodeReaderRef,
       activeScanQR: true,
       onChangeActiveScanQR,
