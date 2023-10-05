@@ -18,6 +18,11 @@ import { RefObject, useEffect, useState } from 'react';
 import QrScanner from 'qr-scanner';
 import { useMountedRef } from './mount';
 
+if ('BarcodeDetector' in window) {
+  // https://github.com/nimiq/qr-scanner/issues/237
+  delete window.BarcodeDetector;
+}
+
 export const useHasCamera = () => {
   const [hasCamera, setHasCamera] = useState(false);
   const mounted = useMountedRef();
