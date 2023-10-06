@@ -15,7 +15,8 @@
  */
 
 import { RefObject, useEffect } from 'react';
-import QrScanner from 'qr-scanner';
+//@ts-ignore
+import QrScanner from 'qr-scanner/qr-scanner.legacy.min.js';
 
 type TUseQRScannerOptions = {
   onStart?: () => void;
@@ -35,7 +36,7 @@ export const useQRScanner = (
     const scanner = videoRef.current && (
       new QrScanner(
         videoRef.current,
-        result => {
+        (result: any) => {
           scanner?.stop();
           onResult(result);
         }, {
