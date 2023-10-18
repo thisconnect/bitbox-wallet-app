@@ -1033,19 +1033,16 @@
   "lightning": {
     "accountLabel": "Lightning",
     "payments": {
-      "title": "Payment history",
       "header": {
-        "type": "Type",
+        "amount": "Amount",
         "date": "Date",
         "description": "Description",
-        "amount": "Amount"
+        "type": "Type"
       },
-      "placeholder": "No payments yet."
+      "placeholder": "No payments yet.",
+      "title": "Payment history"
     },
     "receive": {
-      "title": "Receive Lightning",
-      "subtitle": "Create lightning invoice",
-      "openChannelWarning": "A fee of {{feeSat}} sats will be deducted to open a new channel.",
       "amountSats": {
         "label": "Amount",
         "placeholder": "Enter amount"
@@ -1054,29 +1051,32 @@
         "label": "Description",
         "placeholder": "Enter description"
       },
+      "openChannelWarning": "A fee of {{feeSat}} sats will be deducted to open a new channel.",
+      "subtitle": "Create lightning invoice",
       "success": {
         "message": "Lightning payment received!"
-      }
+      },
+      "title": "Receive Lightning"
     },
     "send": {
-      "title": "Send Lightning",
+      "confirm": {
+        "amount": "Amount",
+        "memo": "Memo",
+        "title": "Confirm transaction details"
+      },
       "qrCode": {
         "label": "Scan lightning invoice"
       },
       "rawInput": {
         "label": "Paste invoice from clipboard"
       },
-      "confirm": {
-        "title": "Confirm transaction details",
-        "amount": "Amount",
-        "memo": "Memo"
-      },
       "sending": {
         "message": "Sending payment"
       },
       "success": {
         "message": "Transaction confirmed and sent!"
-      }
+      },
+      "title": "Send Lightning"
     }
   },
   "loading": "loading…",
