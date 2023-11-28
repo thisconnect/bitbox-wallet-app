@@ -19,7 +19,7 @@ import { useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as accountApi from '../../../api/account';
 import { Column, Grid, GuideWrapper, GuidedContent, Header, Main } from '../../../components/layout';
-import { View, ViewButtons, ViewContent } from '../../../components/view/view';
+import { View, ViewBackground, ViewButtons, ViewContent } from '../../../components/view/view';
 import { Button } from '../../../components/forms';
 import { InputType, InputTypeVariant, SdkError, getParseInput, postSendPayment } from '../../../api/lightning';
 import { SimpleMarkup } from '../../../utils/markup';
@@ -148,18 +148,20 @@ export function Send() {
     case 'select-invoice':
       return (
         <View fitContent>
+          <ViewBackground>
+            <ScanQRVideo onResult={parseInput} />
+          </ViewBackground>
           <ViewContent textAlign="center">
-            <Grid col="1">
-              <Column>
-                {/* this flickers quickly, as there is 'SdkError: Generic: Breez SDK error: Unrecognized input type' when logging rawInputError */}
-                {rawInputError && <Status type="warning">{rawInputError}</Status>}
-                <ScanQRVideo onResult={parseInput} />
-                {/* Note: unfortunatelly we probably can't read from HTML5 clipboard api directly in Qt/Andoird WebView */}
-                <Button transparent onClick={() => console.log('TODO: implement paste')}>
-                  {t('lightning.send.rawInput.label')}
-                </Button>
-              </Column>
-            </Grid>
+            {/* <Grid col="1">
+              <Column> */}
+            {/* this flickers quickly, as there is 'SdkError: Generic: Breez SDK error: Unrecognized input type' when logging rawInputError */}
+            {rawInputError && <Status type="warning">{rawInputError}</Status>}
+            {/* Note: unfortunatelly we probably can't read from HTML5 clipboard api directly in Qt/Andoird WebView */}
+            <Button transparent onClick={() => console.log('TODO: implement paste')}>
+              {t('lightning.send.rawInput.label')}
+            </Button>
+            {/* </Column>
+            </Grid> */}
           </ViewContent>
           <ViewButtons reverseRow>
             {/* <Button primary onClick={parseInput} disabled={busy}>

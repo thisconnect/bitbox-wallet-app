@@ -105,6 +105,23 @@ export const View = ({
   );
 };
 
+type TViewBackground = {
+  children: ReactNode;
+}
+
+/**
+ * ViewBackground is a container for background elements such as images and videos, should come before ViewHeader/ViewContent
+ */
+export const ViewBackground = ({
+  children,
+}: TViewBackground) => {
+  return (
+    <div className={style.background}>
+      {children}
+    </div>
+  );
+};
+
 type TViewContentProps = {
     children: ReactNode;
     fullWidth?: boolean;

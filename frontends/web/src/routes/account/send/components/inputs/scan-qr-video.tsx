@@ -20,17 +20,19 @@ import { SpinnerAnimation } from '../../../../../components/spinner/SpinnerAnima
 import style from './scan-qr-video.module.css';
 
 type TProps = {
+  className?: string;
   onResult: (result: string) => void;
 }
 
 export const ScanQRVideo = ({
+  className,
   onResult,
 }: TProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useQRScanner(videoRef, {
     onResult: result => onResult(result.data),
-    onError: console.error
+    onError: err => !err.includes('No QR code found') && console.error(err),
   });
 
   return (
@@ -42,7 +44,7 @@ export const ScanQRVideo = ({
         <SpinnerAnimation />
       </div>
       <video
-        className={style.qrVideo}
+        className={`${style.qrVideo} ${className ? className : ''}`}
         ref={videoRef}
         poster="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%3E%20width=%2264%22%20height=%2248%22%3C/svg%3E"
       />

@@ -48,6 +48,7 @@
     margin-top: auto;
 }
 .inner.fit {
+    flex-grow: 1; /* TODO: test this everywhere where the fitContent prop is used */
     flex-shrink: 0;
     max-height: 100%;
     padding-bottom: 0;
@@ -176,6 +177,14 @@
     text-align: center;
     top: 0;
     width: var(--header-height);
+}
+
+.background {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
 .content {
