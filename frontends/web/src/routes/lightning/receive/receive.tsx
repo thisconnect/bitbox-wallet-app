@@ -266,11 +266,11 @@ type TCopyButtonProps = {
 const CopyButton = ({ data, successText, children }: TCopyButtonProps) => {
   const [state, setState] = useState('ready');
   const [buttonText, setButtonText] = useState(children);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const copy = () => {
-    console.log('copying ' + inputRef.current?.value);
-    inputRef.current?.select();
+    textareaRef.current?.focus();
+    textareaRef.current?.select();
     if (document.execCommand('copy')) {
       setState('success');
       successText && setButtonText(successText);
@@ -279,7 +279,7 @@ const CopyButton = ({ data, successText, children }: TCopyButtonProps) => {
 
   return (
     <Button transparent onClick={copy} disabled={!data}>
-      <input className={styles.hiddenInput} ref={inputRef} value={data} readOnly/>
+      <textarea className={styles.hiddenInput} ref={textareaRef} value={data} readOnly></textarea>
       {state === 'success' ? <Checked className={styles.btnIcon} /> : <Copy className={styles.btnIcon} />}
       {buttonText}
     </Button>
