@@ -24,3 +24,9 @@
     max-width: 1rem;
     vertical-align: top;
 }
+
+.hiddenInput {
+  height: 0;
+  width: 0;
+  opacity: 0;
+}
