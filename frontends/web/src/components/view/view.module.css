@@ -47,6 +47,12 @@
     margin-bottom: auto;
     margin-top: auto;
 }
+.verticallyCentered .fit .content {
+    justify-content: center;
+}
+.verticallyCentered .buttons {
+    justify-content: center;
+}
 .inner.fit {
     flex-shrink: 0;
     max-height: 100%;
