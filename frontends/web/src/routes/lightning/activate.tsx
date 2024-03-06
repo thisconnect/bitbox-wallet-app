@@ -146,13 +146,15 @@ export const LightningActivate = () => {
       return <Spinner text={t('lightning.activate.wait.title')} guideExists={false} />;
     case 'success':
       return (
-        <View fitContent textCenter verticallyCentered>
-          <ViewContent withIcon="success">
+        <View fitContent verticallyCentered>
+          <ViewContent textAlign="center" withIcon="success">
             <p>{t('lightning.activate.success.message')}</p>
+          </ViewContent>
+          <ViewButtons>
             <Button primary onClick={() => route('/lightning')}>
               {t('button.done')}
             </Button>
-          </ViewContent>
+          </ViewButtons>
         </View>
       );
     }
