@@ -20,15 +20,19 @@ import { render } from '@testing-library/react';
 import { Amount } from './amount';
 import { CoinUnit, ConversionUnit } from './../../api/account';
 
-vi.mock('i18n', () => ({
-  language: vi.fn()
-}));
 
-vi.mock('react', () => ({
-  ...vi.importActual('react'),
+vi.mock('react', async () => ({
+  ...(await vi.importActual('react')),
   useContext: vi.fn(),
   createContext: vi.fn()
 }));
+
+vi.mock('../../i18n/i18n', () => ({
+  i18n: {
+    language: 'de-CH',
+  },
+}));
+
 
 const validateSpacing = (values: string[], elements: Element[]) => {
   // each element in `values` is an expected

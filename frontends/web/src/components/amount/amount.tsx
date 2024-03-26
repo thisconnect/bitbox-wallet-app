@@ -16,7 +16,7 @@
 import { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import { CoinUnit, ConversionUnit } from './../../api/account';
-// import { i18n } from '../../i18n/i18n'; // importing i18n here crashes test with an error in dialog 🤦
+import { i18n } from '../../i18n/i18n';
 import style from './amount.module.css';
 
 type TProps = {
@@ -106,7 +106,7 @@ export const Amount = ({
 
   const formatted = Intl
     .NumberFormat(
-      'de-CH' /* temp. hardcoded for testing, should use i18n.language */,
+      i18n.language,
       { style: 'currency', currency: unit }
     )
     .formatToParts(Number(amount)) // scary conversion, needs tests with very large and very smalls amounts
