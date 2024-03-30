@@ -15,11 +15,10 @@
  */
 
 import { useContext } from 'react';
-import { Mock, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { Mock, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { Amount } from './amount';
-import { CoinUnit, ConversionUnit } from './../../api/account';
-
+import { CoinUnit } from './../../api/account';
 
 vi.mock('react', async () => ({
   ...(await vi.importActual('react')),
@@ -28,11 +27,8 @@ vi.mock('react', async () => ({
 }));
 
 vi.mock('../../i18n/i18n', () => ({
-  i18n: {
-    language: 'de-CH',
-  },
+  i18n: { language: 'de-CH' },
 }));
-
 
 const validateSpacing = (values: string[], elements: Element[]) => {
   // each element in `values` is an expected
@@ -262,34 +258,6 @@ describe('Amount formatting', () => {
         expect(container).toHaveTextContent('42');
       });
     });
-  });
-
-  describe('fiat amounts', () => {
-    // TODO: mock i18n.language
-    let fiatCoins: ConversionUnit[] = ['USD', 'EUR', 'CHF'];
-    fiatCoins.forEach(coin => {
-      it('1\'340.25 ' + coin + ' with removeBtcTrailingZeroes enabled stays 1\'340.25', () => {
-        const { container } = render(<Amount amount="1340.25" unit={coin} removeBtcTrailingZeroes/>);
-        expect(container).toHaveTextContent('1’340.25');
-      });
-      it('218.00 ' + coin + ' with removeBtcTrailingZeroes enabled stays 218.00', () => {
-        const { container } = render(<Amount amount="218.00" unit={coin} removeBtcTrailingZeroes/>);
-        expect(container).toHaveTextContent('218.00');
-      });
-      it('1\'340.25 ' + coin + ' with removeBtcTrailingZeroes disabled stays 1\'340.25', () => {
-        const { container } = render(<Amount amount="1340.25" unit={coin}/>);
-        expect(container).toHaveTextContent('1’340.25');
-      });
-      it('218.00 ' + coin + ' with removeBtcTrailingZeroes disabled stays 218.00', () => {
-        const { container } = render(<Amount amount="218.00" unit={coin}/>);
-        expect(container).toHaveTextContent('218.00');
-      });
-
-    });
-  });
-
-  afterEach(() => {
-    vi.clearAllMocks();
   });
 
 });

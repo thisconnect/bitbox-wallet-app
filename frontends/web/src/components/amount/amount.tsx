@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { useContext } from 'react';
 import { AppContext } from '../../contexts/AppContext';
 import { CoinUnit, ConversionUnit } from './../../api/account';
@@ -115,6 +116,6 @@ export const Amount = ({
     // .map(part => JSON.stringify(part)) // debug
     .join('');
 
-  console.log(`'${amount}' '${formatted}'`);
+  console.log(`${i18n.language} '${amount}' '${formatted}'`);
   return formatted;
 };
