@@ -18,6 +18,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { Amount } from './amount';
 import { ConversionUnit } from '../../api/account';
+import { i18n } from '../../i18n/i18n';
 
 vi.mock('react', async () => ({
   ...(await vi.importActual('react')),
@@ -30,11 +31,8 @@ describe('Fiat amount formatting', () => {
 
   describe('fiat amounts de-CH formatted', () => {
     beforeEach(() => {
-      vi.mock('../../i18n/i18n', () => ({
-        i18n: { language: 'de-CH' },
-      }));
+      vi.mocked(i18n).language = 'de-CH';
     });
-
     const fiatCoins: ConversionUnit[] = ['USD', 'EUR', 'CHF'];
     fiatCoins.forEach(coin => {
       it(`1'340.25 ${coin} should be formatted as 1’340.25`, () => {
@@ -50,11 +48,8 @@ describe('Fiat amount formatting', () => {
 
   describe('fiat amounts en-US formatted', () => {
     beforeEach(() => {
-      vi.mock('../../i18n/i18n', () => ({
-        i18n: { language: 'en-US' },
-      }));
+      vi.mocked(i18n).language = 'en-US';
     });
-
     const fiatCoins: ConversionUnit[] = ['USD', 'EUR', 'CHF'];
     fiatCoins.forEach(coin => {
       it(`en-US 1'340.25 ${coin} should be formatted as 1,340.25`, () => {
