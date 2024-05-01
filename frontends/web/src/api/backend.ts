@@ -18,6 +18,7 @@ import { AccountCode, CoinCode } from './account';
 import { apiGet, apiPost } from '../utils/request';
 import { FailResponse, SuccessResponse } from './response';
 import { TSubscriptionCallback, subscribeEndpoint } from './subscribe';
+import { Prettify } from './utils';
 
 export interface ICoin {
     coinCode: CoinCode;
@@ -56,7 +57,7 @@ export const getTesting = (): Promise<boolean> => {
   return apiGet('testing');
 };
 
-export type TQRCode = FailResponse | (SuccessResponse & { data: string; });
+export type TQRCode = Prettify<FailResponse | (SuccessResponse & { data: string; })>;
 
 export const getQRCode = (data: string) => {
   return (): Promise<TQRCode> => {
