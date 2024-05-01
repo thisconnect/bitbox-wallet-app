@@ -17,10 +17,11 @@
 
 import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
+import { unlockBootloader } from '../../../../api/bitbox01';
 import { Button } from '../../../../components/forms';
 import { DialogLegacy, DialogButtons } from '../../../../components/dialog/dialog-legacy';
 import { WaitDialog } from '../../../../components/wait-dialog/wait-dialog';
-import { apiGet, apiPost } from '../../../../utils/request';
+import { apiGet } from '../../../../utils/request';
 import { SettingsButton } from '../../../../components/settingsButton/settingsButton';
 
 class UpgradeFirmware extends Component {
@@ -36,7 +37,7 @@ class UpgradeFirmware extends Component {
       activeDialog: false,
       isConfirming: true,
     });
-    apiPost('devices/' + this.props.deviceID + '/unlock-bootloader').then((success) => {
+    unlockBootloader(this.props.deviceID).then((success) => {
       this.setState({
         unlocked: success,
         isConfirming: success,

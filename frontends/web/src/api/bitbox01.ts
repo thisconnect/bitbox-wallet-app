@@ -66,3 +66,7 @@ export const login = (
 ): Promise<TLoginResponse> => {
   return apiPost(`devices/${deviceID}/login`, { password });
 };
+
+export const unlockBootloader = (deviceID: string): Promise<boolean> => {
+  return apiPost(`devices/${deviceID}/unlock-bootloader`);
+};
