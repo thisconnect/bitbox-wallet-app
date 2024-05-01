@@ -16,7 +16,7 @@
 
 import { Component } from 'react';
 import { route } from '../../../utils/route';
-import { apiGet, apiPost } from '../../../utils/request';
+import { getStatus, login } from '../../../api/bitbox01';
 import { Button } from '../../../components/forms';
 import { PasswordSingleInput } from '../../../components/password';
 import { Message } from '../../../components/message/message';
@@ -60,9 +60,9 @@ class Unlock extends Component {
     this.setState({
       status: stateEnum.WAITING
     });
-    apiPost('devices/' + this.props.deviceID + '/login', { password: this.state.password }).then(data => {
+    login(this.props.deviceID, this.state.passwordx).then(data => {
       if (data.success) {
-        apiGet('devices/' + this.props.deviceID + '/status').then(status => {
+        getStatus(this.props.deviceID).then(status => {
           if (status === 'seeded') {
             console.info('unlock.jsx route to /account-summary');
             route('/account-summary', true);

@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Shift Crypto AG
+ * Copyright 2022-2024 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import { apiGet } from '../utils/request';
+import { apiGet, apiPost } from '../utils/request';
+import { SuccessResponse } from './response';
 
 export type DeviceInfo = {
   bootlock: boolean;
@@ -49,4 +50,19 @@ type TDeviceStatus = 'bootloader'
 
 export const getStatus = (deviceID: string): Promise<TDeviceStatus> => {
   return apiGet(`devices/${deviceID}/status`);
+};
+
+type TLoginResponse = SuccessResponse | {
+  code: number;
+  errorMessage: string;
+  remainingAttempts: number;
+  needsLongTouch: boolean;
+  // success: false;
+};
+
+export const login = (
+  deviceID: string,
+  password: string,
+): Promise<TLoginResponse> => {
+  return apiPost(`devices/${deviceID}/login`, { password });
 };
