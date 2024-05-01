@@ -18,6 +18,7 @@
 import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 import { route } from '../../../../utils/route';
+import { hasMobileChannel } from '../../../../api/devices';
 import { getDeviceInfo } from '../../../../api/bitbox01';
 import { apiGet } from '../../../../utils/request';
 import { apiWebsocket } from '../../../../utils/websocket';
@@ -75,7 +76,7 @@ class Settings extends Component {
         });
       });
 
-    apiGet('devices/' + this.props.deviceID + '/has-mobile-channel').then(mobileChannel => {
+    hasMobileChannel(this.props.deviceID)().then(mobileChannel => {
       this.setState({ mobileChannel });
     });
 
