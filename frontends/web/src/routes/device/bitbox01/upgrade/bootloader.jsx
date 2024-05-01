@@ -16,7 +16,7 @@
 
 import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
-import { apiGet, apiPost } from '../../../../utils/request';
+import { getBootloaderStatus, upgradeFirmware } from '../../../../api/bitbox01';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { BitBox } from '../../../../components/icon/logo';
 import { Button } from '../../../../components/forms';
@@ -58,7 +58,7 @@ class Bootloader extends Component {
   };
 
   onStatusChanged = () => {
-    apiGet('devices/' + this.props.deviceID + '/bootloader-status')
+    getBootloaderStatus(this.props.deviceID)
       .then(({ upgrading, progress, upgradeSuccessful, errMsg }) => {
         this.setState({
           upgrading,
@@ -70,7 +70,7 @@ class Bootloader extends Component {
   };
 
   upgradeFirmware = () => {
-    apiPost('devices/' + this.props.deviceID + '/bootloader/upgrade-firmware');
+    upgradeFirmware(this.props.deviceID);
   };
 
   render() {

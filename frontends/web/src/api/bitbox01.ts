@@ -74,3 +74,19 @@ export const unlockBootloader = (deviceID: string): Promise<boolean> => {
 export const getBundledFirmwareVersion = (deviceID: string): Promise<string> => {
   return apiGet(`devices/${deviceID}/bundled-firmware-version`);
 };
+
+type TBootloaderStatusResponse = {
+  upgrading: boolean;
+  progress: number;
+  upgradeSuccessful: boolean;
+  errMsg?: string;
+}
+
+export const getBootloaderStatus = (deviceID: string): Promise<TBootloaderStatusResponse> => {
+  return apiGet(`devices/${deviceID}/bootloader-status`);
+};
+
+// TODO: I am not sure if this endpoint returns something
+export const upgradeFirmware = (deviceID: string): Promise<null> => {
+  return apiPost(`devices/${deviceID}/bootloader/upgrade-firmware`);
+};
