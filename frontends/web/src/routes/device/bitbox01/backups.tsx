@@ -17,9 +17,8 @@
 
 import React, { Component, createRef, ReactNode } from 'react';
 import { getDeviceInfo } from '../../../api/bitbox01';
-import { Backup } from '../../../api/backup';
+import { Backup, getBitBox01BackupList } from '../../../api/backup';
 import { translate, TranslateProps } from '../../../decorators/translate';
-import { apiGet } from '../../../utils/request';
 import { SimpleMarkup } from '../../../utils/markup';
 import { alertUser } from '../../../components/alert/Alert';
 import { Button } from '../../../components/forms';
@@ -65,16 +64,18 @@ class Backups extends Component<Props, State> {
   private refresh = () => {
     getDeviceInfo(this.props.deviceID)
       .then(({ lock }) => this.setState({ lock }));
-    apiGet('devices/' + this.props.deviceID + '/backups/list').then(({ sdCardInserted, backupList, success, errorMessage }) => {
-      if (success) {
-        this.setState({
-          sdCardInserted,
-          backupList,
-        });
-      } else if (errorMessage) {
-        alertUser(errorMessage);
-      }
-    });
+    getBitBox01BackupList(this.props.deviceID)
+      .then((response) => {
+        if (response.success) {
+          const { sdCardInserted, backupList } = response;
+          this.setState({
+            sdCardInserted,
+            backupList,
+          });
+        } else if (response.errorMessage) {
+          alertUser(response.errorMessage);
+        }
+      });
   };
 
   private handleBackuplistChange = (backupID: string) => {

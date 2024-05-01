@@ -24,3 +24,16 @@ export const subscribeBackupList = (deviceID: string) => (
     subscribeEndpoint(`devices/bitbox02/${deviceID}/backups/list`, cb)
   )
 );
+
+type BitBox01BackupResponse = {
+  backupList: Backup[];
+  sdCardInserted: boolean;
+  success: true;
+} | {
+  errorMessage?: string;
+  success: false;
+};
+
+export const getBitBox01BackupList = (deviceID: string): Promise<BitBox01BackupResponse> => {
+  return apiGet(`devices/${deviceID}/backups/list`);
+};
