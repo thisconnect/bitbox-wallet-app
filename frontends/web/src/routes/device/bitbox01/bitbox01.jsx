@@ -15,8 +15,10 @@
  */
 
 import { Component } from 'react';
+import { withTranslation } from 'react-i18next';
 import { AppUpgradeRequired } from '../../../components/appupgraderequired';
-import { apiGet } from '../../../utils/request';
+import { getDeviceList } from '../../../api/devices';
+import { getStatus } from '../../../api/bitbox01';
 import { apiWebsocket } from '../../../utils/websocket';
 import Unlock from './unlock';
 import Bootloader from './upgrade/bootloader';
@@ -28,7 +30,6 @@ import SeedRestore from './setup/seed-restore';
 import { Initialize } from './setup/initialize';
 import Success from './setup/success';
 import Settings from './settings/settings';
-import { withTranslation } from 'react-i18next';
 import { AppContext } from '../../../contexts/AppContext';
 
 const DeviceStatus = Object.freeze({
@@ -83,7 +84,7 @@ class Device extends Component {
   }
 
   onDevicesRegisteredChanged = () => {
-    apiGet('devices/registered').then(devices => {
+    getDeviceList().then(devices => {
       const deviceIDs = Object.keys(devices);
       const deviceRegistered = deviceIDs.includes(this.getDeviceID());
 
@@ -101,7 +102,7 @@ class Device extends Component {
 
   onDeviceStatusChanged = () => {
     if (this.state.deviceRegistered) {
-      apiGet('devices/' + this.props.deviceID + '/status').then(deviceStatus => {
+      getStatus(this.props.deviceID).then(deviceStatus => {
         if (['seeded', 'initialized'].includes(deviceStatus)) {
           this.context.setSidebarStatus('');
         } else {

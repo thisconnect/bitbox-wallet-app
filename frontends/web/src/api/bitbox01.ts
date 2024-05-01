@@ -37,3 +37,16 @@ export const getDeviceInfo = (
 ): Promise<DeviceInfo> => {
   return apiGet(`devices/${deviceID}/info`);
 };
+
+// backend/devices/bitbox/status.go
+type TDeviceStatus = 'bootloader'
+  | 'uninitialized'
+  | 'initialized'
+  | 'logged_in'
+  | 'seeded'
+  | 'require_firmware_upgrade'
+  | 'require_app_upgrade';
+
+export const getStatus = (deviceID: string): Promise<TDeviceStatus> => {
+  return apiGet(`devices/${deviceID}/status`);
+};
