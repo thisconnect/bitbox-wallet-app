@@ -70,3 +70,7 @@ export const login = (
 export const unlockBootloader = (deviceID: string): Promise<boolean> => {
   return apiPost(`devices/${deviceID}/unlock-bootloader`);
 };
+
+export const getBundledFirmwareVersion = (deviceID: string): Promise<string> => {
+  return apiGet(`devices/${deviceID}/bundled-firmware-version`);
+};

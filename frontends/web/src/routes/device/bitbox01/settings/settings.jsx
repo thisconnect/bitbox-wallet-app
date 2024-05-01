@@ -19,8 +19,7 @@ import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
 import { route } from '../../../../utils/route';
 import { hasMobileChannel } from '../../../../api/devices';
-import { getDeviceInfo } from '../../../../api/bitbox01';
-import { apiGet } from '../../../../utils/request';
+import { getBundledFirmwareVersion, getDeviceInfo } from '../../../../api/bitbox01';
 import { apiWebsocket } from '../../../../utils/websocket';
 import { Guide } from '../../../../components/guide/guide';
 import { Entry } from '../../../../components/guide/entry';
@@ -80,7 +79,7 @@ class Settings extends Component {
       this.setState({ mobileChannel });
     });
 
-    apiGet('devices/' + this.props.deviceID + '/bundled-firmware-version').then(version => {
+    getBundledFirmwareVersion(this.props.deviceID).then(version => {
       this.setState({ newVersion: version.replace('v', '') });
     });
 

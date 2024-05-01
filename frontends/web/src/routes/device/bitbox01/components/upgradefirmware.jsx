@@ -17,11 +17,10 @@
 
 import { Component } from 'react';
 import { withTranslation } from 'react-i18next';
-import { unlockBootloader } from '../../../../api/bitbox01';
+import { getBundledFirmwareVersion, unlockBootloader } from '../../../../api/bitbox01';
 import { Button } from '../../../../components/forms';
 import { DialogLegacy, DialogButtons } from '../../../../components/dialog/dialog-legacy';
 import { WaitDialog } from '../../../../components/wait-dialog/wait-dialog';
-import { apiGet } from '../../../../utils/request';
 import { SettingsButton } from '../../../../components/settingsButton/settingsButton';
 
 class UpgradeFirmware extends Component {
@@ -50,7 +49,7 @@ class UpgradeFirmware extends Component {
   };
 
   componentDidMount() {
-    apiGet('devices/' + this.props.deviceID + '/bundled-firmware-version').then(version => {
+    getBundledFirmwareVersion(this.props.deviceID).then(version => {
       this.setState({ newVersion: version.replace('v', '') });
     });
   }
