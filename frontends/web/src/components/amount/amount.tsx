@@ -95,8 +95,8 @@ export const Amount = ({
   removeBtcTrailingZeroes,
   alwaysShowAmounts = false,
 }: TProps) => {
-  const { hideAmounts, nativeLocale } = useContext(AppContext);
-  const { decimal, group } = useLocalizedPunctuation(nativeLocale);
+  const { hideAmounts, nativeNumeric } = useContext(AppContext);
+  const { decimal, group } = useLocalizedPunctuation(nativeNumeric);
 
   if (hideAmounts && !alwaysShowAmounts) {
     return '***';

@@ -109,6 +109,15 @@ func (webdevEnvironment) NativeLocale() string {
 	return strings.Split(v, ".")[0]
 }
 
+// NativeNumeric naively tries to return LC_NUMERIC with fallback to NativeLocale
+func (env webdevEnvironment) NativeNumeric() string {
+	v := os.Getenv("LC_NUMERIC")
+	if v == "" {
+		v = env.NativeLocale()
+	}
+	return strings.Split(v, ".")[0]
+}
+
 // GetSaveFilename implements backend.Environment.
 func (webdevEnvironment) GetSaveFilename(suggestedFilename string) string {
 	return suggestedFilename

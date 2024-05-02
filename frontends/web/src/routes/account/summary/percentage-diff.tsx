@@ -31,11 +31,11 @@ export const PercentageDiff = ({
   hasDifference,
   title,
 }: TPercentageDiff) => {
-  const { hideAmounts, nativeLocale } = useContext(AppContext);
+  const { hideAmounts, nativeNumeric } = useContext(AppContext);
   const positive = difference && difference > 0;
   const style = difference && positive ? 'up' : 'down';
   const className = hasDifference ? styles[style] : '';
-  const formattedDifference = difference && localizePercentage(difference, nativeLocale);
+  const formattedDifference = difference && localizePercentage(difference, nativeNumeric);
   return (
     <span className={className} title={title}>
       {hasDifference ? (

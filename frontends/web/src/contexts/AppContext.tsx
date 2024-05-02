@@ -23,7 +23,7 @@ type AppContextProps = {
     guideShown: boolean;
     guideExists: boolean;
     hideAmounts: boolean;
-    nativeLocale: string;
+    nativeNumeric: string;
     sidebarStatus: string;
     setActiveSidebar: Dispatch<SetStateAction<boolean>>;
     setGuideExists: Dispatch<SetStateAction<boolean>>;

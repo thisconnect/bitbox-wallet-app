@@ -197,6 +197,7 @@ func NewHandlers(
 	getAPIRouterNoError(apiRouter)("/config/default", handlers.getDefaultConfig).Methods("GET")
 	getAPIRouter(apiRouter)("/config", handlers.postAppConfig).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/native-locale", handlers.getNativeLocale).Methods("GET")
+	getAPIRouterNoError(apiRouter)("/native-numeric", handlers.getNativeNumeric).Methods("GET")
 	getAPIRouter(apiRouter)("/notify-user", handlers.postNotify).Methods("POST")
 	getAPIRouter(apiRouter)("/open", handlers.postOpen).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/update", handlers.getUpdate).Methods("GET")
@@ -456,6 +457,10 @@ func (handlers *Handlers) postAppConfig(r *http.Request) (interface{}, error) {
 // The response value may be invalid or unsupported by the app.
 func (handlers *Handlers) getNativeLocale(*http.Request) interface{} {
 	return handlers.backend.Environment().NativeLocale()
+}
+
+func (handlers *Handlers) getNativeNumeric(*http.Request) interface{} {
+	return handlers.backend.Environment().NativeNumeric()
 }
 
 func (handlers *Handlers) postNotify(r *http.Request) (interface{}, error) {

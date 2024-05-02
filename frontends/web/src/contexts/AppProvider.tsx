@@ -19,7 +19,7 @@ import { getConfig, setConfig } from '../utils/config';
 import { AppContext, TSidebarStatus } from './AppContext';
 import { useLoad } from '../hooks/api';
 import { useDefault } from '../hooks/default';
-import { getNativeLocale } from '../api/nativelocale';
+import { getNativeNumeric } from '../api/nativelocale';
 import { i18nextFormat } from '../i18n/utils';
 
 type TProps = {
@@ -27,7 +27,7 @@ type TProps = {
 }
 
 export const AppProvider = ({ children }: TProps) => {
-  const nativeLocale = i18nextFormat(useDefault(useLoad(getNativeLocale), 'de-CH'));
+  const nativeNumeric = i18nextFormat(useDefault(useLoad(getNativeNumeric), 'de-CH'));
   const [guideShown, setGuideShown] = useState(false);
   const [guideExists, setGuideExists] = useState(false);
   const [hideAmounts, setHideAmounts] = useState(false);
@@ -71,7 +71,7 @@ export const AppProvider = ({ children }: TProps) => {
         guideShown,
         guideExists,
         hideAmounts,
-        nativeLocale,
+        nativeNumeric,
         sidebarStatus,
         setActiveSidebar,
         setGuideShown,
