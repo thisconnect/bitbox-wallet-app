@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { useLocation } from 'react-router';
 import { Link, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -78,57 +78,6 @@ const Sidebar = ({
   const { t } = useTranslation();
   const { pathname } = useLocation();
   const { activeSidebar, sidebarStatus, toggleSidebar } = useContext(AppContext);
-
-  useEffect(() => {
-    const swipe = {
-      active: false,
-      x: 0,
-      y: 0,
-    };
-
-    const handleTouchStart = (event: TouchEvent) => {
-      const touch = event.touches[0];
-      swipe.x = touch.clientX;
-      swipe.y = touch.clientY;
-    };
-
-    const handleTouchMove = (event: TouchEvent) => {
-      if (
-        sidebarStatus !== 'forceHidden'
-        && event.changedTouches
-        && event.changedTouches.length
-      ) {
-        swipe.active = true;
-      }
-    };
-
-    const handleTouchEnd = (event: TouchEvent) => {
-      if (sidebarStatus !== 'forceHidden') {
-        const touch = event.changedTouches[0];
-        const travelX = Math.abs(touch.clientX - swipe.x);
-        const travelY = Math.abs(touch.clientY - swipe.y);
-        const validSwipe = window.innerWidth <= 901 && swipe.active && travelY < 100 && travelX > 70;
-        if (
-          (!activeSidebar && validSwipe && swipe.x < 60)
-          || (activeSidebar && validSwipe && swipe.x > 230)
-        ) {
-          toggleSidebar();
-        }
-        swipe.x = 0;
-        swipe.y = 0;
-        swipe.active = false;
-      }
-    };
-
-    document.addEventListener('touchstart', handleTouchStart);
-    document.addEventListener('touchmove', handleTouchMove);
-    document.addEventListener('touchend', handleTouchEnd);
-    return () => {
-      document.removeEventListener('touchstart', handleTouchStart);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [activeSidebar, sidebarStatus, toggleSidebar]);
 
   const keystores = useKeystores();
 
