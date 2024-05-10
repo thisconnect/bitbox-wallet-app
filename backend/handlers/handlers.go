@@ -803,6 +803,31 @@ func (handlers *Handlers) getCoinsTotalBalance(_ *http.Request) (interface{}, er
 			util.FormatBtcAsSat(handlers.backend.Config().AppConfig().Backend.BtcUnit))
 	}
 
+	// Add lightning balance to bitcoin totals.
+	if handlers.backend.Config().LightningConfig().LightningEnabled() {
+		lightningBalance, err := handlers.backend.Lightning().Balance()
+		if err != nil {
+			return nil, err
+		}
+
+		btcCoin, err := handlers.backend.Coin(coinpkg.CodeBTC)
+		if err != nil {
+			return nil, err
+		}
+
+		if _, ok := totalPerCoin[coin.CodeBTC]; !ok {
+			totalPerCoin[coin.CodeBTC] = lightningBalance.Available().BigInt()
+		} else {
+			totalPerCoin[coin.CodeBTC] = new(big.Int).Add(totalPerCoin[coin.CodeBTC], lightningBalance.Available().BigInt())
+		}
+		conversionsPerCoin[coin.CodeBTC] = coin.Conversions(
+			coin.NewAmount(totalPerCoin[coin.CodeBTC]),
+			btcCoin,
+			false,
+			handlers.backend.RatesUpdater(),
+			util.FormatBtcAsSat(handlers.backend.Config().AppConfig().Backend.BtcUnit))
+	}
+
 	for k, v := range totalPerCoin {
 		currentCoin, err := handlers.backend.Coin(k)
 		if err != nil {

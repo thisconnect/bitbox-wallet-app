@@ -27,7 +27,7 @@ import { Status } from '../../../components/status/status';
 import { GuideWrapper, GuidedContent, Header, Main } from '../../../components/layout';
 import { View } from '../../../components/view/view';
 import { Chart } from './chart';
-import { SummaryBalance } from './summarybalance';
+import { SummaryBalance, LightningBalance } from './summarybalance';
 import { CoinBalance } from './coinbalance';
 import { AddBuyReceiveOnEmptyBalances } from '../info/buyReceiveCTA';
 import { Entry } from '../../../components/guide/entry';
@@ -36,6 +36,7 @@ import { HideAmountsButton } from '../../../components/hideamountsbutton/hideamo
 import { AppContext } from '../../../contexts/AppContext';
 import { getAccountsByKeystore, isAmbiguiousName } from '../utils';
 import { RatesContext } from '../../../contexts/RatesContext';
+import { useLightning } from '../../../hooks/lightning';
 
 type TProps = {
   accounts: accountApi.IAccount[];
@@ -60,8 +61,22 @@ export function AccountsSummary({ accounts, devices }: TProps) {
   const [accountsTotalBalance, setAccountsTotalBalance] = useState<accountApi.TAccountsTotalBalance>();
   const [coinsTotalBalance, setCoinsTotalBalance] = useState<accountApi.TCoinsTotalBalance>();
   const [balances, setBalances] = useState<Balances>();
+  const { lightningConfig } = useLightning();
 
   const hasCard = useSDCard(devices);
+
+  // lightning account exists but is not from any connected or remembered keystores
+  const hasLightningFromOtherKeystore = (
+    lightningConfig.accounts.length !== 0
+    && (
+      accountsByKeystore.length === 0
+      || accountsByKeystore.some(({ keystore }) => {
+        return keystore.rootFingerprint !== lightningConfig.accounts[0].rootFingerprint;
+      })
+    )
+  );
+
+  const showTotalCoins = accountsByKeystore.length > 1 || (hasLightningFromOtherKeystore && accountsByKeystore.length === 1);
 
   const getAccountSummary = useCallback(async () => {
     // replace previous timer if present
@@ -213,12 +228,15 @@ export function AccountsSummary({ accounts, devices }: TProps) {
                   <AddBuyReceiveOnEmptyBalances accounts={accounts} balances={balances} />
                 ) : undefined
               } />
-            {accountsByKeystore.length > 1 && (
+            {showTotalCoins && (
               <CoinBalance
                 accounts={accounts}
                 summaryData={summaryData}
                 coinsBalances={coinsTotalBalance}
               />
+            )}
+            {hasLightningFromOtherKeystore && (
+              <LightningBalance/>
             )}
             {accountsByKeystore &&
               (accountsByKeystore.map(({ keystore, accounts }) =>
