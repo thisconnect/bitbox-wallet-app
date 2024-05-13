@@ -70,8 +70,8 @@ export function AccountsSummary({ accounts, devices }: TProps) {
     lightningConfig.accounts.length !== 0
     && (
       accountsByKeystore.length === 0
-      || accountsByKeystore.some(({ keystore }) => {
-        return keystore.rootFingerprint !== lightningConfig.accounts[0].rootFingerprint;
+      || !accountsByKeystore.some(({ keystore }) => {
+        return keystore.rootFingerprint === lightningConfig.accounts[0].rootFingerprint;
       })
     )
   );
