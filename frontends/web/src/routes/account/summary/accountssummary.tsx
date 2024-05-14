@@ -230,7 +230,6 @@ export function AccountsSummary({ accounts, devices }: TProps) {
               } />
             {showTotalCoins && (
               <CoinBalance
-                accounts={accounts}
                 summaryData={summaryData}
                 coinsBalances={coinsTotalBalance}
               />

@@ -19,59 +19,25 @@ import * as accountApi from '../../../api/account';
 import { SubTotalCoinRow } from './subtotalrow';
 import { Amount } from '../../../components/amount/amount';
 import { Skeleton } from '../../../components/skeleton/skeleton';
-import { useLightning } from '../../../hooks/lightning';
-import { CoinCode } from '../../../api/account';
 import style from './accountssummary.module.css';
 
 type TProps = {
-  accounts: accountApi.IAccount[],
-  summaryData?: accountApi.ISummary,
-  coinsBalances?: accountApi.TCoinsTotalBalance,
+  summaryData?: accountApi.ISummary;
+  coinsBalances?: accountApi.TCoinsTotalBalance;
 }
 
-type TAccountCoinMap = {
-    [code in accountApi.CoinCode]: accountApi.IAccount[];
-};
-
-type TCoinMap = {
-  [code in accountApi.CoinCode]: string;
-};
-
 export function CoinBalance ({
-  accounts,
   summaryData,
   coinsBalances,
 }: TProps) {
   const { t } = useTranslation();
 
-  const getAccountsPerCoin = () => {
-    return accounts.reduce((accountPerCoin, account) => {
-      accountPerCoin[account.coinCode]
-        ? accountPerCoin[account.coinCode].push(account)
-        : accountPerCoin[account.coinCode] = [account];
-      return accountPerCoin;
-    }, {} as TAccountCoinMap);
-  };
+  const CoinCodeList = coinsBalances && Object.keys(coinsBalances) as accountApi.CoinCode[];
 
-  const accountsPerCoin = getAccountsPerCoin();
-  const coins = Object.keys(accountsPerCoin) as accountApi.CoinCode[];
-
-  const coinsWithLightning: TCoinMap = {} as TCoinMap;
-  coins.forEach(coinCode => {
-    if (accountsPerCoin[coinCode]?.length >= 1) {
-      const account = accountsPerCoin[coinCode][0];
-      coinsWithLightning[account.coinCode] = account.coinName;
-    }
-  });
-
-  const { lightningConfig } = useLightning();
-  if (lightningConfig.accounts.length > 0) {
-    const bitcoinCode = 'btc';
-    const bitcoinName = 'Bitcoin';
-    if (!coinsWithLightning[bitcoinCode]) {
-      coinsWithLightning[bitcoinCode] = bitcoinName;
-    }
+  if (!CoinCodeList) {
+    return null;
   }
+
   return (
     <div>
       <div className={style.accountName}>
@@ -92,18 +58,15 @@ export function CoinBalance ({
             </tr>
           </thead>
           <tbody>
-            { (Object.keys(coinsWithLightning).length > 0) ? (
-              Object.entries(coinsWithLightning).map(([coinCode, coinName]) => {
-                return (
-                  <SubTotalCoinRow
-                    key={coinCode}
-                    coinCode={coinCode as CoinCode}
-                    coinName={coinName}
-                    balance={coinsBalances && coinsBalances[coinCode]}
-                  />
-                );
-              }
-              )) : null}
+            {CoinCodeList.map((coinCode) => (
+              <SubTotalCoinRow
+                key={coinCode}
+                coinCode={coinCode}
+                // the frontend should have a utils function to get the coinname from coincode.
+                coinName={'Bitcoin or altcoin'}
+                balance={coinsBalances && coinsBalances[coinCode]}
+              />
+            ))}
           </tbody>
           <tfoot>
             <tr>
