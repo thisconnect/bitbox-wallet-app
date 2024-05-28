@@ -18,6 +18,7 @@ package handlers
 import (
 	"bytes"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -93,6 +94,8 @@ type Backend interface {
 	Banners() *banners.Banners
 	Environment() backend.Environment
 	ExportLogs() error
+	ExportNotes() error
+	ImportNotes(jsonLines []byte) (*backend.ImportNotesResult, error)
 	ChartData() (*backend.Chart, error)
 	SupportedCoins(keystore.Keystore) []coinpkg.Code
 	CanAddAccount(coinpkg.Code, keystore.Keystore) (string, bool)
@@ -252,6 +255,8 @@ func NewHandlers(
 	getAPIRouterNoError(apiRouter)("/on-auth-setting-changed", handlers.postOnAuthSettingChanged).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/export-log", handlers.postExportLog).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/accounts/eth-account-code", handlers.lookupEthAccountCode).Methods("POST")
+	getAPIRouterNoError(apiRouter)("/notes/export", handlers.postExportNotes).Methods("POST")
+	getAPIRouterNoError(apiRouter)("/notes/import", handlers.postImportNotes).Methods("POST")
 
 	devicesRouter := getAPIRouterNoError(apiRouter.PathPrefix("/devices").Subrouter())
 	devicesRouter("/registered", handlers.getDevicesRegistered).Methods("GET")
@@ -1465,4 +1470,40 @@ func (handlers *Handlers) postExportLog(r *http.Request) interface{} {
 		return result{Success: false, ErrorMessage: err.Error()}
 	}
 	return result{Success: true}
+}
+
+func (handlers *Handlers) postExportNotes(r *http.Request) interface{} {
+	type result struct {
+		Success      bool   `json:"success"`
+		ErrorMessage string `json:"errorMessage,omitempty"`
+		ErrorCode    string `json:"errorCode,omitempty"`
+	}
+	if err := handlers.backend.ExportNotes(); err != nil {
+		handlers.log.WithError(err).Error("Error exporting notes")
+		return result{Success: false, ErrorMessage: err.Error()}
+	}
+	return result{Success: true}
+}
+
+func (handlers *Handlers) postImportNotes(r *http.Request) interface{} {
+	type result struct {
+		Success bool                       `json:"success"`
+		Message string                     `json:"message,omitempty"`
+		Data    *backend.ImportNotesResult `json:"data"`
+	}
+
+	var fileContentsBase64 string
+	if err := json.NewDecoder(r.Body).Decode(&fileContentsBase64); err != nil {
+		return result{Success: false, Message: err.Error()}
+	}
+	fileContents, err := hex.DecodeString(fileContentsBase64)
+	if err != nil {
+		return result{Success: false, Message: err.Error()}
+	}
+	data, err := handlers.backend.ImportNotes(fileContents)
+	if err != nil {
+		handlers.log.WithError(err).Error("Error importing notes")
+		return result{Success: false, Message: err.Error()}
+	}
+	return result{Success: true, Data: data}
 }
