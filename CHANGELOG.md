@@ -9,6 +9,7 @@
 - Fix BitBoxApp crash on GrapheneOS and other phones without Google Play Services when scanning QR codes.
 - Add DMG installer for macOS
 - Use mempool.space as preferred fee estimation source for BTC
+- Show address re-use warning and group UTXOs with the same address together in coin control.
 
 ## 4.42.0
 - Preselect backup when there's only one backup available
