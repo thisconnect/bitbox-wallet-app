@@ -38,9 +38,9 @@
 }
 
 .warning {
-  background: var(--color-lightyellow);
-  border-color: var(--color-darkyellow);
-  color: var(--color-olive);
+  background: var(--color-darkerorange);
+  border-color: var(--color-darkorange);
+  color: var(--color-orange);
 }
 
 /* swiss-red with different opacities */

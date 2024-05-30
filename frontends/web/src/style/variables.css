@@ -16,7 +16,6 @@
     --color-dark: #1D1D1B;
     --color-yellow: #fef160;
     --color-darkyellow: rgb(243, 234, 0, .66); /* #F3EA00 */
-    --color-lightyellow: rgba(255, 252, 177, .15); /* #FFFCB1 */
     --color-darkblue: #4f7998;
     --color-blue: #5E94BF;
     --color-lightblue: #73A5CD;
@@ -26,8 +25,8 @@
     --color-pale-ice-blue: #E6F7FF;
     --color-blue-alt: #91BFCF;
     --color-orange: #F5A04C;
-    --color-olive: #908B00;
-    --color-lightorange: #F9AC60;
+    --color-darkorange: rgba(245, 160, 76, 0.33);
+    --color-darkerorange: rgba(245, 160, 76, 0.2);
 
     /* status colors */
     --color-success: var(--color-green);
