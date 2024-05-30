@@ -136,7 +136,7 @@ export const UTXOs = ({
                       </span>
                       <div className="m-left-quarter">
                         {utxo.addressReused ?
-                          <Badge type="danger">
+                          <Badge type="warning">
                             {t('send.coincontrol.addressReused')}
                           </Badge> :
                           null
