@@ -1,5 +1,5 @@
 /**
- * Copyright 2023 Shift Crypto AG
+ * Copyright 2023-2024 Shift Crypto AG
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,15 @@
  */
 
 import { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
-import { route } from '../../../utils/route';
 import { SettingsItem } from './settingsItem/settingsItem';
 import { ChevronRightDark } from '../../../components/icon';
-import { useTranslation } from 'react-i18next';
 import styles from './tabs.module.css';
 
 type TWithSettingsTabsProps = {
-  children: ReactNode
-  deviceIDs: string[]
+  children: ReactNode;
+  deviceIDs: string[];
   hasAccounts: boolean;
   hideMobileMenu?: boolean;
 }
@@ -50,7 +49,11 @@ export const WithSettingsTabs = ({
   return (
     <>
       <div className="hide-on-small">
-        <Tabs hideMobileMenu={hideMobileMenu} deviceIDs={deviceIDs} hasAccounts={hasAccounts} />
+        <Tabs
+          hideMobileMenu={hideMobileMenu}
+          deviceIDs={deviceIDs}
+          hasAccounts={hasAccounts}
+        />
       </div>
       {children}
     </>
@@ -73,9 +76,10 @@ export const Tab = ({ name, url, hideMobileMenu }: TTab) => {
 
   return (
     <NavLink
+      key={url}
       className={({ isActive }) => isActive ? `${styles.active} hide-on-small` : 'hide-on-small'}
       to={url}
-      key={url}>
+    >
       {name}
     </NavLink>
   );
@@ -85,13 +89,40 @@ export const Tabs = ({ deviceIDs, hideMobileMenu, hasAccounts }: TTabs) => {
   const { t } = useTranslation();
   return (
     <div className={styles.container}>
-      <Tab key="appearance" hideMobileMenu={hideMobileMenu} name={t('settings.appearance')} url="/settings/appearance" />
-      {hasAccounts ? <Tab key="manage-accounts" hideMobileMenu={hideMobileMenu} name={t('manageAccounts.title')} url="/settings/manage-accounts" /> : null}
+      <Tab
+        key="appearance"
+        hideMobileMenu={hideMobileMenu}
+        name={t('settings.appearance')}
+        url="/settings/appearance"
+      />
+      {hasAccounts ? (
+        <Tab
+          key="manage-accounts"
+          hideMobileMenu={hideMobileMenu}
+          name={t('manageAccounts.title')}
+          url="/settings/manage-accounts"
+        />
+      ) : null}
       {deviceIDs.map(id => (
-        <Tab hideMobileMenu={hideMobileMenu} name={t('sidebar.device')} key={`device-${id}`} url={`/settings/device-settings/${id}`} />
+        <Tab
+          key={`device-${id}`}
+          hideMobileMenu={hideMobileMenu}
+          name={t('sidebar.device')}
+          url={`/settings/device-settings/${id}`}
+        />
       )) }
-      <Tab key="advanced-settings" hideMobileMenu={hideMobileMenu} name={t('settings.advancedSettings')} url="/settings/advanced-settings" />
-      <Tab key="about" hideMobileMenu={hideMobileMenu} name={t('settings.about')} url="/settings/about" />
+      <Tab
+        key="advanced-settings"
+        hideMobileMenu={hideMobileMenu}
+        name={t('settings.advancedSettings')}
+        url="/settings/advanced-settings"
+      />
+      <Tab
+        key="about"
+        hideMobileMenu={hideMobileMenu}
+        name={t('settings.about')}
+        url="/settings/about"
+      />
     </div>
   );
 };
