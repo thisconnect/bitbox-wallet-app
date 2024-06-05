@@ -16,7 +16,7 @@
 
 import { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { SettingsItem } from './settingsItem/settingsItem';
 import { ChevronRightDark } from '../../../components/icon';
 import styles from './tabs.module.css';
@@ -61,6 +61,7 @@ export const WithSettingsTabs = ({
 };
 
 export const Tab = ({ name, url, hideMobileMenu }: TTab) => {
+  const navigate = useNavigate();
 
   if (!hideMobileMenu) {
     // Will only be shown on mobile (index/general settings page)
@@ -68,7 +69,7 @@ export const Tab = ({ name, url, hideMobileMenu }: TTab) => {
       <div key={url} className="show-on-small">
         <SettingsItem
           settingName={name}
-          onClick={() => route(url)}
+          onClick={() => navigate(url)}
           extraComponent={<ChevronRightDark/>} />
       </div>
     );
