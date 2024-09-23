@@ -3,7 +3,7 @@
   background-color: var(--background-secondary);
   /* border: 1px solid var(--background-quaternary);
   border-radius: 2px; */
-  margin-bottom: var(--space-half);
+  margin-bottom: 2px;
 }
 
 .txContent {
