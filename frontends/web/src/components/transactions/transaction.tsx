@@ -148,6 +148,7 @@ const Amounts = ({
   const { defaultCurrency } = useContext(RatesContext);
   const conversion = amount?.conversions && amount?.conversions[defaultCurrency];
   const sign = getTxSign(type);
+  const color = type === 'receive' ? { color: '#7aba7a' } : type === 'send' ? { color: '#E30613' } : {};
   return (
     <span className={styles.txAmountsColumn}>
       {/* <data value={amount.amount}> */}
@@ -161,7 +162,7 @@ const Amounts = ({
       </span>
       {/* </data> */}
       { conversion ? (
-        <span className={styles.txConversionAmount}>
+        <span className={styles.txConversionAmount} style={color}>
           {sign}
           <Amount amount={conversion} unit={defaultCurrency} />
           <span className={styles.txUnit}>

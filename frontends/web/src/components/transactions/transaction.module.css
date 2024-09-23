@@ -1,6 +1,7 @@
 .tx {
   font-size: 100%;
-  background-color: var(--background-secondary);
+  /* border-bottom: 2px solid var(--background-quaternary); */
+  /* background-color: var(--background-secondary); */
   /* border: 1px solid var(--background-quaternary);
   border-radius: 2px; */
   margin-bottom: 2px;
