@@ -75,11 +75,14 @@
 
 .txNote {
   display: block;
-  padding: 7px 0 4px 0;
+  font-size: 20px;
+  padding: 3px 0;
 }
 @media (max-width: 560px) {
   .txNote {
-    padding: 4px 0;
+    font-size: 18px;
+    line-height: 1.222222;
+    padding: 3px 0 4px 0;
   }
 }
 
@@ -120,6 +123,7 @@
 
 .addresses {
   color: var(--color-secondary);
+  font-size: var(--size-default);
 }
 
 .txDateLong {
