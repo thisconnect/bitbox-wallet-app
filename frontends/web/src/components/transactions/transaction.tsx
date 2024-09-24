@@ -105,7 +105,11 @@ const Status = ({
   return (
     <span className={styles.txInfoColumn}>
       <span className={styles.txNote}>
-        {note || (
+        {note ? (
+          <span className={styles.txNoteText}>
+            {note}
+          </span>
+        ) : (
           <Addresses
             addresses={addresses}
             status={status}
@@ -150,7 +154,7 @@ const Amounts = ({
   const sign = getTxSign(type);
   const color = type === 'receive' ? { color: 'rgb(30, 130, 30)' } : {};
   return (
-    <span className={styles.txAmountsColumn}>
+    <span className={styles.txAmountsColumn} style={color}>
       {/* <data value={amount.amount}> */}
       <span className={styles.txAmount}>
         {sign}
@@ -162,7 +166,7 @@ const Amounts = ({
       </span>
       {/* </data> */}
       { conversion ? (
-        <span className={styles.txConversionAmount} style={color}>
+        <span className={styles.txConversionAmount}>
           {sign}
           <Amount amount={conversion} unit={defaultCurrency} />
           <span className={styles.txUnit}>
@@ -202,14 +206,12 @@ const Date = ({
 
 type TAddresses = {
   addresses: ITransaction['addresses'];
-  hidden?: boolean;
   status: TTransactionStatus;
   type: TTransactionType;
 }
 
 const Addresses = ({
   addresses,
-  hidden = false,
   status,
   type,
 }: TAddresses) => {
@@ -226,8 +228,8 @@ const Addresses = ({
   );
 
   return (
-    <span hidden={hidden}>
-      <span>
+    <span>
+      <span className={styles.txType}>
         {label}
       </span>
       {' '}

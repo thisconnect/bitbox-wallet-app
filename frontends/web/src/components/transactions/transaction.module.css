@@ -53,7 +53,7 @@
 }
 
 .txAmount {
-  font-size: 20px;
+  font-size: 18px;
   font-variant: tabular-nums;
   font-weight: 600;
   display: block;
@@ -70,23 +70,20 @@
   font-variant: tabular-nums;
 }
 
-.txUnit {
-  color: var(--color-secondary);
-  font-size: 14px;
-  font-weight: normal;
-}
-
 .txNote {
   display: block;
-  font-size: 20px;
-  font-weight: 600;
   padding: 3px 0;
+}
+.txNoteText {
+  font-size: 18px;
+  font-weight: 600;
 }
 @media (max-width: 560px) {
   .txNote {
-    font-size: 18px;
-    line-height: 1.222222;
     padding: 3px 0 4px 0;
+  }
+  .txNoteText {
+    line-height: 1.222222;
   }
 }
 
@@ -127,8 +124,12 @@
 
 .addresses {
   color: var(--color-secondary);
-  font-size: var(--size-default);
+  font-size: 16px;
   font-weight: normal;
+}
+.txType {
+  font-size: 18px;
+  font-weight: 600;
 }
 
 .txDateLong {
@@ -137,7 +138,7 @@
 .txDateShort {
   display: none;
 }
-@media (max-width: 460px) {
+@media (max-width: 560px) {
   .txDateLong {
     display: none;
   }

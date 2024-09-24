@@ -15,7 +15,7 @@
  */
 
 import { useTranslation } from 'react-i18next';
-import { parseTimeShort } from '@/utils/date';
+import { parseTimeLong } from '@/utils/date';
 import { TxDetail } from './detail';
 
 type TProps = {
@@ -24,7 +24,7 @@ type TProps = {
 
 export const TxDateDetail = ({ time }: TProps) => {
   const { i18n, t } = useTranslation();
-  const shortDate = time ? parseTimeShort(time, i18n.language) : '---';
+  const shortDate = time ? parseTimeLong(time, i18n.language) : '---';
   return (
     <TxDetail
       label={t('transaction.details.date')}>

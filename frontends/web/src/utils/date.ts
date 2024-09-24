@@ -28,25 +28,44 @@ export const convertDateToLocaleString = (
   });
 };
 
-export const parseTimeShort = (time: string, lang: string) => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-  };
-  return new Date(Date.parse(time)).toLocaleString(lang, options);
+export const parseTimeShort = (
+  time: string,
+  lang: string,
+) => {
+  const date = new Date(Date.parse(time));
+  // Check if in the current year (UTC)
+  if (date.getUTCFullYear() === new Date().getUTCFullYear()) {
+    return (
+      date.toLocaleString(lang, {
+        month: 'short',
+        day: 'numeric',
+      })
+    );
+  }
+  return (
+    date.toLocaleString(lang, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric'
+    })
+  );
 };
 
 export const parseTimeLong = (
   time: string,
   locale: string
 ) => {
+  const date = new Date(Date.parse(time));
+  if (locale) {
+    return date.toLocaleString(locale, {
+      dateStyle: 'full',
+    });
+  }
   return (
-    new Date(Date.parse(time))
-      .toLocaleString(locale, {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
+    date.toLocaleString(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
   );
 };
