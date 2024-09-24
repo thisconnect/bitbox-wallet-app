@@ -148,7 +148,7 @@ const Amounts = ({
   const { defaultCurrency } = useContext(RatesContext);
   const conversion = amount?.conversions && amount?.conversions[defaultCurrency];
   const sign = getTxSign(type);
-  const color = type === 'receive' ? { color: '#7aba7a' } : type === 'send' ? { color: '#E30613' } : {};
+  const color = type === 'receive' ? { color: 'rgb(30, 130, 30)' } : {};
   return (
     <span className={styles.txAmountsColumn}>
       {/* <data value={amount.amount}> */}

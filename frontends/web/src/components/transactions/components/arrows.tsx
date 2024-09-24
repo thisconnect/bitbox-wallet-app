@@ -15,7 +15,7 @@
  */
 
 import type { TTransactionStatus, TTransactionType } from '@/api/account';
-import { ArrowDownGreen, ArrowRightGray, ArrowUpRed, Warning } from '@/components/icon/icon';
+import { ArrowDownGreen, ArrowRightGray, ArrowUpDark, Warning } from '@/components/icon/icon';
 
 type TProps = {
   status: TTransactionStatus;
@@ -31,7 +31,7 @@ export const Arrow = ({ status, type }: TProps) => {
   switch (type) {
   case 'send':
     return (
-      <ArrowUpRed />
+      <ArrowUpDark />
     );
   case 'receive':
     return (

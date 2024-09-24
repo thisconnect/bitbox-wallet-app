@@ -15,19 +15,19 @@
 
 .txIcon {
   align-self: center;
-  flex-basis: 85px;
+  flex-basis: 50px;
   flex-grow: 0;
   flex-shrink: 0;
-  text-align: center;
+  text-align: left;
 }
 @media (max-width: 768px) {
   .txIcon {
-    flex-basis: 74px;
+    flex-basis: 44px;
   }
 }
 @media (max-width: 560px) {
   .txIcon {
-    flex-basis: 63px;
+    flex-basis: 33px;
   }
 }
 
@@ -55,6 +55,7 @@
 .txAmount {
   font-size: 20px;
   font-variant: tabular-nums;
+  font-weight: 600;
   display: block;
   padding: 3px 0 3px 0;
 }
@@ -72,11 +73,13 @@
 .txUnit {
   color: var(--color-secondary);
   font-size: 14px;
+  font-weight: normal;
 }
 
 .txNote {
   display: block;
   font-size: 20px;
+  font-weight: 600;
   padding: 3px 0;
 }
 @media (max-width: 560px) {
@@ -125,6 +128,7 @@
 .addresses {
   color: var(--color-secondary);
   font-size: var(--size-default);
+  font-weight: normal;
 }
 
 .txDateLong {
@@ -152,7 +156,7 @@
   flex-basis: 61px;
   font-size: inherit;
   line-height: inherit;
-  margin: 0 var(--space-half) 0 0;
+  margin: 0;
   padding: 0;
 }
 @media (max-width: 768px) {
