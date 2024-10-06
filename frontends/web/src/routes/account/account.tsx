@@ -310,44 +310,46 @@ export const Account = ({
             </Link>
           </Header>
           <View>
-            <ViewContent>
+            <ViewContent fullWidth>
               {status.synced && hasDataLoaded && isBitcoinBased(account.coinCode) && (
                 <HeadersSync coinCode={account.coinCode} />
               )}
-              <label className="labelXLarge">
-                {t('accountSummary.availableBalance')}
-              </label>
-              <div className="flex flex-row flex-between flex-item-center flex-column-mobile">
-                <Balance balance={balance} />
-                {!isAccountEmpty && <ActionButtons {...actionButtonsProps} />}
-              </div>
-              {isAccountEmpty && (
-                <BuyReceiveCTA
-                  account={account}
-                  code={code}
-                  exchangeSupported={exchangeSupported}
-                  unit={balance.available.unit}
-                  balanceList={[balance]}
-                />
-              )}
-
-              {!transactions?.success ? (
-                <div className={`flex flex-row flex-center ${style.empty}`}>
-                  <p>{t('transactions.errorLoadTransactions')}</p>
+              <div className={style.accountHeader}>
+                <label className="labelXLarge">
+                  {t('accountSummary.availableBalance')}
+                </label>
+                <div className="flex flex-row flex-between flex-item-center flex-column-mobile">
+                  <Balance balance={balance} />
+                  {!isAccountEmpty && <ActionButtons {...actionButtonsProps} />}
                 </div>
-              ) : (
-                <SubTitle className={style.titleWithButton}>
-                  {t('accountSummary.transactionHistory')}
-                  {hasTransactions && (
-                    <Button
-                      transparent
-                      onClick={exportAccount}
-                      title={t('account.exportTransactions')}>
-                      {t('account.export')}
-                    </Button>
-                  )}
-                </SubTitle>
-              )}
+                {isAccountEmpty && (
+                  <BuyReceiveCTA
+                    account={account}
+                    code={code}
+                    exchangeSupported={exchangeSupported}
+                    unit={balance.available.unit}
+                    balanceList={[balance]}
+                  />
+                )}
+
+                {!transactions?.success ? (
+                  <div className={`flex flex-row flex-center ${style.empty}`}>
+                    <p>{t('transactions.errorLoadTransactions')}</p>
+                  </div>
+                ) : (
+                  <SubTitle className={style.titleWithButton}>
+                    {t('accountSummary.transactionHistory')}
+                    {hasTransactions && (
+                      <Button
+                        transparent
+                        onClick={exportAccount}
+                        title={t('account.exportTransactions')}>
+                        {t('account.export')}
+                      </Button>
+                    )}
+                  </SubTitle>
+                )}
+              </div>
 
               {hasTransactions ? (
                 transactions.list.map(tx => (
