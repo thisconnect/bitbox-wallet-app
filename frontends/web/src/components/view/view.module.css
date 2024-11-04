@@ -169,6 +169,15 @@
     margin-top: var(--space-quarter);
 }
 
+@media (min-width: 769px) {
+    .stickyDesktopHeader {
+        background-color: var(--background);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+}
+
 .closeButton {
     background: transparent;
     border: none;

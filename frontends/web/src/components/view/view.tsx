@@ -146,6 +146,7 @@ export const ViewContent = ({
 
 type THeaderProps = {
     small?: boolean;
+    sticky?: 'desktop';
     title?: ReactNode;
     withAppLogo?: boolean;
     children?: ReactNode;
@@ -154,19 +155,25 @@ type THeaderProps = {
 /**
  * ViewHeader component to render the view's title and a byline
  * @param small option to reduce the size of the header
+ * @param sticky accepts 'desktop', could be extended to support 'mobile' or 'all'
  * @param title the title of the view
  * @param withAppLogo if true includes the BitBoxApp logo before the title
  */
 export const ViewHeader = ({
   children,
   small,
+  sticky,
   title,
   withAppLogo,
 }: THeaderProps) => {
   const { isDarkMode } = useDarkmode();
-  const headerStyles = small ? `${style.header} ${style.smallHeader}` : style.header;
+  const classNames = `
+    ${style.header}
+    ${small ? style.smallHeader : ''}
+    ${sticky === 'desktop' ? style.stickyDesktopHeader : ''}
+  `;
   return (
-    <header className={headerStyles}>
+    <header className={classNames}>
       {withAppLogo && (
         isDarkMode ? <AppLogoInverted /> : <AppLogo />
       )}

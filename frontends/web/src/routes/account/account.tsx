@@ -315,7 +315,7 @@ export const Account = ({
             <HeadersSync coinCode={account.coinCode} />
           )}
           <View>
-            <ViewHeader>
+            <ViewHeader sticky="desktop">
               <label className="labelXLarge">
                 {t('accountSummary.availableBalance')}
               </label>
