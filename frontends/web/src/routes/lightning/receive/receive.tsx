@@ -17,6 +17,7 @@
 
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { Column, Grid, GuideWrapper, GuidedContent, Header, Main } from '../../../components/layout';
 import { View, ViewButtons, ViewContent } from '../../../components/view/view';
 import { Button, Input, OptionalLabel } from '../../../components/forms';
@@ -32,7 +33,6 @@ import {
   postReceivePayment,
   subscribeListPayments
 } from '../../../api/lightning';
-import { route } from '../../../utils/route';
 import { toMsat, toSat } from '../../../utils/conversion';
 import { Status } from '../../../components/status/status';
 import { QRCode } from '../../../components/qrcode/qrcode';
@@ -48,6 +48,7 @@ type TStep = 'create-invoice' | 'wait' | 'invoice' | 'success';
 
 export function Receive() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [inputSatsText, setInputSatsText] = useState<string>('');
   const [invoiceAmount, setInvoiceAmount] = useState<IAmount>();
   const [description, setDescription] = useState<string>('');
@@ -74,7 +75,7 @@ export function Receive() {
   const back = useCallback(() => {
     switch (step) {
     case 'create-invoice':
-      route('/lightning');
+      navigate('/lightning');
       break;
     case 'invoice':
     case 'success':
@@ -85,7 +86,7 @@ export function Receive() {
       }
       break;
     }
-  }, [step]);
+  }, [step, navigate]);
 
   const onAmountSatsChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const target = event.target as HTMLInputElement;
@@ -231,7 +232,7 @@ export function Receive() {
             </Grid>
           </ViewContent>
           <ViewButtons>
-            <Button primary onClick={() => route('/lightning')}>
+            <Button primary onClick={() => navigate('/lightning')}>
               {t('button.done')}
             </Button>
             <Button secondary onClick={newInvoice}>
@@ -250,7 +251,7 @@ export function Receive() {
             {description && ` / ${description}`}
           </ViewContent>
           <ViewButtons>
-            <Button primary onClick={() => route('/lightning')}>
+            <Button primary onClick={() => navigate('/lightning')}>
               {t('button.done')}
             </Button>
             <Button secondary onClick={newInvoice}>
