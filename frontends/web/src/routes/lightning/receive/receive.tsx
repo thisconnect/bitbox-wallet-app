@@ -49,10 +49,11 @@ type TStep = 'create-invoice' | 'wait' | 'invoice' | 'success';
 export function Receive() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
   const [inputSatsText, setInputSatsText] = useState<string>('');
   const [invoiceAmount, setInvoiceAmount] = useState<IAmount>();
   const [description, setDescription] = useState<string>('');
-  const [disableConfirm, setDisableConfirm] = useState(true);
+  const [disableConfirm, setDisableConfirm] = useState(false);
   const [openChannelFeeResponse, setOpenChannelFeeResponse] = useState<OpenChannelFeeResponse>();
   const [receivePaymentResponse, setReceivePaymentResponse] = useState<ReceivePaymentResponse>();
   const [receiveError, setReceiveError] = useState<string>();
@@ -64,7 +65,7 @@ export function Receive() {
     setInputSatsText('');
     setInvoiceAmount(undefined);
     setDescription('');
-    setDisableConfirm(true);
+    setDisableConfirm(false);
     setReceivePaymentResponse(undefined);
     setReceiveError(undefined);
     setShowOpenChannelWarning(false);
@@ -108,28 +109,25 @@ export function Receive() {
   }, [onPaymentsChange]);
 
   useEffect(() => {
-    getBtcSatsAmount(inputSatsText).then(response => {
-      if (response.success) {
-        setInvoiceAmount(response.amount);
-      }
-    });
-
-  }, [inputSatsText]);
-
-
-  useEffect(() => {
     (async () => {
+      const response = await getBtcSatsAmount(inputSatsText || '0');
+      if (!response.success) {
+        return;
+      }
       const inputSats = Number(inputSatsText);
-      if (inputSats > 0) {
+      try {
         const openChannelFeeResponse = await getOpenChannelFee({ amountMsat: toMsat(inputSats) });
         setOpenChannelFeeResponse(openChannelFeeResponse);
         setShowOpenChannelWarning(openChannelFeeResponse.feeMsat ? openChannelFeeResponse.feeMsat > 0 : false);
         if (inputSats > toSat(openChannelFeeResponse.feeMsat || 0)) {
           setDisableConfirm(false);
-          return;
         }
+        setInvoiceAmount(response.amount);
+      } catch (e) {
+        setInvoiceAmount(undefined);
+        setShowOpenChannelWarning(false);
+        console.error(e);
       }
-      setDisableConfirm(true);
     })();
   }, [inputSatsText]);
 
