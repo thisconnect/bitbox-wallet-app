@@ -75,7 +75,7 @@ export function Receive() {
   const back = useCallback(() => {
     switch (step) {
     case 'create-invoice':
-      navigate('/lightning');
+      navigate(-1);
       break;
     case 'invoice':
     case 'success':
@@ -232,7 +232,7 @@ export function Receive() {
             </Grid>
           </ViewContent>
           <ViewButtons>
-            <Button primary onClick={() => navigate('/lightning')}>
+            <Button primary onClick={() => navigate(-1)}>
               {t('button.done')}
             </Button>
             <Button secondary onClick={newInvoice}>
@@ -251,7 +251,7 @@ export function Receive() {
             {description && ` / ${description}`}
           </ViewContent>
           <ViewButtons>
-            <Button primary onClick={() => navigate('/lightning')}>
+            <Button primary onClick={() => navigate(-1)}>
               {t('button.done')}
             </Button>
             <Button secondary onClick={newInvoice}>
