@@ -117,7 +117,7 @@ export const BTCDirect = ({
     }
 
     const address = { // TODO: should come from the backend
-      BTC: 'bc1qnkku53ue3fud8pquec7jrp4jmtn3tmqmwtelr6',
+      BTC: 'bc1qh03ue249h5ucqu8m73rr9ea4x2ra07fuzpsgtt',
       LTC: 'ltc1qldx5037gn4u4nu6nfrwskhtdngzxzgjefygk8r',
       ETH: '0xE5b1F760BA4334bc311695e125861Eb5870018aD',
       USDC: '0xE5b1F760BA4334bc311695e125861Eb5870018aD',
