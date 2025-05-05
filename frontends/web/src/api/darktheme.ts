@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import { apiGet, apiPost } from '@/utils/request';
+import { apiPost } from '@/utils/request';
 
 export const setDarkTheme = (isDark: boolean): Promise<null> => {
   return apiPost('set-dark-theme', isDark);
-};
-
-export const detectDarkTheme = (): Promise<boolean> => {
-  return apiGet('detect-dark-theme');
 };

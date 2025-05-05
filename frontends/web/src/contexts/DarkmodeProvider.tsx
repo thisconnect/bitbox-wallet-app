@@ -16,8 +16,7 @@
 
 import { useState, useEffect, ReactNode, useCallback } from 'react';
 import { getConfig, setConfig } from '@/utils/config';
-import { setDarkTheme, detectDarkTheme } from '@/api/darktheme';
-import { runningInAndroid } from '@/utils/env';
+import { setDarkTheme } from '@/api/darktheme';
 import { useMediaQuery } from '@/hooks/mediaquery';
 import { DarkModeContext } from './DarkmodeContext';
 
@@ -48,12 +47,7 @@ export const DarkModeProvider = ({ children }: TProps) => {
           setIsDarkMode(config.frontend.darkmode);
           return;
         }
-        // else use mode from OS
-        if (runningInAndroid()) {
-          setIsDarkMode(androidPrefersDarkMode);
-        } else {
-          detectDarkTheme().then(setIsDarkMode);
-        }
+        setIsDarkMode(androidPrefersDarkMode);
       })
       .catch(console.error);
   }, [androidPrefersDarkMode]);
@@ -66,12 +60,7 @@ export const DarkModeProvider = ({ children }: TProps) => {
     setIsDarkMode(darkmode);
     getConfig()
       .then(async config => {
-        let preferredDarkMode;
-        if (runningInAndroid()) {
-          preferredDarkMode = androidPrefersDarkMode;
-        } else {
-          preferredDarkMode = await detectDarkTheme();
-        }
+        const preferredDarkMode = androidPrefersDarkMode;
         if (preferredDarkMode === darkmode) {
           // remove darkmode from config, so it use the same mode as the OS
           const { darkmode, ...frontend } = config.frontend;
