@@ -108,10 +108,6 @@
     padding: 0;
 }
 
-.contentContainer.padded {
-    padding: var(--space-default);
-}
-
 .content p {
     word-break: break-word;
 }
@@ -219,7 +215,7 @@
     .overlay {
         align-items: stretch;
         max-height: 100vh;
-        padding-top: calc(var(--space-default) + calc(env(safe-area-inset-top, 0) * 3));
+        padding-top: calc(var(--space-default) + env(safe-area-inset-top, 0));
     }
 
     .modal, .modal.small, .modal.medium, .modal.large { 
@@ -235,8 +231,8 @@
       transition: transform 300ms;
       transform: translateY(0);
     }
-
-    .contentContainer.padded {
-        padding: var(--space-half);
+    
+    .contentContainer.slim {
+        padding-bottom: calc(env(safe-area-inset-bottom, 0));
     }
 }
