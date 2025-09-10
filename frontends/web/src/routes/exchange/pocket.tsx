@@ -139,6 +139,20 @@ export const Pocket = ({
     current.contentWindow?.postMessage(message, '*');
   };
 
+  const sendPaymentTxId = (txid: string) => {
+    if (!iframeRef.current) {
+      return;
+    }
+
+    const message = serializeMessage({
+      version: MessageVersion.V0,
+      type: V0MessageType.Payment,
+      txid,
+    });
+
+    iframeRef.current.contentWindow?.postMessage(message, '*');
+  };
+
   const handleRequestAddress = (message: RequestAddressV0Message) => {
     signing = true;
     const addressType = message.withScriptType ? convertScriptType(message.withScriptType) : '';
@@ -247,6 +261,9 @@ export const Pocket = ({
       setBlocking(false);
       if (!sendResult.success && !('aborted' in sendResult)) {
         alertUser(t('unknownError', { errorMessage: sendResult.errorMessage }));
+      }
+      if (sendResult.success) {
+        sendPaymentTxId(sendResult.txId);
       }
     } else {
       if (result.errorCode === 'insufficientFunds') {
