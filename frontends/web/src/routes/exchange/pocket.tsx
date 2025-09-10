@@ -153,6 +153,20 @@ export const Pocket = ({
     iframeRef.current.contentWindow?.postMessage(message, '*');
   };
 
+  const sendCanceledMessage = (reason: string) => {
+    if (!iframeRef.current) {
+      return;
+    }
+
+    const message = serializeMessage({
+      version: MessageVersion.V0,
+      type: V0MessageType.Cancel,
+      reason,
+    });
+
+    iframeRef.current.contentWindow?.postMessage(message, '*');
+  };
+
   const handleRequestAddress = (message: RequestAddressV0Message) => {
     signing = true;
     const addressType = message.withScriptType ? convertScriptType(message.withScriptType) : '';
@@ -259,11 +273,15 @@ export const Pocket = ({
       setBlocking(true);
       const sendResult = await sendTx(code, txNote);
       setBlocking(false);
-      if (!sendResult.success && !('aborted' in sendResult)) {
-        alertUser(t('unknownError', { errorMessage: sendResult.errorMessage }));
-      }
       if (sendResult.success) {
         sendPaymentTxId(sendResult.txId);
+      } else {
+        if ('aborted' in sendResult) {
+          sendCanceledMessage('rejected_by_customer');
+        } else {
+          sendCanceledMessage('unknown_error');
+          alertUser(t('unknownError', { errorMessage: sendResult.errorMessage }));
+        }
       }
     } else {
       if (result.errorCode === 'insufficientFunds') {
