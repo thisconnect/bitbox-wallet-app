@@ -67,6 +67,8 @@ export const Pocket = ({
 
   const ref = createRef<HTMLDivElement>();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const sessionId = useRef(crypto.randomUUID());
+
   let signing = false;
   let resizeTimerID: any = undefined;
 
@@ -132,6 +134,7 @@ export const Pocket = ({
     const message = serializeMessage({
       version: MessageVersion.V0,
       type: V0MessageType.Address,
+      correlationId: sessionId.current,
       bitcoinAddress: address,
       signature: sig,
     });
@@ -147,6 +150,7 @@ export const Pocket = ({
     const message = serializeMessage({
       version: MessageVersion.V0,
       type: V0MessageType.Payment,
+      correlationId: sessionId.current,
       txid,
     });
 
@@ -161,6 +165,7 @@ export const Pocket = ({
     const message = serializeMessage({
       version: MessageVersion.V0,
       type: V0MessageType.Cancel,
+      correlationId: sessionId.current,
       reason,
     });
 
@@ -219,6 +224,7 @@ export const Pocket = ({
         const message = serializeMessage({
           version: MessageVersion.V0,
           type: V0MessageType.ExtendedPublicKey,
+          correlationId: sessionId.current,
           extendedPublicKey: xpub,
         });
         current.contentWindow?.postMessage(message, '*');
