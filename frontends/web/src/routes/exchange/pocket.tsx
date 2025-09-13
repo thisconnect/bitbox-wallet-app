@@ -67,7 +67,8 @@ export const Pocket = ({
 
   const ref = createRef<HTMLDivElement>();
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
-  const sessionId = useRef(crypto.randomUUID());
+
+  const [correlationId, setCorrelationId] = useState<string>();
 
   let signing = false;
   let resizeTimerID: any = undefined;
@@ -134,7 +135,7 @@ export const Pocket = ({
     const message = serializeMessage({
       version: MessageVersion.V0,
       type: V0MessageType.Address,
-      correlationId: sessionId.current,
+      correlationId,
       bitcoinAddress: address,
       signature: sig,
     });
@@ -150,7 +151,7 @@ export const Pocket = ({
     const message = serializeMessage({
       version: MessageVersion.V0,
       type: V0MessageType.Payment,
-      correlationId: sessionId.current,
+      correlationId,
       txid,
     });
 
@@ -165,7 +166,7 @@ export const Pocket = ({
     const message = serializeMessage({
       version: MessageVersion.V0,
       type: V0MessageType.Cancel,
-      correlationId: sessionId.current,
+      correlationId,
       reason,
     });
 
@@ -224,7 +225,7 @@ export const Pocket = ({
         const message = serializeMessage({
           version: MessageVersion.V0,
           type: V0MessageType.ExtendedPublicKey,
-          correlationId: sessionId.current,
+          correlationId,
           extendedPublicKey: xpub,
         });
         current.contentWindow?.postMessage(message, '*');
@@ -255,10 +256,14 @@ export const Pocket = ({
       alertUser(t('unknownError', { errorMessage: 'Missing payment request data' }));
       return;
     }
+    if (message.correlationId) {
+      setCorrelationId(message.correlationId);
+    }
 
     // this allows to correctly handle sats mode
     const parsedAmount = await parseExternalBtcAmount(message.amount.toString());
     if (!parsedAmount.success) {
+      sendCanceledMessage('invalid_amount');
       alertUser(t('unknownError', { errorMessage: 'Invalid amount' }));
       return;
     }
