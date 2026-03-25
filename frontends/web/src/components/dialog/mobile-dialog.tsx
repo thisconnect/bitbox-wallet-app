@@ -36,13 +36,27 @@ export const MobileDialog = ({
     if (!contentContainer) {
       return null;
     }
-    if (!(target instanceof HTMLElement)) {
-      return contentContainer;
+
+    let targetElement: Element | null = null;
+    if (target instanceof Element) {
+      targetElement = target;
+    } else if (target instanceof Node) {
+      targetElement = target.parentElement;
     }
-    const scrollContent = target.closest<HTMLElement>('[data-dialog-scroll-content]');
-    if (scrollContent && contentContainer.contains(scrollContent)) {
-      return scrollContent;
+
+    const firstScrollContent = contentContainer.querySelector<HTMLElement>('[data-dialog-scroll-content]');
+    if (!targetElement) {
+      return firstScrollContent ?? contentContainer;
     }
+
+    if (contentContainer.contains(targetElement)) {
+      const scrollContent = targetElement.closest<HTMLElement>('[data-dialog-scroll-content]');
+      if (scrollContent && contentContainer.contains(scrollContent)) {
+        return scrollContent;
+      }
+      return firstScrollContent ?? contentContainer;
+    }
+
     return contentContainer;
   }, [contentContainerRef]);
 
