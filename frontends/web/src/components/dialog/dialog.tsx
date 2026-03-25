@@ -291,6 +291,7 @@ export const DialogScrollContent = ({
 }: DialogScrollContentProps) => {
   return (
     <div
+      data-dialog-scroll-content
       className={style.dialogScrollContent}
       style={{ minHeight }}
     >

@@ -29,23 +29,41 @@ export const MobileDialog = ({
   const [dragY, setDragY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const dragStartY = useRef(0);
+  const dragScrollContainerRef = useRef<HTMLElement | null>(null);
+
+  const getTouchScrollContainer = useCallback((target: EventTarget | null) => {
+    const contentContainer = contentContainerRef.current;
+    if (!contentContainer) {
+      return null;
+    }
+    if (!(target instanceof HTMLElement)) {
+      return contentContainer;
+    }
+    const scrollContent = target.closest<HTMLElement>('[data-dialog-scroll-content]');
+    if (scrollContent && contentContainer.contains(scrollContent)) {
+      return scrollContent;
+    }
+    return contentContainer;
+  }, [contentContainerRef]);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    dragScrollContainerRef.current = null;
     if (!canClose || status !== 'open') {
       return;
     }
 
-    const contentContainer = contentContainerRef.current;
-    if (contentContainer && contentContainer.scrollTop > 0) {
+    const scrollContainer = getTouchScrollContainer(e.target);
+    if (scrollContainer && scrollContainer.scrollTop > 0) {
       return;
     }
+    dragScrollContainerRef.current = scrollContainer;
 
     const touch = e.touches[0];
     if (touch) {
       dragStartY.current = touch.clientY;
       setIsDragging(true);
     }
-  }, [canClose, status, contentContainerRef]);
+  }, [canClose, status, getTouchScrollContainer]);
 
   useEffect(() => {
     const modal = modalRef.current;
@@ -55,6 +73,14 @@ export const MobileDialog = ({
 
     const handleTouchMove = (e: TouchEvent) => {
       if (!isDragging) {
+        return;
+      }
+
+      const scrollContainer = dragScrollContainerRef.current;
+      if (scrollContainer && scrollContainer.scrollTop > 0) {
+        setIsDragging(false);
+        setDragY(0);
+        dragScrollContainerRef.current = null;
         return;
       }
 
@@ -85,6 +111,7 @@ export const MobileDialog = ({
     }
 
     setIsDragging(false);
+    dragScrollContainerRef.current = null;
     const threshold = window.innerHeight * DRAG_CLOSE_THRESHOLD_PERCENT;
 
     if (dragY > threshold) {
@@ -98,6 +125,7 @@ export const MobileDialog = ({
   const handleTouchCancel = useCallback(() => {
     setIsDragging(false);
     setDragY(0);
+    dragScrollContainerRef.current = null;
   }, []);
 
   const combinedModalClass = `
