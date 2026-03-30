@@ -150,12 +150,18 @@
 }
 
 .assetBalanceNameFlex {
-    flex: 1;
+    flex-basis: 50%;
+    flex-grow: 0;
+    flex-shrink: 1;
     min-width: 0;
 }
 
 .assetBalanceAmountFixed {
+    flex-basis: 50%;
+    flex-grow: 1;
     flex-shrink: 0;
+    overflow: hidden;
+    text-align: end;
     white-space: nowrap;
 }
 
