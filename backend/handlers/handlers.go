@@ -38,6 +38,7 @@ import (
 	"github.com/BitBoxSwiss/bitbox-wallet-app/backend/market"
 	"github.com/BitBoxSwiss/bitbox-wallet-app/backend/market/swapkit"
 	"github.com/BitBoxSwiss/bitbox-wallet-app/backend/rates"
+	"github.com/BitBoxSwiss/bitbox-wallet-app/backend/signing"
 	"github.com/BitBoxSwiss/bitbox-wallet-app/backend/versioninfo"
 	utilConfig "github.com/BitBoxSwiss/bitbox-wallet-app/util/config"
 	"github.com/BitBoxSwiss/bitbox-wallet-app/util/errp"
@@ -97,6 +98,7 @@ type Backend interface {
 	CreateAndPersistAccountConfig(coinCode coinpkg.Code, name string, keystore keystore.Keystore) (accountsTypes.Code, error)
 	SetAccountActive(accountCode accountsTypes.Code, active bool) error
 	SetTokenActive(accountCode accountsTypes.Code, tokenCode string, active bool) error
+	SetAccountReceiveScriptType(accountCode accountsTypes.Code, scriptType signing.ScriptType) error
 	RenameAccount(accountCode accountsTypes.Code, name string) error
 	AOPP() backend.AOPP
 	AOPPCancel()
@@ -217,6 +219,7 @@ func NewHandlers(
 	getAPIRouter(apiRouter)("/accounts/balance-summary", handlers.getAccountsBalanceSummary).Methods("GET")
 	getAPIRouterNoError(apiRouter)("/set-account-active", handlers.postSetAccountActive).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/set-token-active", handlers.postSetTokenActive).Methods("POST")
+	getAPIRouterNoError(apiRouter)("/set-account-receive-script-type", handlers.postSetAccountReceiveScriptType).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/rename-account", handlers.postRenameAccount).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/accounts/reinitialize", handlers.postAccountsReinitialize).Methods("POST")
 	getAPIRouterNoError(apiRouter)("/chart-data", handlers.getChartData).Methods("GET")
@@ -384,6 +387,7 @@ type accountBaseJSON struct {
 	// Multiple accounts can belong to the same keystore. For now we replicate the keystore info in
 	// the accounts. In the future the getAccountsHandler() could return the accounts grouped
 	// keystore.
+<<<<<<< HEAD
 	Keystore keystoreJSON       `json:"keystore"`
 	Active   bool               `json:"active"`
 	CoinCode coinpkg.Code       `json:"coinCode"`
@@ -401,6 +405,22 @@ type accountJSON struct {
 	ActiveTokens               []activeToken `json:"activeTokens,omitempty"`
 	BlockExplorerTxPrefix      string        `json:"blockExplorerTxPrefix"`
 	BlockExplorerAddressPrefix string        `json:"blockExplorerAddressPrefix,omitempty"`
+=======
+	Keystore                   keystoreJSON        `json:"keystore"`
+	Active                     bool                `json:"active"`
+	BitsuranceStatus           string              `json:"bitsuranceStatus"`
+	CoinCode                   coinpkg.Code        `json:"coinCode"`
+	CoinUnit                   string              `json:"coinUnit"`
+	CoinName                   string              `json:"coinName"`
+	Code                       accountsTypes.Code  `json:"code"`
+	Name                       string              `json:"name"`
+	ReceiveScriptType          *signing.ScriptType `json:"receiveScriptType,omitempty"`
+	IsToken                    bool                `json:"isToken"`
+	ContractAddress            string              `json:"contractAddress,omitempty"`
+	ActiveTokens               []activeToken       `json:"activeTokens,omitempty"`
+	BlockExplorerTxPrefix      string              `json:"blockExplorerTxPrefix"`
+	BlockExplorerAddressPrefix string              `json:"blockExplorerAddressPrefix,omitempty"`
+>>>>>>> upstream/master
 	// Number of the account per coin per keystore, starting at 0. Nil if unknown.
 	AccountNumber *uint16 `json:"accountNumber"`
 }
@@ -440,6 +460,7 @@ func newAccountBaseJSON(
 			Keystore:  keystore,
 			Connected: keystoreConnected,
 		},
+<<<<<<< HEAD
 		Active:   !accountConfig.Inactive,
 		CoinCode: accountCoin.Code(),
 		CoinUnit: accountCoin.Unit(false),
@@ -477,6 +498,17 @@ func newAccountJSON(
 		accountBaseJSON:            newAccountBaseJSON(keystore, accountConfig, accountCoin, keystoreConnected),
 		BitsuranceStatus:           accountConfig.InsuranceStatus,
 		CoinName:                   accountCoin.Name(),
+=======
+		Active:                     !account.Config().Config.Inactive,
+		BitsuranceStatus:           account.Config().Config.InsuranceStatus,
+		CoinCode:                   account.Coin().Code(),
+		CoinUnit:                   account.Coin().Unit(false),
+		CoinName:                   account.Coin().Name(),
+		Code:                       account.Config().Config.Code,
+		Name:                       account.Config().Config.Name,
+		ReceiveScriptType:          account.Config().Config.ReceiveScriptType,
+		IsToken:                    isToken,
+>>>>>>> upstream/master
 		ContractAddress:            contractAddress,
 		ActiveTokens:               activeTokens,
 		BlockExplorerTxPrefix:      accountCoin.BlockExplorerTransactionURLPrefix(),
@@ -897,6 +929,29 @@ func (handlers *Handlers) postRenameAccount(r *http.Request) interface{} {
 		if errCode, ok := errp.Cause(err).(errp.ErrorCode); ok {
 			return response{Success: false, ErrorCode: string(errCode)}
 		}
+		return response{Success: false, ErrorMessage: err.Error()}
+	}
+	return response{Success: true}
+}
+
+func (handlers *Handlers) postSetAccountReceiveScriptType(r *http.Request) interface{} {
+	var jsonBody struct {
+		AccountCode accountsTypes.Code `json:"accountCode"`
+		ScriptType  signing.ScriptType `json:"scriptType"`
+	}
+
+	type response struct {
+		Success      bool   `json:"success"`
+		ErrorMessage string `json:"errorMessage,omitempty"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&jsonBody); err != nil {
+		return response{Success: false, ErrorMessage: err.Error()}
+	}
+	if err := handlers.backend.SetAccountReceiveScriptType(
+		jsonBody.AccountCode,
+		jsonBody.ScriptType,
+	); err != nil {
 		return response{Success: false, ErrorMessage: err.Error()}
 	}
 	return response{Success: true}

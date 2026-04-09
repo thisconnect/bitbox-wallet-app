@@ -3,6 +3,7 @@
 package backend
 
 import (
+	"bytes"
 	"encoding/hex"
 	"fmt"
 	"math"
@@ -102,6 +103,7 @@ func (a AccountsList) lookupByTransactionInternalID(internalID string) (accounts
 	return nil, nil
 }
 
+<<<<<<< HEAD
 func compareAccountCoins(coin1, coin2 coinpkg.Coin) int {
 	getOrder := func(c coinpkg.Coin) (int, bool) {
 		order, ok := map[coinpkg.Code]int{
@@ -112,6 +114,34 @@ func compareAccountCoins(coin1, coin2 coinpkg.Coin) int {
 		}[c.Code()]
 		if ok {
 			return order, true
+=======
+// sortAccounts sorts the accounts in-place by 1) keystore name 2) root fingerprint 3) coin
+// 4) account number.
+func sortAccounts(accounts []accounts.Interface, accountsConfig config.AccountsConfig) {
+	compareCoin := func(coin1, coin2 coinpkg.Coin) int {
+		getOrder := func(c coinpkg.Coin) (int, bool) {
+			order, ok := map[coinpkg.Code]int{
+				coinpkg.CodeBTC:  0,
+				coinpkg.CodeTBTC: 1,
+				coinpkg.CodeLTC:  2,
+				coinpkg.CodeTLTC: 3,
+			}[c.Code()]
+			if ok {
+				return order, true
+			}
+			// We want to sort ETH and ERC20 tokens with the same priority even though they have
+			// different coin codes, so we use the chain ID.
+			ethCoin, ok := c.(*eth.Coin)
+			if ok {
+				switch ethCoin.ChainID() {
+				case params.MainnetChainConfig.ChainID.Uint64():
+					return 4, true
+				case params.SepoliaChainConfig.ChainID.Uint64():
+					return 5, true
+				}
+			}
+			return 0, false
+>>>>>>> upstream/master
 		}
 		// We want to sort ETH and ERC20 tokens with the same priority even though they have
 		// different coin codes, so we use the chain ID.
@@ -126,6 +156,7 @@ func compareAccountCoins(coin1, coin2 coinpkg.Coin) int {
 		}
 		return 0, false
 	}
+<<<<<<< HEAD
 	order1, ok1 := getOrder(coin1)
 	order2, ok2 := getOrder(coin2)
 	if !ok1 || !ok2 {
@@ -138,6 +169,49 @@ func compareAccountCoins(coin1, coin2 coinpkg.Coin) int {
 func lessAccountSortOrder(coin1 coinpkg.Coin, accountConfig1 *config.Account, coin2 coinpkg.Coin, accountConfig2 *config.Account) bool {
 	coinCmp := compareAccountCoins(coin1, coin2)
 	if coinCmp != 0 {
+=======
+	less := func(i, j int) bool {
+		acct1 := accounts[i]
+		acct2 := accounts[j]
+		rootFingerprint1, err1 := acct1.Config().Config.SigningConfigurations.RootFingerprint()
+		rootFingerprint2, err2 := acct2.Config().Config.SigningConfigurations.RootFingerprint()
+		if err1 == nil && err2 == nil {
+			keystore1, lookupErr1 := accountsConfig.LookupKeystore(rootFingerprint1)
+			keystore2, lookupErr2 := accountsConfig.LookupKeystore(rootFingerprint2)
+			if lookupErr1 == nil && lookupErr2 == nil && keystore1.Name != keystore2.Name {
+				return keystore1.Name < keystore2.Name
+			}
+			if cmp := bytes.Compare(rootFingerprint1, rootFingerprint2); cmp != 0 {
+				return cmp < 0
+			}
+		}
+		coinCmp := compareCoin(acct1.Coin(), acct2.Coin())
+		if coinCmp == 0 && len(acct1.Config().Config.SigningConfigurations) > 0 && len(acct2.Config().Config.SigningConfigurations) > 0 {
+			signingCfg1 := acct1.Config().Config.SigningConfigurations[0]
+			signingCfg2 := acct2.Config().Config.SigningConfigurations[0]
+			// An error should never happen here, but if it does, we just sort as if it was account
+			// number 0.
+			accountNumber1, _ := signingCfg1.AccountNumber()
+			accountNumber2, _ := signingCfg2.AccountNumber()
+			if accountNumber1 != accountNumber2 {
+				return accountNumber1 < accountNumber2
+			}
+			// Same coin, same account number: for ETH coins, put regular account first, followed by
+			// its children ERC20 token accounts.
+			ethCoin1, ok1 := acct1.Coin().(*eth.Coin)
+			ethCoin2, ok2 := acct2.Coin().(*eth.Coin)
+			if ok1 && ok2 {
+				if ethCoin1.ERC20Token() != nil && ethCoin2.ERC20Token() != nil {
+					// ERC20 tokens sorted by code.
+					return acct1.Config().Config.Code < acct2.Config().Config.Code
+				}
+				// ETH parent account comes before its ERC20 tokens.
+				return ethCoin2.ERC20Token() != nil
+			}
+			// Unspecified account ordering: default to ordering by code.
+			return acct1.Config().Config.Code < acct2.Config().Config.Code
+		}
+>>>>>>> upstream/master
 		return coinCmp < 0
 	}
 
@@ -824,6 +898,32 @@ func (backend *Backend) SetTokenActive(accountCode accountsTypes.Code, tokenCode
 	return nil
 }
 
+// SetAccountReceiveScriptType stores the receive script type for an account.
+func (backend *Backend) SetAccountReceiveScriptType(
+	accountCode accountsTypes.Code,
+	scriptType signing.ScriptType,
+) error {
+	err := backend.config.ModifyAccountsConfig(func(accountsConfig *config.AccountsConfig) error {
+		acct := accountsConfig.Lookup(accountCode)
+		if acct == nil {
+			return errp.Newf("Could not find account %s", accountCode)
+		}
+		if scriptType == signing.ScriptTypeP2WPKHP2SH {
+			return errp.New("wrapped segwit is not supported in receive flows")
+		}
+		if acct.InsuranceStatus == string(bitsurance.ActiveStatus) &&
+			scriptType != signing.ScriptTypeP2WPKH {
+			return errp.New("insured accounts can only receive on native segwit")
+		}
+		return acct.SetReceiveScriptType(scriptType)
+	})
+	if err != nil {
+		return err
+	}
+	backend.emitAccountsStatusChanged()
+	return nil
+}
+
 // RenameAccount renames an account in the accounts database.
 func (backend *Backend) RenameAccount(accountCode accountsTypes.Code, name string) error {
 	if name == "" {
@@ -844,11 +944,28 @@ func (backend *Backend) RenameAccount(accountCode accountsTypes.Code, name strin
 	return nil
 }
 
+// updateKeystoreName persists a keystore name change and re-sorts the loaded accounts accordingly.
+func (backend *Backend) updateKeystoreName(rootFingerprint []byte, name string) error {
+	if name == "" {
+		return errp.New("Name cannot be empty")
+	}
+	if err := backend.config.ModifyAccountsConfig(func(accountsConfig *config.AccountsConfig) error {
+		accountsConfig.GetOrAddKeystore(rootFingerprint).Name = name
+		return nil
+	}); err != nil {
+		return err
+	}
+	defer backend.accountsAndKeystoreLock.Lock()()
+	sortAccounts(backend.accounts, backend.config.AccountsConfig())
+	backend.emitAccountsStatusChanged()
+	return nil
+}
+
 // addAccount adds the given account to the backend.
 // The accountsAndKeystoreLock must be held when calling this function.
 func (backend *Backend) addAccount(account accounts.Interface) {
 	backend.accounts = append(backend.accounts, account)
-	sortAccounts(backend.accounts)
+	sortAccounts(backend.accounts, backend.config.AccountsConfig())
 
 	account.Observe(func(event observable.Event) {
 		backend.Notify(observable.Event{
