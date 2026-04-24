@@ -105,13 +105,11 @@
         btcdirect('set-parameters',
           mode === 'production' ? {
             baseCurrency: currency,
-            fixedCurrency: true,
             quoteCurrency,
             // paymentMethod: any of 'bancontact', 'bankTransfer', 'creditCard', 'giropay', 'iDeal', 'sofort', 'applepay'
             showWalletAddress: false,
           } : {
             baseCurrency: currency,
-            fixedCurrency: true,
             paymentMethod: 'sofort', // sandbox currently only supports sofort payment method
             quoteCurrency,
             showWalletAddress: false,
