@@ -20,6 +20,7 @@ import { MarketGuide } from './guide';
 import { alertUser } from '@/components/alert/Alert';
 import { useVendorIframeResizeHeight, useVendorTerms } from '@/hooks/vendor-iframe';
 import style from './iframe.module.css';
+import { Message } from '@/components/message/message';
 
 // Map languages supported by BTC Direct
 const localeMapping: Readonly<Record<string, string>> = {
@@ -241,7 +242,9 @@ export const BTCDirect = ({
                     src={btcdirectInfo.url}>
                   </iframe>
                 ) : (
-                  <>{btcdirectInfo?.errorMessage ? alertUser(btcdirectInfo.errorMessage) : alertUser('genericError')}</>
+                  <Message type="error">
+                    {btcdirectInfo?.errorMessage || t('genericError')}
+                  </Message>
                 )}
               </div>
             )}
