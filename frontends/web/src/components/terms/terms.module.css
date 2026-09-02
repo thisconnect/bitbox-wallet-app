@@ -74,10 +74,9 @@
   text-align: left;
 }
 
-
-@media (max-width: 768px) {
-  .buttons {
-    flex-direction: column;
-    margin-bottom: var(--space-half);
+@media (max-width: 768px),
+       (orientation: landscape) and (max-height: 600px) and (hover: none) and (pointer: coarse) {
+  .disclaimerContainer {
+    padding-bottom: var(--space-large);
   }
 }

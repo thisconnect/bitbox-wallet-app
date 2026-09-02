@@ -6,6 +6,7 @@ import { useLocation } from 'wouter';
 import { ArrowFloorDownWhite, ArrowFloorUpWhite, Coins, WalletConnectLight } from '@/components/icon';
 import { useMediaQuery } from '@/hooks/mediaquery';
 import type { TAccountCode, TAccount, TCoinCode } from '@/api/account';
+import { useMobileLayout } from '@/hooks/mobile-layout';
 import { isEthereumBased } from '@/utils/coin';
 import { AccountActionButtonLink } from './components/account-action-button-link';
 import { AccountActionButtons } from './components/account-action-buttons';
@@ -32,7 +33,7 @@ export const ActionButtons = ({ canSend, code, coinCode, exchangeSupported, acco
   } = useFeatureConnect();
   const walletConnectEnabled = isEthereumBased(account.coinCode) && !account.isToken;
   const isLargeTablet = useMediaQuery('(max-width: 830px)');
-  const isMobile = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMobileLayout();
 
   // When clicking 'Send', first prompt to connect the keystore and check that it supports signing.
   // For Ethereum based accounts, we also need to know which keystore (which BitBox02 version) is

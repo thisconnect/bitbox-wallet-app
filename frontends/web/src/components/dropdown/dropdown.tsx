@@ -14,6 +14,7 @@ import Select, {
 } from 'react-select';
 import { useMediaQuery } from '@/hooks/mediaquery';
 import { runningOnMobile } from '@/utils/env';
+import { useMobileLayout } from '@/hooks/mobile-layout';
 import { MobileFullscreenSelector } from './mobile-fullscreen-selector';
 import { ChevronDownDark } from '@/components/icon';
 import styles from './dropdown.module.css';
@@ -145,10 +146,10 @@ export const Dropdown = <T, IsMulti extends boolean = false, TExtra = object, TO
   isSearchable = true,
   ...props
 }: SelectProps<T, IsMulti, TExtra, TOptionExt>) => {
-  const isCompact = useMediaQuery('(max-width: 768px)');
+  const isMobile = useMobileLayout();
   const hasTabletDimensions = useMediaQuery('(min-width: 600px) and (min-height: 600px)');
 
-  if (isCompact && mobileFullScreen) {
+  if (isMobile && mobileFullScreen) {
     return (
       <MobileFullscreenSelector
         title={title}
@@ -165,7 +166,6 @@ export const Dropdown = <T, IsMulti extends boolean = false, TExtra = object, TO
       />
     );
   }
-
   const isGrouped = isGroupedOptions(options);
   const optionCount = (
     isGrouped
