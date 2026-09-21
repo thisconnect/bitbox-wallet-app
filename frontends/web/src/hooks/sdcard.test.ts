@@ -30,7 +30,7 @@ describe('useSDCard', () => {
     it('should apply for bitbox02', async () => {
       checkSDCardSpy.mockImplementation(() => Promise.resolve(true));
 
-      const { result } = renderHook(() => useSDCard({ '000': 'bitbox02' }));
+      const { result } = renderHook(() => useSDCard({ '000': 'bitbox02' }, 'first'));
 
       await waitFor(() => expect(checkSDCard).toHaveBeenCalled());
       await waitFor(() => expect(result.current).toBe(true));
@@ -53,7 +53,7 @@ describe('useSDCard', () => {
 
       getDeviceInfoSpy.mockResolvedValue(MOCKED_DEVICE_INFO);
 
-      const { result } = renderHook(() => useSDCard({ '000': 'bitbox' }));
+      const { result } = renderHook(() => useSDCard({ '000': 'bitbox' }, 'second'));
 
       await waitFor(() => expect(getDeviceInfo).toHaveBeenCalled());
 
@@ -72,7 +72,7 @@ describe('useSDCard', () => {
         }));
 
       const { result, rerender } = renderHook(
-        ({ locationKey }) => useSDCard({ '000': 'bitbox02' }, [locationKey]),
+        ({ locationKey }) => useSDCard({ '000': 'bitbox02' }, locationKey),
         { initialProps: { locationKey: 'first' } },
       );
       await waitFor(() => expect(checkSDCard).toHaveBeenCalledTimes(1));

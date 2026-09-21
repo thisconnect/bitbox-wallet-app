@@ -16,9 +16,9 @@ export const SDCardWarning = ({
 }: Props) => {
   const { t } = useTranslation();
   const { key: locationKey } = useLocation();
-  const hasCard = useSDCard(devices, [locationKey]);
-
   const deviceList: KeysOf<TDevices> = Object.keys(devices);
+  const hasCard = useSDCard(devices, locationKey);
+
   const firstDevice = deviceList[0];
   if (!firstDevice) {
     return null;

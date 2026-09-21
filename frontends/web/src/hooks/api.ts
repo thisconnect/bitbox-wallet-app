@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-import { DependencyList, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type DependencyList } from 'react';
 import { TSubscriptionCallback, TUnsubscribe } from '@/api/subscribe';
 import { useMountedRef } from './mount';
 
