@@ -62,13 +62,15 @@ export const useQRScanner = (
                 onErrorRef.current(err);
               }
             },
-            // disabled bc we draw their own scan overlay.
-            highlightScanRegion: false,
-            highlightCodeOutline: false,
+            maxScansPerSecond: 3,
+            // Temporarily remove calculateScanRegion
+            // and let qr-scanner use its default scan region.
+            highlightScanRegion: true,
+            highlightCodeOutline: true,
             calculateScanRegion: (v) => {
               const videoWidth = v.videoWidth;
               const videoHeight = v.videoHeight;
-              const factor = 0.5;
+              const factor = 0.8;
               const size = Math.floor(Math.min(videoWidth, videoHeight) * factor);
               const y = Math.min(
                 Math.max(videoHeight * scanRegionCenterY - size / 2, 0),

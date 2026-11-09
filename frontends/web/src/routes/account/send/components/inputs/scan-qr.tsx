@@ -11,7 +11,7 @@ import style from './scan-qr.module.css';
 
 const ANIMATION_MS = 300;
 const DEFAULT_SCAN_REGION_CENTER_Y = 0.5;
-const FULLSCREEN_SCAN_REGION_CENTER_Y = 0.35;
+const FULLSCREEN_SCAN_REGION_CENTER_Y = 0.5;
 
 type TRequestClose = (onClosed?: () => void) => void;
 type TResetLastResult = () => void;
