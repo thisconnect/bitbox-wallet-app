@@ -20,6 +20,7 @@ import { Button } from '@/components/forms';
 import { NewBadge } from '@/components/new-badge/new-badge';
 import { ConnectedKeystore } from '../keystore/connected-keystore';
 import style from './sidebar.module.css';
+import { useMobileLayout } from '@/hooks/mobile-layout';
 
 type SidebarProps = {
   devices: TDevices;
@@ -79,14 +80,11 @@ const Sidebar = ({
   accounts,
 }: SidebarProps) => {
   const { t } = useTranslation();
+  const isMobile = useMobileLayout();
   const { pathname } = useLocation();
   const [ canUpgrade, setCanUpgrade ] = useState(false);
   const { activeSidebar, toggleSidebar } = useContext(AppContext);
   const { lightningAccount } = useLightning();
-  const hasPortfolio = accounts.length > 0 || !!lightningAccount;
-
-  const deviceIDs: string[] = Object.keys(devices);
-  const isBitboxBootloader = Object.values(devices).includes('bitbox02-bootloader');
 
   useEffect(() => {
     const checkUpgradableDevices = async () => {
@@ -108,6 +106,10 @@ const Sidebar = ({
 
   const keystores = useKeystores();
 
+  if (isMobile) {
+    return null;
+  }
+
   const handleSidebarItemClick = (event: React.SyntheticEvent) => {
     const el = (event.target as Element).closest('a');
     if (el!.classList.contains('sidebarActive') && window.innerWidth <= 901) {
@@ -115,6 +117,9 @@ const Sidebar = ({
     }
   };
 
+  const hasPortfolio = accounts.length > 0 || !!lightningAccount;
+  const deviceIDs: string[] = Object.keys(devices);
+  const isBitboxBootloader = Object.values(devices).includes('bitbox02-bootloader');
   const accountsByKeystore = getAccountsByKeystore(accounts);
   const inMarketSection = pathname.startsWith('/market');
 
