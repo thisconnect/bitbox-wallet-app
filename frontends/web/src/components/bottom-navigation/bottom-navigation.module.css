@@ -126,6 +126,33 @@
     .bottomGlass {
         display: block;
     }
+
+}
+@media (orientation: landscape) and (max-height: 600px) {
+    .container {
+        --bottom-navigation-bar-height: 90%;
+        --bottom-navigation-bottom-offset: var(--space-half);
+        display: flex;
+        flex-direction: column;
+        max-width: 90px;
+        right: auto;
+    }
+
+    .link {
+        container-type: normal;
+        height: 100%;
+    }
+
+    .settingsLabel {
+
+    }
+
+    .container,
+    .bottomGlass {
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+    }
+
 }
 
 .redDot {

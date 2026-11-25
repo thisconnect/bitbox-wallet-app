@@ -66,3 +66,16 @@
         }
     }
 }
+
+@media (orientation: landscape) and (max-height: 600px) {
+
+    .appContent.hasBottomNavigation {
+        left: 100px;
+        width: calc(100% - 100px);
+    }
+
+    .appContent.hasBottomNavigation main::after {
+        content: none;
+        flex: initial;
+    }
+}
